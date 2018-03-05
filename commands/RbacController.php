@@ -16,34 +16,36 @@ class RbacController extends Controller {
 
         // Создаем роли
         $admin = $auth->createRole('admin');
-        //$factor = $auth->createRole('factor');
+        $security = $auth->createRole('security');
+        $operator = $auth->createRole('operator');
+
 
         // запишем их в БД
         $auth->add($admin);
-        //$auth->add($factor);
+        $auth->add($security);
+        $auth->add($operator);
 
         // Создаем разрешения.
         $adminTask = $auth->createPermission('adminTask');
         $adminTask->description = 'Задачи администратора';
-
-        $viewDocument = $auth->createPermission('viewDocument');
-        $viewDocument->description = 'Просмотр документов';
-
-        $viewReport = $auth->createPermission('viewReport');
-        $viewReport->description = 'Просмотр отчетов';
+        $securityTask = $auth->createPermission('securityTask');
+        $securityTask->description = 'Задачи начальника охраны';
+        $operatorTask = $auth->createPermission('operatorTask');
+        $operatorTask->description = 'Задачи оператора';
 
         // Запишем эти разрешения в БД
         $auth->add($adminTask);
-        $auth->add($viewDocument);
-        $auth->add($viewReport);
+        $auth->add($securityTask);
+        $auth->add($operatorTask);
 
         // Теперь добавим наследования.
 
+        $auth->addChild($security,$operator);
+        $auth->addChild($security,$securityTask);
+
         // админ наследует все роли. Он же админ, должен уметь всё! :D
-        /*$auth->addChild($admin, $market);
-        $auth->addChild($admin, $manager);
-        $auth->addChild($admin, $energy);
-        $auth->addChild($admin, $guard);*/
+        $auth->addChild($admin, $security);
+        $auth->addChild($admin, $operator);
 
         // Еще админ имеет собственное разрешение - «Просмотр админки»
         $auth->addChild($admin, $adminTask);

@@ -87,9 +87,6 @@ class User extends BaseModel implements IdentityInterface
             ['email', 'unique', 'targetClass' => self::className(), 'message' => 'Пользователь с таким e-mail уже существует.'],
             ['email', 'string', 'max' => 40],
 
-            ['phone', 'required'],
-            ['phone', 'string', 'max' => 12],
-
             ['status', 'integer'],
             ['status', 'default', 'value' => self::STATUS_ACTIVE],
             ['status', 'in', 'range' => array_keys(self::getStatusesArray())],
@@ -104,7 +101,6 @@ class User extends BaseModel implements IdentityInterface
             'updated_at' => 'Обновлён',
             'username' => 'Логин',
             'email' => 'Email',
-            'phone' => 'Телефон',
             'status' => 'Статус',
             'fname' => 'Имя',
             'lname' => 'Фамилия',

@@ -8,8 +8,8 @@ $params = ArrayHelper::merge(
 $db = require(__DIR__ . '/db.php');
 
 $config = [
-    'id' => 'smart-console',
-    'name' => 'Домовенок',
+    'id' => 'skud-console',
+    'name' => 'СКУД Рубеж',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'language' => 'ru-RU',

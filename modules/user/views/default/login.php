@@ -16,9 +16,9 @@ $this->params['breadcrumbs'][] = $this->title;
             <div class="center">
                 <h1>
                     <i class="ace-icon fa fa-eye green"></i>
-                    <span class="white" id="id-text2">Домовенок</span>
+                    <span class="white" id="id-text2"><?= Yii::$app->name ?></span>
                 </h1>
-                <h4 class="blue" id="id-company-text">Система управления умным домом</h4>
+                <h4 class="blue" id="id-company-text">Вход в административный раздел </h4>
             </div>
 
             <div class="space-6"></div>

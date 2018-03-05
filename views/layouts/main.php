@@ -94,36 +94,9 @@ AppAsset::register($this);
                     </ul>
                 </li>
 
-                <li class="green dropdown-modal">
-                    <a data-toggle="dropdown" class="dropdown-toggle" href="#">
-                        <i class="ace-icon fa fa-envelope icon-animated-vertical"></i>
-                        <span class="badge badge-success">2</span>
-                    </a>
-
-                    <ul class="dropdown-menu-right dropdown-navbar dropdown-menu dropdown-caret dropdown-close">
-                        <li class="dropdown-header">
-                            <i class="ace-icon fa fa-envelope-o"></i>
-                            Новых сообщений - 2
-                        </li>
-
-                        <li class="dropdown-content">
-                            <ul class="dropdown-menu dropdown-navbar">
-
-                            </ul>
-                        </li>
-
-                        <li class="dropdown-footer">
-                            <a href="/main/syslog/index">
-                                Все сообщения
-                                <i class="ace-icon fa fa-arrow-right"></i>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-
                 <li class="light-blue dropdown-modal">
                     <a data-toggle="dropdown" href="#" class="dropdown-toggle">
-                        <img class="nav-user-photo" src="<?= Yii::$app->user->identity->image ?>" alt="image" />
+                        <img class="nav-user-photo" src="<?= Yii::$app->user->identity->image ?? '/images/male.png' ?>" alt="image" />
                         <span class="user-info">
 									<?= Yii::$app->user->identity->fname .'<br>'.Yii::$app->user->identity->lname ?>
 								</span>
@@ -132,13 +105,6 @@ AppAsset::register($this);
                     </a>
 
                     <ul class="user-menu dropdown-menu-right dropdown-menu dropdown-yellow dropdown-caret dropdown-close">
-                        <li>
-                            <a href="#">
-                                <i class="ace-icon fa fa-cog"></i>
-                                Settings
-                            </a>
-                        </li>
-
                         <li><?= Html::a("<i class=\"ace-icon fa fa-user\"></i> Профиль", '/user/profile/index', [
                                     'data' => [
                                         'method' => 'post'
@@ -235,14 +201,6 @@ AppAsset::register($this);
 
                         <ul class="submenu">
                             <li class="">
-                                <a href="/main/config">
-                                    <i class="menu-icon fa fa-caret-right"></i>
-                                    Параметры
-                                </a>
-
-                                <b class="arrow"></b>
-                            </li>
-                            <li class="">
                                 <a href="/main/config/sms">
                                     <i class="menu-icon fa fa-caret-right"></i>
                                     Отправка смс
@@ -251,9 +209,41 @@ AppAsset::register($this);
                                 <b class="arrow"></b>
                             </li>
                             <li class="">
-                                <a href="/main/config/mqtt">
+                                <a href="/admin/user">
                                     <i class="menu-icon fa fa-caret-right"></i>
-                                    MQTT
+                                    Пользователи
+                                </a>
+
+                                <b class="arrow"></b>
+                            </li>
+                            <li class="">
+                                <a href="/admin/time-zone">
+                                    <i class="menu-icon fa fa-caret-right"></i>
+                                    Временные зоны
+                                </a>
+
+                                <b class="arrow"></b>
+                            </li>
+                            <li class="">
+                                <a href="/admin/event-type">
+                                    <i class="menu-icon fa fa-caret-right"></i>
+                                    Виды событий
+                                </a>
+
+                                <b class="arrow"></b>
+                            </li>
+                            <li class="">
+                                <a href="/admin/car-type">
+                                    <i class="menu-icon fa fa-caret-right"></i>
+                                    Виды автотранспорта
+                                </a>
+
+                                <b class="arrow"></b>
+                            </li>
+                            <li class="">
+                                <a href="/admin/doc-type">
+                                    <i class="menu-icon fa fa-caret-right"></i>
+                                    Виды документов
                                 </a>
 
                                 <b class="arrow"></b>
@@ -278,93 +268,6 @@ AppAsset::register($this);
                         </a>
 
                         <b class="arrow"></b>
-                    </li>
-                    <li class="">
-                        <a href="/main/device-type">
-                            <i class="menu-icon fa fa-caret-right"></i>
-                            Типы устройств
-                        </a>
-
-                        <b class="arrow"></b>
-                    </li>
-                </ul>
-            </li>
-
-            <li class="">
-                <a href="#" class="dropdown-toggle">
-                    <i class="menu-icon fa fa-database"></i>
-                    <span class="menu-text">Учет</span>
-
-                    <b class="arrow fa fa-angle-down"></b>
-                </a>
-
-                <b class="arrow"></b>
-
-                <ul class="submenu">
-
-                    <li class="">
-
-                        <a href="/main/registration">
-                            <i class="menu-icon fa fa-caret-right"></i>
-                            <span class="menu-text"> Счетчики </span>
-                        </a>
-
-                        <b class="arrow"></b>
-
-                        <a href="#" class="dropdown-toggle">
-                            <i class="menu-icon fa fa-caret-right"></i>
-                            Мой склад
-                            <b class="arrow fa fa-angle-down"></b>
-                        </a>
-
-                        <b class="arrow"></b>
-
-                        <ul class="submenu">
-                            <li class="">
-                                <a href="/main/stock/store">
-                                    <i class="menu-icon fa fa-tachometer"></i>
-                                    <span class="menu-text"> Остатки </span>
-                                </a>
-                                <b class="arrow"></b>
-                            </li>
-                            <li class="">
-                                <a href="/main/stock/store/inventory">
-                                    <i class="menu-icon fa fa-search"></i>
-                                    <span class="menu-text"> Инвентаризация </span>
-                                </a>
-                                <b class="arrow"></b>
-                            </li>
-                            <li class="">
-                                <a href="/main/stock/category">
-                                    <i class="menu-icon fa fa-caret-right"></i>
-                                    Категории
-                                </a>
-                                <b class="arrow"></b>
-                            </li>
-
-                            <li class="">
-                                <a href="/main/stock/cell">
-                                    <i class="menu-icon fa fa-caret-right"></i>
-                                    Места хранения
-                                </a>
-                                <b class="arrow"></b>
-                            </li>
-
-                            <li class="">
-                                <a href="/main/stock/material">
-                                    <i class="menu-icon fa fa-caret-right"></i>
-                                    Номенклатура
-                                </a>
-                                <b class="arrow"></b>
-                            </li>
-                            <li class="">
-                                <a href="/main/stock/unit">
-                                    <i class="menu-icon fa fa-caret-right"></i>
-                                    Ед. измерения
-                                </a>
-                                <b class="arrow"></b>
-                            </li>
-                        </ul>
                     </li>
                 </ul>
             </li>
@@ -391,14 +294,6 @@ AppAsset::register($this);
                 <a href="/admin/events/index">
                     <i class="menu-icon fa fa-bell-o" aria-hidden="true"></i>
                     <span class="menu-text"> События 2</span>
-                </a>
-
-                <b class="arrow"></b>
-            </li>
-            <li class="">
-                <a href="/main/syslog/index">
-                    <i class="menu-icon fa fa-envelope-o" aria-hidden="true"></i>
-                    <span class="menu-text"> Сообщения 2</span></span>
                 </a>
 
                 <b class="arrow"></b>

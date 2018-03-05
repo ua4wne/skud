@@ -9,6 +9,7 @@ use yii\web\Controller;
  */
 class DefaultController extends Controller
 {
+    public $layout = '@app/views/layouts/main.php';
     /**
      * Renders the index view for the module
      * @return string
