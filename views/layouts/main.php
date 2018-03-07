@@ -331,6 +331,7 @@ AppAsset::register($this);
                     <!-- /.col-lg-12 -->
                 </div>
                 <!-- /.row -->
+
             <?= $content ?>
             </div>
         </div>
