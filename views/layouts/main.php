@@ -191,70 +191,49 @@ AppAsset::register($this);
 
                 <ul class="submenu">
                     <li class="">
-                        <a href="#" class="dropdown-toggle">
+                        <a href="/admin/user">
                             <i class="menu-icon fa fa-caret-right"></i>
-                            Система
-                            <b class="arrow fa fa-angle-down"></b>
+                            Пользователи
                         </a>
 
                         <b class="arrow"></b>
-
-                        <ul class="submenu">
-                            <li class="">
-                                <a href="/main/config/sms">
-                                    <i class="menu-icon fa fa-caret-right"></i>
-                                    Отправка смс
-                                </a>
-
-                                <b class="arrow"></b>
-                            </li>
-                            <li class="">
-                                <a href="/admin/user">
-                                    <i class="menu-icon fa fa-caret-right"></i>
-                                    Пользователи
-                                </a>
-
-                                <b class="arrow"></b>
-                            </li>
-                            <li class="">
-                                <a href="/admin/time-zone">
-                                    <i class="menu-icon fa fa-caret-right"></i>
-                                    Временные зоны
-                                </a>
-
-                                <b class="arrow"></b>
-                            </li>
-                            <li class="">
-                                <a href="/admin/event-type">
-                                    <i class="menu-icon fa fa-caret-right"></i>
-                                    Виды событий
-                                </a>
-
-                                <b class="arrow"></b>
-                            </li>
-                            <li class="">
-                                <a href="/admin/car-type">
-                                    <i class="menu-icon fa fa-caret-right"></i>
-                                    Виды автотранспорта
-                                </a>
-
-                                <b class="arrow"></b>
-                            </li>
-                            <li class="">
-                                <a href="/admin/doc-type">
-                                    <i class="menu-icon fa fa-caret-right"></i>
-                                    Виды документов
-                                </a>
-
-                                <b class="arrow"></b>
-                            </li>
-                        </ul>
                     </li>
-
                     <li class="">
-                        <a href="/main/locations">
+                        <a href="/admin/time-zone">
                             <i class="menu-icon fa fa-caret-right"></i>
-                            Локации
+                            Временные зоны
+                        </a>
+
+                        <b class="arrow"></b>
+                    </li>
+                    <li class="">
+                        <a href="/admin/event-type">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            Виды событий
+                        </a>
+
+                        <b class="arrow"></b>
+                    </li>
+                    <li class="">
+                        <a href="/admin/car-type">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            Виды автотранспорта
+                        </a>
+
+                        <b class="arrow"></b>
+                    </li>
+                    <li class="">
+                        <a href="/admin/doc-type">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            Виды документов
+                        </a>
+
+                        <b class="arrow"></b>
+                    </li>
+                    <li class="">
+                        <a href="/main/config/sms">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            Отправка смс
                         </a>
 
                         <b class="arrow"></b>
@@ -262,9 +241,9 @@ AppAsset::register($this);
 
 
                     <li class="">
-                        <a href="/main/device">
+                        <a href="/admin/device">
                             <i class="menu-icon fa fa-caret-right"></i>
-                            Оборудование
+                            Контроллеры СКУД
                         </a>
 
                         <b class="arrow"></b>
@@ -331,6 +310,7 @@ AppAsset::register($this);
                     <!-- /.col-lg-12 -->
                 </div>
                 <!-- /.row -->
+
             <?= $content ?>
             </div>
         </div>

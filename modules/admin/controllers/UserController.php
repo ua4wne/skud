@@ -105,7 +105,7 @@ class UserController extends Controller
             $statsel = ['0'=>'Не активный', '1'=>'Активный'];
             $rolesel = array();
             $roles = Role::find()->select(['id','alias'])->asArray()->all();
-            $def = Role::find()->where(['name'=>'poll'])->asArray()->all();
+            $def = Role::find()->where(['name'=>'operator'])->asArray()->all();
             foreach($roles as $role) {
                 $rolesel[$role['id']] = $role['alias']; //массив для заполнения данных в select формы
             }

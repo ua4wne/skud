@@ -1,25 +1,24 @@
 <?php
 
-namespace app\modules\main\controllers;
+namespace app\modules\admin\controllers;
 
-use app\models\Ping;
-use app\modules\main\models\DeviceType;
-use app\modules\main\models\Location;
-use app\modules\main\models\Tarif;
+use app\models\Events;
+use app\modules\admin\models\TimeZone;
+use app\modules\main\models\Event;
+use app\modules\main\models\UploadImage;
 use Yii;
-use app\modules\main\models\Device;
-use yii\data\ActiveDataProvider;
+use app\modules\admin\models\Device;
+use app\modules\admin\models\SearchDevice;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-use app\modules\main\models\UploadImage;
-use yii\web\UploadedFile;
 
 /**
  * DeviceController implements the CRUD actions for Device model.
  */
 class DeviceController extends Controller
 {
+    public $layout = '@app/views/layouts/main.php';
     /**
      * @inheritdoc
      */
@@ -41,15 +40,12 @@ class DeviceController extends Controller
      */
     public function actionIndex()
     {
-        $dataProvider = new ActiveDataProvider([
-            'query' => Device::find(),
-        ]);
+        $searchModel = new SearchDevice();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
+            'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
-            'pagination' => [
-                'pageSize' => Yii::$app->params['page_size'],
-            ],
         ]);
     }
 
@@ -57,33 +53,13 @@ class DeviceController extends Controller
      * Displays a single Device model.
      * @param integer $id
      * @return mixed
+     * @throws NotFoundHttpException if the model cannot be found
      */
     public function actionView($id)
     {
         return $this->render('view', [
             'model' => $this->findModel($id),
         ]);
-    }
-
-    public function actionTarif($id)
-    {
-        $model = new Tarif();
-        $model->device_id = $id;
-        if ($model->load(Yii::$app->request->post())) {
-            //удаляем старую запись, если была
-            $old = Tarif::findOne(['device_id'=>$id]);
-            if(!empty($old))
-                $old->delete();
-            if($model->save())
-                return $this->redirect(['view', 'id' => $id]);
-        }
-        else
-            return $this->render('tarif', [
-                'model' => $model,
-                'image' => $this->findModel($id)->image,
-                'device' => $this->findModel($id)->name,
-                'id' => $id,
-            ]);
     }
 
     /**
@@ -95,8 +71,7 @@ class DeviceController extends Controller
     {
         $model = new Device();
         $upload = new UploadImage();
-        $sid = md5(uniqid());
-        $model->uid = substr($sid,0,16);
+        $model->type = 'Z5R-Web';
         if ($model->load(Yii::$app->request->post())) {
             $upload->image = UploadedFile::getInstance($upload, 'image');
             $fname = $upload->upload();
@@ -104,24 +79,17 @@ class DeviceController extends Controller
             $model->image = $fname;
             if($model->save())
                 return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            $locations = Location::find()->select(['id','name'])->asArray()->all();
-            $selloc = array();
-            foreach($locations as $location) {
-                $selloc[$location['id']] = $location['name']; //массив для заполнения данных в select формы
+        }
+        else{
+            $zones = TimeZone::find()->select(['id','zone'])->asArray()->all();
+            $tzone = array();
+            foreach($zones as $zone) {
+                $tzone[$zone['id']] = $zone['zone']; //массив для заполнения данных в select формы
             }
-            $types = DeviceType::find()->select(['id','name'])->asArray()->all();
-            $seltype = array();
-            foreach($types as $type) {
-                $seltype[$type['id']] = $type['name']; //массив для заполнения данных в select формы
-            }
-            $selvrf = array('0' => 'Ручной','1' => 'Автоматический');
             return $this->render('create', [
                 'model' => $model,
-                'selvrf' => $selvrf,
-                'selloc' => $selloc,
-                'seltype' => $seltype,
                 'upload' => $upload,
+                'tzone' => $tzone,
             ]);
         }
     }
@@ -131,6 +99,7 @@ class DeviceController extends Controller
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
+     * @throws NotFoundHttpException if the model cannot be found
      */
     public function actionUpdate($id)
     {
@@ -153,24 +122,17 @@ class DeviceController extends Controller
             }
             $model->save();
             return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            $locations = Location::find()->select(['id','name'])->asArray()->all();
-            $selloc = array();
-            foreach($locations as $location) {
-                $selloc[$location['id']] = $location['name']; //массив для заполнения данных в select формы
+        }
+        else{
+            $zones = TimeZone::find()->select(['id','zone'])->asArray()->all();
+            $tzone = array();
+            foreach($zones as $zone) {
+                $tzone[$zone['id']] = $zone['zone']; //массив для заполнения данных в select формы
             }
-            $types = DeviceType::find()->select(['id','name'])->asArray()->all();
-            $seltype = array();
-            foreach($types as $type) {
-                $seltype[$type['id']] = $type['name']; //массив для заполнения данных в select формы
-            }
-            $selvrf = array('0' => 'Ручной','1' => 'Автоматический');
             return $this->render('update', [
                 'model' => $model,
-                'selvrf' => $selvrf,
-                'selloc' => $selloc,
-                'seltype' => $seltype,
                 'upload' => $upload,
+                'tzone' => $tzone,
             ]);
         }
     }
@@ -180,26 +142,20 @@ class DeviceController extends Controller
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
+     * @throws NotFoundHttpException if the model cannot be found
      */
     public function actionDelete($id)
     {
-        $fname = substr($this->findModel($id)->image,1);
-        $this->findModel($id)->delete();
-        //удаляем связанный файл изображения если это не общая картинка noimage.jpg
-        $pos = strpos($fname, 'noimage.jpg');
-        if($pos === false)
-            unlink($fname);
-
+        //ищем связанные записи с таблицами time_zone и event
+        $events = Event::findAll()->where(['device_id'=>$id])->count();
+        if($events){
+            Yii::$app->session->setFlash('error', 'Удаление не возможно! Имеются связанные записи ('.$events.')');
+        }
+        else{
+            $this->findModel($id)->delete();
+            Yii::$app->session->setFlash('success', 'Контроллер '.$this->findModel($id)->type.' удален из системы!');
+        }
         return $this->redirect(['index']);
-    }
-
-    public function actionPing(){
-        $host="192.168.1.10";
-        //return shell_exec("arping -n 2 " . long2ip($host));
-        $scan = new Ping($host);
-        $result = $scan->ping('fsockopen');
-        if($result)
-            return gethostbyaddr($host);
     }
 
     /**
@@ -213,8 +169,8 @@ class DeviceController extends Controller
     {
         if (($model = Device::findOne($id)) !== null) {
             return $model;
-        } else {
-            throw new NotFoundHttpException('The requested page does not exist.');
         }
+
+        throw new NotFoundHttpException('The requested page does not exist.');
     }
 }

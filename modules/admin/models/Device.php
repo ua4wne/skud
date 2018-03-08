@@ -45,6 +45,8 @@ class Device extends BaseModel
             [['type', 'snum', 'fware', 'conn_fw'], 'string', 'max' => 10],
             [['image'], 'string', 'max' => 50],
             [['text'], 'string', 'max' => 255],
+            [['address'], 'string', 'max' => 32],
+            [['snum'], 'unique'],
         ];
     }
 
@@ -64,8 +66,9 @@ class Device extends BaseModel
             'is_active' => 'Статус',
             'mode' => 'Режим работы',
             'zone_id' => 'Временная зона',
-            'created_at' => 'Created At',
-            'updated_at' => 'Updated At',
+            'address' => 'Адрес',
+            'created_at' => 'Дата создания',
+            'updated_at' => 'Дата обновления',
         ];
     }
 

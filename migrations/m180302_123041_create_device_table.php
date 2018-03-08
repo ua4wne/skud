@@ -27,6 +27,7 @@ class m180302_123041_create_device_table extends Migration
             'is_active' => $this->boolean()->notNull()->defaultValue(0),
             'mode' => $this->smallInteger()->notNull()->defaultValue(0),
             'zone_id' => $this->integer()->notNull(),
+            'address' => $this->string(32),
             'created_at' => $this->dateTime()->notNull(),
             'updated_at' => $this->dateTime()->notNull(),
         ], $tableOptions);

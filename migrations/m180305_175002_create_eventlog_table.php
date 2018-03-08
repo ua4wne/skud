@@ -20,7 +20,7 @@ class m180305_175002_create_eventlog_table extends Migration
             'id' => $this->primaryKey(),
             'user_id' => $this->integer()->notNull(),
             'user_ip' => $this->string(15)->notNull(),
-            'type' => $this->string(7)->notNull(),
+            'type' => $this->string(10)->notNull(),
             'msg' => $this->string(255)->notNull(),
             'is_read' => $this->smallInteger(4)->notNull()->defaultValue(0),
             'created_at' => $this->dateTime()->notNull(),
