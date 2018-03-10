@@ -8,16 +8,17 @@ use yii\helpers\Html;
 
 $this->title = 'Новая запись';
 $this->params['breadcrumbs'][] = ['label' => 'Контроллеры СКУД', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="device-create">
 
-    <h1 class="text-center">Новый контроллер СКУД</h1>
+    <h1 class="text-center"><?= Html::encode($this->title) ?></h1>
 
     <?= $this->render('_form', [
         'model' => $model,
+        'active' => $active,
+        'mode' => $mode,
+        'zone' => $zone,
         'upload' => $upload,
-        'tzone' => $tzone,
     ]) ?>
 
 </div>

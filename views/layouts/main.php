@@ -98,7 +98,7 @@ AppAsset::register($this);
                     <a data-toggle="dropdown" href="#" class="dropdown-toggle">
                         <img class="nav-user-photo" src="<?= Yii::$app->user->identity->image ?? '/images/male.png' ?>" alt="image" />
                         <span class="user-info">
-									<?= Yii::$app->user->identity->fname .'<br>'.Yii::$app->user->identity->lname ?>
+									<?= Yii::$app->user->identity->fname ?? ' ' .'<br>'.Yii::$app->user->identity->lname ?? ' ' ?>
 								</span>
 
                         <i class="ace-icon fa fa-caret-down"></i>
@@ -252,9 +252,18 @@ AppAsset::register($this);
             </li>
 
             <li class="">
-                <a href="/main/task">
-                    <i class="menu-icon fa fa-calendar"></i>
-                    <span class="menu-text">Задачи</span>
+                <a href="/main/renter">
+                    <i class="menu-icon fa fa-users"></i>
+                    <span class="menu-text">Организации</span>
+                </a>
+
+                <b class="arrow"></b>
+            </li>
+
+            <li class="">
+                <a href="/main/visitor">
+                    <i class="menu-icon fa fa-user"></i>
+                    <span class="menu-text">Посетители</span>
                 </a>
 
                 <b class="arrow"></b>

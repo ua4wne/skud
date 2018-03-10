@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\grid\GridView;
+use yii\helpers\Url;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\modules\admin\models\SearchDevice */
@@ -10,9 +11,6 @@ use yii\grid\GridView;
 $this->title = 'Контроллеры СКУД';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="page-header">
-    <h1>Настройки</h1>
-</div><!-- /.page-header -->
 <div class="device-index">
 
     <h1 class="text-center"><?= Html::encode($this->title) ?></h1>
@@ -24,19 +22,23 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
-        //'filterModel' => $searchModel,
+        'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
             //'id',
             [
+                'class' => 'yii\grid\CheckboxColumn',
+                // вы можете настроить дополнительные свойства здесь.
+            ],
+            [
                 'label' => 'Фото',
                 'format' => 'raw',
                 'value' => function($data){
                     return Html::img(Url::toRoute($data->image),[
-                        'alt'=>'image',
-                        'style' => 'width:50px;',
-                        //'class'=>'img-circle'
+                            'alt'=>'image',
+                            'style' => 'width:50px;',
+                            //'class'=>'img-circle'
                     ]);
                 },
             ],
@@ -44,7 +46,9 @@ $this->params['breadcrumbs'][] = $this->title;
             'snum',
             'fware',
             'conn_fw',
+            //'image',
             'text',
+            'address',
             //'is_active',
             [
                 /**
@@ -61,10 +65,10 @@ $this->params['breadcrumbs'][] = $this->title;
                  * Переопределяем отображение фильтра.
                  * Задаем выпадающий список с заданными значениями вместо поля для ввода
                  */
-                //'filter' => [
-                //    0 => 'Ручной',
-                //    1 => 'Автоматический',
-                //],
+                'filter' => [
+                    0 => 'Не активный',
+                    1 => 'Активный',
+                ],
                 /**
                  * Переопределяем отображение самих данных.
                  * Вместо 1 или 0 выводим Yes или No соответственно.
@@ -74,14 +78,38 @@ $this->params['breadcrumbs'][] = $this->title;
                     $active = $model->{$column->attribute} === 1;
                     return \yii\helpers\Html::tag(
                         'span',
-                        $active ? 'Активирован' : 'Деактивирован',
+                        $active ? 'Активный' : 'Не активный',
                         [
                             'class' => 'label label-' . ($active ? 'success' : 'danger'),
                         ]
                     );
                 },
             ],
-            'mode',
+            //'mode',
+            [
+                'label' => 'Режим работы',
+                'attribute' => 'mode',
+                'filter' => ['0' => 'Нормальный', '1' => 'Блокирующий', '2' => 'Свободный проход', '3' => 'Ожидание свободного прохода'],
+                //'filterInputOptions' => ['prompt' => 'All educations', 'class' => 'form-control', 'id' => null]
+                'value' => function ($model, $key, $index, $column) {
+                    $mode = $model->{$column->attribute};
+                    switch ($mode) {
+                        case 0:
+                            $val = 'Нормальный';
+                            break;
+                        case 1:
+                            $val = 'Блокирующий';
+                            break;
+                        case 2:
+                            $val = 'Свободный проход';
+                            break;
+                        case 3:
+                            $val = 'Ожидание свободного прохода';
+                            break;
+                    }
+                    return $val;
+                },
+            ],
             'zone_id',
             //'created_at',
             //'updated_at',

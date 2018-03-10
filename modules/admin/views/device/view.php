@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\DetailView;
+use yii\helpers\Url;
 
 /* @var $this yii\web\View */
 /* @var $model app\modules\admin\models\Device */
@@ -28,26 +29,66 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
+            //'id',
             [
                 'label' => 'Картинка',
                 'format' => 'raw',
+
                 'value' => function($data){
                     return Html::img(Url::toRoute($data->image),[
-                        'alt'=>'image',
-                        'style' => 'width:300px;',
-                        //'class'=>'img-circle'
+                         'alt'=>'image',
+                         'style' => 'width:300px;',
+                         //'class'=>'img-circle'
                     ]);
                 },
             ],
-            'id',
             'type',
             'snum',
             'fware',
             'conn_fw',
             //'image',
             'text',
-            'is_active',
-            'mode',
+            'address',
+            //'is_active',
+            [
+                'label' => 'Статус',
+                'format' => 'raw',
+                'value' => function($data){
+                    $mode = $data->is_active;
+                    switch ($mode) {
+                        case 0:
+                            $val = 'Не активный';
+                            break;
+                        case 1:
+                            $val = 'Активный';
+                            break;
+                    }
+                    return $val;
+                },
+            ],
+            //'mode',
+            [
+                'label' => 'Режим работы',
+                'format' => 'raw',
+                'value' => function($data){
+                    $mode = $data->is_active;
+                    switch ($mode) {
+                       case 0:
+                          $val = 'Нормальный';
+                          break;
+                       case 1:
+                          $val = 'Блокирующий';
+                          break;
+                       case 2:
+                          $val = 'Свободный проход';
+                          break;
+                       case 3:
+                          $val = 'Ожидание свободного прохода';
+                          break;
+                    }
+                    return $val;
+                },
+            ],
             'zone_id',
             'created_at',
             'updated_at',

@@ -23,6 +23,7 @@ class UploadImage extends Model{
             $fname = substr_replace(sha1(microtime(true)), '', 12);
             $this->image->saveAs("images/gallery/{$fname}.{$this->image->extension}");
             return '/images/gallery/'.$fname.'.'.$this->image->extension;
+
         }
         else{
             return false;

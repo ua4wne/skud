@@ -4,11 +4,11 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
-/* @var $model app\modules\admin\models\SearchDevice */
+/* @var $model app\modules\main\models\SearchRenter */
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
-<div class="device-search">
+<div class="renter-search">
 
     <?php $form = ActiveForm::begin([
         'action' => ['index'],
@@ -17,25 +17,15 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'id') ?>
 
-    <?= $form->field($model, 'type') ?>
+    <?= $form->field($model, 'title') ?>
 
-    <?= $form->field($model, 'snum') ?>
+    <?= $form->field($model, 'area') ?>
 
-    <?= $form->field($model, 'fware') ?>
+    <?= $form->field($model, 'agent') ?>
 
-    <?= $form->field($model, 'conn_fw') ?>
+    <?= $form->field($model, 'phone') ?>
 
-    <?php // echo $form->field($model, 'image') ?>
-
-    <?php // echo $form->field($model, 'text') ?>
-
-    <?php // echo $form->field($model, 'address') ?>
-
-    <?php // echo $form->field($model, 'is_active') ?>
-
-    <?php // echo $form->field($model, 'mode') ?>
-
-    <?php // echo $form->field($model, 'zone_id') ?>
+    <?php // echo $form->field($model, 'status') ?>
 
     <?php // echo $form->field($model, 'created_at') ?>
 

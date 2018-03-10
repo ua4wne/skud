@@ -8,20 +8,22 @@ use app\models\BaseModel;
 /**
  * This is the model class for table "device".
  *
- * @property integer $id
+ * @property int $id
  * @property string $type
  * @property string $snum
  * @property string $fware
  * @property string $conn_fw
  * @property string $image
  * @property string $text
- * @property integer $is_active
- * @property integer $mode
- * @property integer $zone_id
+ * @property string $address
+ * @property int $is_active
+ * @property int $mode
+ * @property int $zone_id
  * @property string $created_at
  * @property string $updated_at
  *
- * @property EventSkud[] $eventSkuds
+ * @property TimeZone $zone
+ * @property Event[] $events
  */
 class Device extends BaseModel
 {
@@ -39,14 +41,16 @@ class Device extends BaseModel
     public function rules()
     {
         return [
-            [['type', 'snum', 'fware', 'conn_fw'], 'required'],
-            [['is_active', 'mode', 'zone_id'], 'integer'],
+            [['type', 'snum', 'fware', 'conn_fw', 'zone_id'], 'required'],
+            [['mode', 'zone_id'], 'integer'],
             [['created_at', 'updated_at'], 'safe'],
             [['type', 'snum', 'fware', 'conn_fw'], 'string', 'max' => 10],
             [['image'], 'string', 'max' => 50],
             [['text'], 'string', 'max' => 255],
-            [['address'], 'string', 'max' => 32],
+            [['address'], 'string', 'max' => 15],
+            [['is_active'], 'string', 'max' => 1],
             [['snum'], 'unique'],
+            [['zone_id'], 'exist', 'skipOnError' => true, 'targetClass' => TimeZone::className(), 'targetAttribute' => ['zone_id' => 'id']],
         ];
     }
 
@@ -59,14 +63,14 @@ class Device extends BaseModel
             'id' => 'ID',
             'type' => 'Тип',
             'snum' => 'Серийный №',
-            'fware' => 'Firmware',
+            'fware' => 'Fware',
             'conn_fw' => 'Conn Fw',
-            'image' => 'Фото',
+            'image' => 'Изображение',
             'text' => 'Описание',
+            'address' => 'Адрес',
             'is_active' => 'Статус',
             'mode' => 'Режим работы',
             'zone_id' => 'Временная зона',
-            'address' => 'Адрес',
             'created_at' => 'Дата создания',
             'updated_at' => 'Дата обновления',
         ];
@@ -75,8 +79,16 @@ class Device extends BaseModel
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getEventSkuds()
+    public function getZone()
     {
-        return $this->hasMany(EventSkud::className(), ['device_id' => 'id']);
+        return $this->hasOne(TimeZone::className(), ['id' => 'zone_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getEvents()
+    {
+        return $this->hasMany(Event::className(), ['device_id' => 'id']);
     }
 }

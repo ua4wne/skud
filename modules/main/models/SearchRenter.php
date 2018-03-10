@@ -1,16 +1,16 @@
 <?php
 
-namespace app\modules\admin\models;
+namespace app\modules\main\models;
 
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\modules\admin\models\Device;
+use app\modules\main\models\Renter;
 
 /**
- * SearchDevice represents the model behind the search form of `app\modules\admin\models\Device`.
+ * SearchRenter represents the model behind the search form of `app\modules\main\models\Renter`.
  */
-class SearchDevice extends Device
+class SearchRenter extends Renter
 {
     /**
      * @inheritdoc
@@ -18,8 +18,8 @@ class SearchDevice extends Device
     public function rules()
     {
         return [
-            [['id', 'mode', 'zone_id'], 'integer'],
-            [['type', 'snum', 'fware', 'conn_fw', 'image', 'text', 'address', 'is_active', 'created_at', 'updated_at'], 'safe'],
+            [['id', 'status'], 'integer'],
+            [['title', 'area', 'agent', 'phone', 'created_at', 'updated_at'], 'safe'],
         ];
     }
 
@@ -41,7 +41,7 @@ class SearchDevice extends Device
      */
     public function search($params)
     {
-        $query = Device::find();
+        $query = Renter::find();
 
         // add conditions that should always apply here
 
@@ -60,20 +60,15 @@ class SearchDevice extends Device
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'mode' => $this->mode,
-            'zone_id' => $this->zone_id,
+            'status' => $this->status,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ]);
 
-        $query->andFilterWhere(['like', 'type', $this->type])
-            ->andFilterWhere(['like', 'snum', $this->snum])
-            ->andFilterWhere(['like', 'fware', $this->fware])
-            ->andFilterWhere(['like', 'conn_fw', $this->conn_fw])
-            ->andFilterWhere(['like', 'image', $this->image])
-            ->andFilterWhere(['like', 'text', $this->text])
-            ->andFilterWhere(['like', 'address', $this->address])
-            ->andFilterWhere(['like', 'is_active', $this->is_active]);
+        $query->andFilterWhere(['like', 'title', $this->title])
+            ->andFilterWhere(['like', 'area', $this->area])
+            ->andFilterWhere(['like', 'agent', $this->agent])
+            ->andFilterWhere(['like', 'phone', $this->phone]);
 
         return $dataProvider;
     }

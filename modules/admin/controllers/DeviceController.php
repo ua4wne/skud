@@ -2,10 +2,10 @@
 
 namespace app\modules\admin\controllers;
 
-use app\models\Events;
 use app\modules\admin\models\TimeZone;
 use app\modules\main\models\Event;
 use app\modules\main\models\UploadImage;
+use yii\web\UploadedFile;
 use Yii;
 use app\modules\admin\models\Device;
 use app\modules\admin\models\SearchDevice;
@@ -71,27 +71,36 @@ class DeviceController extends Controller
     {
         $model = new Device();
         $upload = new UploadImage();
-        $model->type = 'Z5R-Web';
+
         if ($model->load(Yii::$app->request->post())) {
             $upload->image = UploadedFile::getInstance($upload, 'image');
-            $fname = $upload->upload();
-            //обновляем данные картинки
-            $model->image = $fname;
+            if(!empty($upload->image)) {
+                $fname = $upload->upload();
+                //обновляем данные картинки
+                $model->image = $fname;
+            }
+            else
+                $model->image = '/images/noimage.jpg';
             if($model->save())
                 return $this->redirect(['view', 'id' => $model->id]);
         }
         else{
-            $zones = TimeZone::find()->select(['id','zone'])->asArray()->all();
-            $tzone = array();
-            foreach($zones as $zone) {
-                $tzone[$zone['id']] = $zone['zone']; //массив для заполнения данных в select формы
+            $active = array('1' => 'Активный', '0' => 'Не активный');
+            $mode = array('0' => 'Норма', '1' => 'Блокировка', '2' => 'Свободный проход', '3' => 'Ожидание свободного прохода');
+            $zones = TimeZone::find()->select(['id', 'zone', 'text'])->asArray()->all();
+            $zone = array();
+            foreach ($zones as $val) {
+                $zone[$val['id']] = $val['zone'].' ('.$val['text'].')'; //массив для заполнения данных в select формы
             }
             return $this->render('create', [
                 'model' => $model,
+                'active' => $active,
+                'mode' => $mode,
+                'zone' => $zone,
                 'upload' => $upload,
-                'tzone' => $tzone,
             ]);
         }
+
     }
 
     /**
@@ -107,7 +116,7 @@ class DeviceController extends Controller
         $old_image = substr($model->image,1); //старый файл изображения
         $upload = new UploadImage();
 
-        if ($model->load(Yii::$app->request->post())) {
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
             $upload->image = UploadedFile::getInstance($upload, 'new_image');
             if(!empty($upload->image)){
                 $fname = $upload->upload();
@@ -124,15 +133,19 @@ class DeviceController extends Controller
             return $this->redirect(['view', 'id' => $model->id]);
         }
         else{
-            $zones = TimeZone::find()->select(['id','zone'])->asArray()->all();
-            $tzone = array();
-            foreach($zones as $zone) {
-                $tzone[$zone['id']] = $zone['zone']; //массив для заполнения данных в select формы
+            $active = array('1' => 'Активный', '0' => 'Не активный');
+            $mode = array('0' => 'Норма', '1' => 'Блокировка', '2' => 'Свободный проход', '3' => 'Ожидание свободного прохода');
+            $zones = TimeZone::find()->select(['id', 'zone', 'text'])->asArray()->all();
+            $zone = array();
+            foreach ($zones as $val) {
+                $zone[$val['id']] = $val['zone'].' ('.$val['text'].')'; //массив для заполнения данных в select формы
             }
             return $this->render('update', [
                 'model' => $model,
+                'active' => $active,
+                'mode' => $mode,
+                'zone' => $zone,
                 'upload' => $upload,
-                'tzone' => $tzone,
             ]);
         }
     }
@@ -146,15 +159,15 @@ class DeviceController extends Controller
      */
     public function actionDelete($id)
     {
-        //ищем связанные записи с таблицами time_zone и event
-        $events = Event::findAll()->where(['device_id'=>$id])->count();
-        if($events){
-            Yii::$app->session->setFlash('error', 'Удаление не возможно! Имеются связанные записи ('.$events.')');
+        //определяем связанные записи
+        $count = Event::find()->where(['device_id'=>$id])->count();
+        if($count){
+            Yii::$app->session->setFlash('error', 'Удаление организации '.$this->findModel($id)->title.' не возможно! Имеются связанные записи посетителей ('.$count.')');
         }
         else{
             $this->findModel($id)->delete();
-            Yii::$app->session->setFlash('success', 'Контроллер '.$this->findModel($id)->type.' удален из системы!');
         }
+
         return $this->redirect(['index']);
     }
 

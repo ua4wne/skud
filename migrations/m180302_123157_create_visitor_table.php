@@ -18,6 +18,7 @@ class m180302_123157_create_visitor_table extends Migration
 
         $this->createTable('visitor', [
             'id' => $this->primaryKey(),
+            'is_worker' => $this->boolean()->notNull()->defaultValue(0),
             'fname' => $this->string(50)->notNull(),
             'mname' => $this->string(50)->defaultValue(null),
             'lname' => $this->string(50)->notNull(),
@@ -30,6 +31,7 @@ class m180302_123157_create_visitor_table extends Migration
             'doc_type' => $this->string(30),
             'doc_series' => $this->string(7),
             'doc_num' => $this->string(10),
+            'phone' => $this->string(20),
             'created_at' => $this->dateTime()->notNull(),
             'updated_at' => $this->dateTime()->notNull(),
         ], $tableOptions);

@@ -24,13 +24,14 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'address')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'is_active')->dropDownList(['1'=>'Активация','0'=>'Деактивация']) ?>
+    <?= $form->field($model, 'is_active')->dropDownList($active) ?>
 
-    <?= $form->field($model, 'mode')->dropDownList(['0'=>'Нормальный','1'=>'Блокирующий','2'=>'Свободный проход','3'=>'Ожидание свободного прохода']) ?>
+    <?= $form->field($model, 'mode')->dropDownList($mode) ?>
 
-    <?= $form->field($model, 'zone_id')->dropDownList($tzone) ?>
+    <?= $form->field($model, 'zone_id')->dropDownList($zone) ?>
 
-    <?= $form->field($upload, 'image')->fileInput() ?>
+    <?= $model->isNewRecord ? $form->field($upload, 'image')->fileInput():$form->field($upload, 'new_image')->fileInput() ?>
+
 
     <div class="form-group">
         <?= Html::submitButton('Сохранить', ['class' => 'btn btn-success']) ?>

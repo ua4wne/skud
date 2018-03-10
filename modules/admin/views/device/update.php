@@ -5,7 +5,7 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\modules\admin\models\Device */
 
-$this->title = 'Обновление записи';
+$this->title = $model->type;
 $this->params['breadcrumbs'][] = ['label' => 'Контроллеры СКУД', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->type, 'url' => ['view', 'id' => $model->id]];
 ?>
@@ -15,8 +15,10 @@ $this->params['breadcrumbs'][] = ['label' => $model->type, 'url' => ['view', 'id
 
     <?= $this->render('_form', [
         'model' => $model,
+        'active' => $active,
+        'mode' => $mode,
+        'zone' => $zone,
         'upload' => $upload,
-        'tzone' => $tzone,
     ]) ?>
 
 </div>

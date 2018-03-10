@@ -22,7 +22,7 @@ class Module extends \yii\base\Module
         // custom initialization code goes here
     }
 
-    public function behaviors(){
+    /*public function behaviors(){
         return [
             'access' => [
                 'class' => \yii\filters\AccessControl::className(),
@@ -33,11 +33,11 @@ class Module extends \yii\base\Module
                     ],
                     [
                         'allow' => true,
-                        'controllers' => ['main/control'],
+                        'controllers' => ['main/data'],
                         'actions' => ['index'],
                     ],
                 ],
             ],
         ];
-    }
+    } */
 }

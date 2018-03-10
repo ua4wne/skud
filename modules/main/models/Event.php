@@ -35,9 +35,9 @@ class Event extends BaseModel
     public function rules()
     {
         return [
-            [['device_id', 'event_type', 'card_id'], 'required'],
+            [['device_id', 'event_type', 'card_id', 'event_time'], 'required'],
             [['device_id', 'card_id'], 'integer'],
-            [['created_at', 'updated_at'], 'safe'],
+            [['created_at', 'updated_at', 'event_time'], 'safe'],
             [['event_type'], 'string', 'max' => 2],
             [['flag'], 'string', 'max' => 3],
             [['device_id'], 'exist', 'skipOnError' => true, 'targetClass' => Device::className(), 'targetAttribute' => ['device_id' => 'id']],
@@ -56,6 +56,7 @@ class Event extends BaseModel
             'event_type' => 'Событие',
             'card_id' => 'Карта доступа',
             'flag' => 'Флаг',
+            'event_time' => 'Время события',
             'created_at' => 'Дата создания',
             'updated_at' => 'Дата обновления',
         ];

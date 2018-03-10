@@ -22,6 +22,7 @@ class m180302_123137_create_event_table extends Migration
             'event_type' => $this->string(2)->notNull(),
             'card_code' => $this->string(20),
             'flag' => $this->string(3),
+            'event_time' => $this->dateTime()->notNull(),
             'created_at' => $this->dateTime()->notNull(),
             'updated_at' => $this->dateTime()->notNull(),
         ], $tableOptions);
