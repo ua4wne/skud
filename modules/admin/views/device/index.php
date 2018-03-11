@@ -3,6 +3,9 @@
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\helpers\Url;
+use yii\bootstrap\Modal;
+use yii\widgets\ActiveForm;
+
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\modules\admin\models\SearchDevice */
@@ -16,10 +19,98 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1 class="text-center"><?= Html::encode($this->title) ?></h1>
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
-    <p>
+    <div>
         <?= Html::a('Новая запись', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
 
+        <?php
+        Modal::begin([
+            'header' => '<h3>Активация\Деактивация</h3>',
+            'toggleButton' => ['label' => '<i class="fa fa-flash" aria-hidden="true"></i> Активация','class'=>'btn btn-primary'],
+            //'footer' => 'Низ окна',
+        ]);
+
+        $form = ActiveForm::begin([
+            'id' => 'set-active-form',
+            //'enableAjaxValidation' => true,
+            'action' => ['index']
+        ]); ?>
+
+        <?= $form->field($command, 'device')->hiddenInput(['class' => 'id_device'])->label(false) ?>
+        <?= $form->field($command, 'active')->dropDownList(['1'=>'Активировать','0'=>'Деактивировать']) ?>
+        <?= $form->field($command, 'online')->dropDownList(['1'=>'Поддержка ONLINE','0'=>'Нет поддержки ONLINE']) ?>
+
+        <div class="form-group">
+            <?= Html::submitButton('Отправить', ['class' => 'btn btn-success','id'=>'set-active']) ?>
+        </div>
+
+        <?php ActiveForm::end();
+
+        Modal::end();
+
+        Modal::begin([
+            'header' => '<h3>Установка режима работы</h3>',
+            'toggleButton' => ['label' => '<i class="fa fa-gears" aria-hidden="true"></i> Режим работы','class'=>'btn btn-primary'],
+            //'footer' => 'Низ окна',
+        ]);
+
+        $form = ActiveForm::begin([
+            'id' => 'set-mode-form',
+            //'enableAjaxValidation' => true,
+            'action' => ['index']
+        ]); ?>
+
+        <?= $form->field($command, 'device')->hiddenInput(['class' => 'id_device'])->label(false) ?>
+        <?= $form->field($command, 'mode')->dropDownList(['0'=>'Нормальный', '1'=>'Блокировка', '2'=>'Свободный проход','3'=>'Ожидание свободного прохода']) ?>
+
+        <div class="form-group">
+            <?= Html::submitButton('Отправить', ['class' => 'btn btn-success','id'=>'set-mode']) ?>
+        </div>
+
+        <?php ActiveForm::end();
+
+        Modal::end();
+
+        Modal::begin([
+            'header' => '<h3>Установка тайм-зоны</h3>',
+            'toggleButton' => ['label' => '<i class="fa fa-clock-o" aria-hidden="true"></i> Тайм-зона','class'=>'btn btn-primary'],
+            //'footer' => 'Низ окна',
+        ]);
+
+        $form = ActiveForm::begin([
+            'id' => 'set-timezone-form',
+            //'enableAjaxValidation' => true,
+            'action' => ['index']
+        ]); ?>
+
+        <?= $form->field($command, 'device')->hiddenInput(['class' => 'id_device'])->label(false) ?>
+        <?= $form->field($command, 'zone')->dropDownList(['0'=>'Зона №0', '1'=>'Зона №1', '2'=>'Зона №2','3'=>'Зона №3','4'=>'Зона №4','5'=>'Зона №5','6'=>'Зона №6','7'=>'Зона №7']) ?>
+        <?= $form->field($command, 'begin')->widget(\yii\widgets\MaskedInput::className(), [
+            'mask' => '99:99',
+        ]) ?>
+        <?= $form->field($command, 'end')->widget(\yii\widgets\MaskedInput::className(), [
+            'mask' => '99:99',
+        ]) ?>
+
+        <?=$form->field($command, 'days')
+        ->checkboxList([
+            '0' => 'ПН',
+            '1' => 'ВТ',
+            '2' => 'СР',
+            '3' => 'ЧТ',
+            '4' => 'ПТ',
+            '5' => 'СБ',
+            '6' => 'ВС',
+        ]); ?>
+
+        <div class="form-group">
+            <?= Html::submitButton('Отправить', ['class' => 'btn btn-success','id'=>'set-timezone']) ?>
+        </div>
+
+        <?php ActiveForm::end();
+
+        Modal::end();
+        ?>
+    </div>
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
@@ -28,8 +119,14 @@ $this->params['breadcrumbs'][] = $this->title;
 
             //'id',
             [
-                'class' => 'yii\grid\CheckboxColumn',
-                // вы можете настроить дополнительные свойства здесь.
+                'class' => 'yii\grid\RadioButtonColumn',
+                'radioOptions' => function ($model) {
+                    return [
+                        'value' => $model['id'],
+                        'checked' => $model['id'] == 1
+                    ];
+                },
+                'contentOptions' =>['class' => 'seldev'],
             ],
             [
                 'label' => 'Фото',
@@ -118,3 +215,76 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
     ]); ?>
 </div>
+
+<?php
+$js = <<<JS
+    $('.btn-primary').prop('disabled', true);
+    $('.seldev').click (function(){
+        var id = $(this).children().val();
+        if(id){
+            $('.btn-primary').prop('disabled', false);
+            $('.id_device').val(id);
+        }
+        else
+            $('.btn-primary').prop('disabled', true);
+    });
+    $('#set-active-form').on('beforeSubmit', function(){
+         var data = $(this).serialize();
+         $.ajax({
+             url: '/admin/device/set-active',
+             type: 'POST',
+             data: data,
+             success: function(res){
+                alert("Сервер вернул вот что: " + res);
+             },
+             error: function(){
+                alert('Error!');
+             }
+         });
+         return false;
+    });
+    $('#set-mode-form').on('beforeSubmit', function(){
+         var data = $(this).serialize();
+         $.ajax({
+             url: '/admin/device/set-mode',
+             type: 'POST',
+             data: data,
+             success: function(res){
+                alert("Сервер вернул вот что: " + res);
+             },
+             error: function(){
+                alert('Error!');
+             }
+         });
+         return false;
+    });
+    $('#set-timezone-form').on('beforeSubmit', function(){
+         var data = $(this).serialize();
+         if($('#command-begin').val()==''){
+             $('#command-begin').focus();
+             alert('Не указано время начала действия!');
+             return false;
+         }
+         if($('#command-end').val()==''){
+             $('#command-end').focus();
+             alert('Не указано время окончания действия!');
+             return false;
+         }
+                  
+         $.ajax({
+             url: '/admin/device/set-zone',
+             type: 'POST',
+             data: data,
+             success: function(res){
+                alert("Сервер вернул вот что: " + res);
+             },
+             error: function(){
+                alert('Error!');
+             }
+         });
+         return false;
+    });
+JS;
+
+$this->registerJs($js);
+?>

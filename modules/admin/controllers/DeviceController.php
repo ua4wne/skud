@@ -2,6 +2,7 @@
 
 namespace app\modules\admin\controllers;
 
+use app\modules\admin\models\Command;
 use app\modules\admin\models\TimeZone;
 use app\modules\main\models\Event;
 use app\modules\main\models\UploadImage;
@@ -42,11 +43,40 @@ class DeviceController extends Controller
     {
         $searchModel = new SearchDevice();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $command = new Command();
 
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'command' => $command,
         ]);
+    }
+
+    public function actionSetActive(){
+        $model = new Command();
+        if(\Yii::$app->request->isAjax){
+            if($model->load(\Yii::$app->request->post())){
+                return $model->SetActive($model->device);
+            }
+        }
+    }
+
+    public function actionSetMode(){
+        $model = new Command();
+        if(\Yii::$app->request->isAjax){
+            if($model->load(\Yii::$app->request->post())){
+                return $model->SetMode($model->device);
+            }
+        }
+    }
+
+    public function actionSetZone(){
+        $model = new Command();
+        if(\Yii::$app->request->isAjax){
+            if($model->load(\Yii::$app->request->post())){
+                return $model->SetTimeZone($model->device);
+            }
+        }
     }
 
     /**
