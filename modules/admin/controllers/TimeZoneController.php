@@ -2,6 +2,7 @@
 
 namespace app\modules\admin\controllers;
 
+use app\modules\admin\models\Device;
 use Yii;
 use app\modules\admin\models\TimeZone;
 use yii\data\ActiveDataProvider;
@@ -66,7 +67,17 @@ class TimeZoneController extends Controller
     {
         $model = new TimeZone();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post())) {
+            $templ = array(0,0,0,0,0,0,0);
+            $mask = '';
+            foreach($model->days as $val){
+                $templ[$val] = 1;
+            }
+            foreach ($templ as $tmp){
+                $mask.=$tmp;
+            }
+            $model->days = $mask;
+            $model->save();
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('create', [
@@ -102,7 +113,14 @@ class TimeZoneController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        //ищем связанные данные в таблице device
+        $count = Device::find(['zone_id'=>$id])->count();
+        if($count){
+            Yii::$app->session->setFlash('error', 'Удаление временной зоны '.$this->findModel($id)->zone.' не возможно! Имеются связанные записи контроллеров СКУД ('.$count.')');
+        }
+        else{
+            $this->findModel($id)->delete();
+        }
 
         return $this->redirect(['index']);
     }

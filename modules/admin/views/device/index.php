@@ -83,24 +83,7 @@ $this->params['breadcrumbs'][] = $this->title;
         ]); ?>
 
         <?= $form->field($command, 'device')->hiddenInput(['class' => 'id_device'])->label(false) ?>
-        <?= $form->field($command, 'zone')->dropDownList(['0'=>'Зона №0', '1'=>'Зона №1', '2'=>'Зона №2','3'=>'Зона №3','4'=>'Зона №4','5'=>'Зона №5','6'=>'Зона №6','7'=>'Зона №7']) ?>
-        <?= $form->field($command, 'begin')->widget(\yii\widgets\MaskedInput::className(), [
-            'mask' => '99:99',
-        ]) ?>
-        <?= $form->field($command, 'end')->widget(\yii\widgets\MaskedInput::className(), [
-            'mask' => '99:99',
-        ]) ?>
-
-        <?=$form->field($command, 'days')
-        ->checkboxList([
-            '0' => 'ПН',
-            '1' => 'ВТ',
-            '2' => 'СР',
-            '3' => 'ЧТ',
-            '4' => 'ПТ',
-            '5' => 'СБ',
-            '6' => 'ВС',
-        ]); ?>
+        <?= $form->field($command, 'zone')->dropDownList($zone) ?>
 
         <div class="form-group">
             <?= Html::submitButton('Отправить', ['class' => 'btn btn-success','id'=>'set-timezone']) ?>
@@ -207,7 +190,23 @@ $this->params['breadcrumbs'][] = $this->title;
                     return $val;
                 },
             ],
-            'zone_id',
+            //'zone.text',
+            /*[
+                'label' => 'Временная зона',
+                'attribute' => 'zone_id',
+                'value' => function ($model, $key, $index, $column) {
+                    return 'Зона №' . $model->zone->zone . ' (' .$model->zone->text.')';
+                },
+            ],*/
+            [
+                'attribute'=>'zone_id',
+                'label'=>'Временная зона',
+                'format'=>'text', // Возможные варианты: raw, html
+                'content'=>function($data){
+                    return $data->getZoneName();
+                },
+                'filter' => \app\modules\admin\models\Device::getZoneList()
+            ],
             //'created_at',
             //'updated_at',
 

@@ -50,12 +50,21 @@ class TimeZone extends BaseModel
         return [
             'id' => 'ID',
             'zone' => 'Зона',
-            'begin' => 'Начало',
-            'end' => 'Окончание',
-            'days' => 'Маска дней',
+            'zone' => 'Временная зона',
+            'begin' => 'Время начала действия',
+            'end' => 'Время окончания действия',
+            'days' => 'Дни недели',
             'text' => 'Описание',
             'created_at' => 'Дата создания',
             'updated_at' => 'Дата обновления',
         ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getDevice()
+    {
+        return $this->hasMany(Device::className(), ['zone_id' => 'id']);
     }
 }

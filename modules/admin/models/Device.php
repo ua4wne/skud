@@ -4,6 +4,7 @@ namespace app\modules\admin\models;
 
 use Yii;
 use app\models\BaseModel;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "device".
@@ -82,6 +83,23 @@ class Device extends BaseModel
     public function getZone()
     {
         return $this->hasOne(TimeZone::className(), ['id' => 'zone_id']);
+    }
+
+    public function getZoneName()
+    {
+        $zone = $this->zone;
+
+        return $zone ? 'Зона №' . $zone->zone . ' (' .$zone->text.')' : '';
+    }
+
+    public static function getZoneList()
+    {
+        // Выбираем тайм-зоны для фильтра
+        $zone = TimeZone::find()
+            ->select(['id', 'zone'])
+            ->all();
+
+        return ArrayHelper::map($zone, 'id', 'zone');
     }
 
     /**

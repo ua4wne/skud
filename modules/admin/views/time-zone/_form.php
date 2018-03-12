@@ -15,24 +15,22 @@ use yii\widgets\ActiveForm;
     <?= $form->field($model, 'zone')->textInput() ?>
 
     <?= $form->field($model, 'begin')->widget(\yii\widgets\MaskedInput::className(), [
-        'clientOptions' => ['alias' =>  'hh:mm']
+        'mask' => '99:99',
     ]) ?>
-
     <?= $form->field($model, 'end')->widget(\yii\widgets\MaskedInput::className(), [
-        'clientOptions' => ['alias' =>  'hh:mm']
+        'mask' => '99:99',
     ]) ?>
 
-    <?= $form->field($model, 'days')->widget(\yii\widgets\MaskedInput::className(), [
-        //'mask' => '9[9999999]'
-        'mask' => 'j', // basic
-        'definitions' => ['j' => [
-            'validator' => '[0-1\(\)\.\+/ ]',
-            'cardinality' => 8,
-            'prevalidator' =>  [
-                ['validator' => '[0|1]', 'cardinality' => 1],
-            ]
-        ]]
-    ]) ?>
+    <?=$form->field($model, 'days')
+        ->checkboxList([
+            '0' => 'ПН',
+            '1' => 'ВТ',
+            '2' => 'СР',
+            '3' => 'ЧТ',
+            '4' => 'ПТ',
+            '5' => 'СБ',
+            '6' => 'ВС',
+        ]); ?>
 
     <?= $form->field($model, 'text')->textInput(['maxlength' => true]) ?>
 

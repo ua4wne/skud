@@ -44,11 +44,16 @@ class DeviceController extends Controller
         $searchModel = new SearchDevice();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
         $command = new Command();
-
+        $zones = TimeZone::find()->select(['id', 'zone', 'text'])->asArray()->all();
+        $zone = array();
+        foreach ($zones as $val) {
+            $zone[$val['id']] = 'Зона №' . $val['zone'].' ('.$val['text'].')'; //массив для заполнения данных в select формы
+        }
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
             'command' => $command,
+            'zone' => $zone,
         ]);
     }
 

@@ -13,17 +13,12 @@ class Command extends Model
     public $direction;
     public $mode;
     public $zone;
-    public $begin;
-    public $end;
-    public $days;
 
     public function rules()
     {
         return [
             [['device'], 'required'],
             [['active', 'online', 'direction', 'mode', 'zone', 'device'], 'integer'],
-            [['begin', 'end'], 'string', 'max' => 5],
-            [['days'], 'string', 'max' => 8],
         ];
     }
 
@@ -36,9 +31,6 @@ class Command extends Model
             'direction' => 'Направление',
             'mode' => 'Режим работы',
             'zone' => 'Временная зона',
-            'begin' => 'Время начала действия',
-            'end' => 'Время окончания действия',
-            'days' => 'Дни недели'
         ];
     }
 
@@ -71,20 +63,17 @@ class Command extends Model
     }
 
     public function SetTimeZone($id){
-        $host = Device::findOne($id)->address;
-        $templ = array(0,0,0,0,0,0,0);
-        $mask = '';
-        foreach($this->days as $val){
-            $templ[$val] = 1;
-        }
-        foreach ($templ as $tmp){
-            $mask.=$tmp;
-        }
+        $device = Device::findOne($id);
+        $device->zone_id = $this->zone;
+        $device->save(false);
+        $tzone = TimeZone::findOne($this->zone);
+        $host = $device->address;
+
         if(!empty($host)){
             $host = 'http://'.$host;
             $id = rand();
             $data = $this->SetHeader();
-            $data['messages'] = ['id'=>$id,'operation'=>'set_timezone','zone'=>$this->zone,'begin'=>$this->begin,'end'=>$this->end,'days'=>$mask];
+            $data['messages'] = ['id'=>$id,'operation'=>'set_timezone','zone'=>$tzone->zone,'begin'=>$tzone->begin,'end'=>$tzone->end,'days'=>$tzone->days];
             return $this->SendCURL($data,$host);
         }
         else{

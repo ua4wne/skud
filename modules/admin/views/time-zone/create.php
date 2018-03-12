@@ -6,7 +6,7 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\modules\main\models\TimeZone */
 
-$this->title = 'Новая запись';
+$this->title = 'Новая зона';
 $this->params['breadcrumbs'][] = ['label' => 'Временные зоны', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
