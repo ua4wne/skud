@@ -4,6 +4,7 @@ namespace app\modules\admin\models;
 
 
 use yii\base\Model;
+use stdClass;
 
 class Command extends Model
 {
@@ -11,6 +12,7 @@ class Command extends Model
     public $active;
     public $online;
     public $direction;
+    public $address;
     public $mode;
     public $zone;
 
@@ -19,6 +21,7 @@ class Command extends Model
         return [
             [['device'], 'required'],
             [['active', 'online', 'direction', 'mode', 'zone', 'device'], 'integer'],
+            [['address'], 'string', 'max' => 15],
         ];
     }
 
@@ -37,11 +40,19 @@ class Command extends Model
     public function SetActive($id){
         $host = Device::findOne($id)->address;
         if(!empty($host)){
+            //$data = array();
             $host = 'http://'.$host;
             $id = rand();
             $data = $this->SetHeader();
-            $data['messages'] = ['id'=>$id,'operation'=>'set_active','active'=>$this->active,'online'=>$this->online];
+            $msg = array();
+            $msg[0] = ['id'=>$id,'operation'=>'set_active','active'=>$this->active,'online'=>$this->online];
+            $data['messages'] = $msg;
             return $this->SendCURL($data,$host);
+            /*$obj = new stdClass();
+            $obj->date = date('Y-m-d H:i:s');
+            $obj->interval = 10;
+            $obj->messages = $msg[0];
+            return $this->SendCURL($obj,$host);*/
         }
         else{
             return 'NOT';
@@ -51,10 +62,13 @@ class Command extends Model
     public function SetMode($id){
         $host = Device::findOne($id)->address;
         if(!empty($host)){
+           // $data = array();
             $host = 'http://'.$host;
             $id = rand();
             $data = $this->SetHeader();
-            $data['messages'] = ['id'=>$id,'operation'=>'set_mode','mode'=>$this->mode];
+            $msg = array();
+            $msg[0] = ['id'=>$id,'operation'=>'set_mode','mode'=>$this->mode];
+            $data['messages'] = $msg;
             return $this->SendCURL($data,$host);
         }
         else{
@@ -73,7 +87,9 @@ class Command extends Model
             $host = 'http://'.$host;
             $id = rand();
             $data = $this->SetHeader();
-            $data['messages'] = ['id'=>$id,'operation'=>'set_timezone','zone'=>$tzone->zone,'begin'=>$tzone->begin,'end'=>$tzone->end,'days'=>$tzone->days];
+            $msg = array();
+            $msg[0] = ['id'=>$id,'operation'=>'set_timezone','zone'=>$tzone->zone,'begin'=>$tzone->begin,'end'=>$tzone->end,'days'=>$tzone->days];
+            $data['messages'] = $msg;
             return $this->SendCURL($data,$host);
         }
         else{
@@ -86,19 +102,33 @@ class Command extends Model
         return $header;
     }
 
-    private function SendCURL($data,$host){
+    public function SendCURL($data,$host){
         $data_string = json_encode($data);
-        return $data_string;
         $ch = curl_init($host);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
+        curl_setopt($ch, CURLOPT_USERPWD, "z5rweb:F99CF324");
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array(
                 'Content-Type: application/json',
                 'Content-Length: ' . strlen($data_string))
         );
         $result = curl_exec($ch);
-        curl_close($ch);
+     //   curl_close($ch);
         return $result;
-    }
+
+        /*// Указание опций для контекста потока
+        $options = array (
+            'http' => array (
+                'method' => 'POST',
+                'header' => "Content-Type: application/json; charset=utf-8\r\n",
+                'content' => $data_string
+            )
+        );*/
+
+    // Создание контекста потока
+            $context = stream_context_create($options);
+    // Отправка данных и получение результата
+            return file_get_contents($host, 0, $context); //'http://test.ru/json.php'
+        }
 }
