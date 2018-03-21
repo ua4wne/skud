@@ -101,34 +101,4 @@ class Command extends Model
         $header = array('date'=>date('Y-m-d H:i:s'),'interval'=>10,'messages'=>' ');
         return $header;
     }
-
-    public function SendCURL($data,$host){
-        $data_string = json_encode($data);
-        $ch = curl_init($host);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
-        curl_setopt($ch, CURLOPT_USERPWD, "z5rweb:F99CF324");
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-                'Content-Type: application/json',
-                'Content-Length: ' . strlen($data_string))
-        );
-        $result = curl_exec($ch);
-     //   curl_close($ch);
-        return $result;
-
-        /*// Указание опций для контекста потока
-        $options = array (
-            'http' => array (
-                'method' => 'POST',
-                'header' => "Content-Type: application/json; charset=utf-8\r\n",
-                'content' => $data_string
-            )
-        );*/
-
-    // Создание контекста потока
-            $context = stream_context_create($options);
-    // Отправка данных и получение результата
-            return file_get_contents($host, 0, $context); //'http://test.ru/json.php'
-        }
 }

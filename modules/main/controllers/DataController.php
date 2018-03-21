@@ -9,6 +9,8 @@ use app\modules\main\models\Event;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use Yii;
+use stdClass;
+use yii\web\Response;
 
 class DataController extends \yii\web\Controller
 {
@@ -44,64 +46,58 @@ class DataController extends \yii\web\Controller
 
     public function actionIndex()
     {
-        $session = Yii::$app->session;
-        $last_cmd = $session->get('last_cmd');
-        \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-        if(Yii::$app->request->isPost){
-            //Получить JSON как строку
-            $json_str = file_get_contents('php://input');
+     //   \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+        //$session = Yii::$app->session;
+        //Получить JSON как строку
+  //      $json_str = file_get_contents('php://input');
         //$json_str = '{"type":"Z5RWEB","sn":44374,"messages":[{"id":1856669179,"operation":"power_on","fw":"a.a","conn_fw":"1.0.120","active":1,"mode":0}]}';
-            //Получить объект
-            $json = json_decode($json_str);
-            $type = $json->type;
-            $sn = $json->sn;
-            $messages = $json->messages;
-            foreach ($messages as $msg){
-                if($msg->operation == 'power_on'){ //POWER_ON
-                    $session->set('last_cmd', 'power_on');
-                    return $this->power_on($type,$sn,$msg);
-                }
-                if($msg->operation == 'check_access'){ //CHECK_ACCESS
-                    $session->set('last_cmd', 'check_access');
-                    return $this->check_access($type,$sn,$msg);
-                }
-                if($msg->operation == 'ping'){ //PING
-                    $session->set('last_cmd', 'ping');
-                    return $this->ping($type,$sn,$msg);
-                }
-                if($msg->operation == 'events'){ //EVENTS
-                    $session->set('last_cmd', 'events');
-                    return $this->events($type,$sn,$msg);
-                }
-//                if($msg->success == 1){
-//                    //запись в лог
-//                    $log = 'Команда <strong>'. $last_cmd .'</strong> успешно принята контроллером '.$type.'(sn '. $sn .') '.date('d-m-Y H:i:s');
-//                    LibraryModel::AddEventLog('success',$log);
-//                }
-//                if($msg->success == 0){
-//                    //запись в лог
-//                    $log = 'Команда <strong>'. $last_cmd .'</strong> не принята контроллером '.$type.'(sn '. $sn .') '.date('d-m-Y H:i:s');
-//                    LibraryModel::AddEventLog('error',$log);
-//                }
+        $json_str = '{"type":"Z5RWEB","sn":44374,"messages":[{"id":1856669179,"operation":"ping","active":1,"mode":0}]}';
+        //Получить объект
+        $json = json_decode($json_str);
+
+        //$session['z5j'] = json_decode(file_get_contents("php://input"));
+        if(!empty($json)) {
+            //запись в лог
+            $log = 'Сообщение от контроллера <strong>' . $json_str . '</strong>';
+            LibraryModel::AddTraceLog('request', $log);
+
+            $sn = $json->sn; //серийный номер контроллера Z5R-WEB
+            $type = $json->type; //тип контроллера Z5R-WEB
+            //активация контроллера
+            if ($json->messages[0]->operation == "power_on") {
+                $this->power_on($type, $sn, $json->messages[0]);
+                $msg = new stdClass();
+                $msg->id = $json->messages[0]->id;
+                $msg->operation = "set_active";
+                $msg->active = 1;
+                $msg->online = 1;
             }
 
-            /*$file = './download/data.txt';
+            //пинг
+            if ($json->messages[0]->operation == "ping") {
+                //если запросов нет то готовим пустое сообщение
+                $msg = null;
+            }
 
-            if ( !file_exists( $file ) ) { // если файл НЕ существует
-                $fp = fopen ($file, "w");
-                // Добавляем новую запись в файл
-                $current = $json_str."\n";
-                fwrite($fp,$current);
-                fclose($fp);
-            } else {
-                $current = file_get_contents($file);
-                // Добавляем новую запись в файл
-                $current .= $json_str."\n";
-                // Пишем содержимое обратно в файл
-                file_put_contents($file, $current);
-            }*/
+            //преобразование и отправка сообщения контроллеру
+            $send = new stdClass();
+            $send->date = date('Y-m-d H:i:s');
+            $send->interval = 8;
+            if(isset($msg))
+                $send->messages[0] = $msg;
+            else
+                $send->messages = $msg;
+            //$send = ['date'=>date('Y-m-d H:i:s'),'interval'=>10,'messages' => ['id'=>10,'operation'=>'set_active','active'=>1,'online'=>1]];
+            $data = json_encode($send);
+            //запись в лог
+            $log = 'Ответ от сервера <strong>' . $data . '</strong>';
+            LibraryModel::AddTraceLog('response', $log);
+
+            //echo json_encode($session['z3']->$sn);
+            //header('Access-Control-Allow-Origin: *');
+            //header('Content-Type: application/json');
+            return $data;
         }
-        //return $this->redirect('/admin/device');
     }
 
     private function power_on($type,$sn,$msg){
@@ -137,9 +133,7 @@ class DataController extends \yii\web\Controller
             //$log = 'Данные контроллера <strong>'. $device->type .' (sn '. $device->snum .')</strong> были обновлены '.date('d-m-Y H:i:s');
             //LibraryModel::AddEventLog('power_on',$log);
         }
-        //SET_ACTIVE
-        $send = ['date'=>date('Y-m-d H:i:s'),'interval'=>10,'messages' => ['id'=>10,'operation'=>'set_active','active'=>1,'online'=>1]];
-        return $send;
+        return true;
     }
 
     private function check_access($type,$sn,$msg){
@@ -164,29 +158,6 @@ class DataController extends \yii\web\Controller
                     $send = ['date'=>date('Y-m-d H:i:s'),'interval'=>10,'messages' => ['id'=>1,'operation'=>'check_access','granted'=>0]];
                 }
             }
-        }
-        return $send;
-    }
-
-    private function ping($type,$sn,$msg){
-        //проверяем наличие контроллера в базе
-        $device = Device::findOne(['type'=>$type,'snum'=>$sn]);
-        if(empty($device)){
-            //нет такого контроллера
-            //ничего не делаем
-            $send = array();
-        }
-        else{ //есть такой контроллер
-            $ip = LibraryModel::GetRealIp();
-            $device->is_active = $msg->active;
-            $device->mode = $msg->mode;
-            $device->address = $ip;
-            $device->save();
-            //запись в лог
-            //$log = 'Данные контроллера <strong>'. $device->type .' (sn '. $device->snum .')</strong> были обновлены '.date('d-m-Y H:i:s');
-            //LibraryModel::AddEventLog('ping',$msg);
-            //SET_ACTIVE
-            $send = ['date'=>date('Y-m-d H:i:s'),'interval'=>10,'messages' => ['id'=>10,'operation'=>'set_active','active'=>$msg->active,'online'=>1]];
         }
         return $send;
     }
@@ -230,5 +201,4 @@ class DataController extends \yii\web\Controller
         $send = ['date'=>date('Y-m-d H:i:s'),'interval'=>10,'messages' => ['id'=>100,'operation'=>'events','events_success'=>$count]];
         return $send;
     }
-
 }

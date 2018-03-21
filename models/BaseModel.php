@@ -24,7 +24,7 @@ class BaseModel extends ActiveRecord
     {
         $modelName = $this->tableName();
         parent::afterSave($insert, $changedAttributes);
-        if($modelName != 'data' && $modelName != 'event' && $modelName != 'eventlog' && $modelName != 'device'&& $modelName != 'card'){
+        if($modelName != 'data' && $modelName != 'event' && $modelName != 'eventlog' && $modelName != 'tracelog' && $modelName != 'device'&& $modelName != 'card'){
             if ($insert) {
                 Yii::$app->session->setFlash('success', 'Запись добавлена!');
             } else {
@@ -38,7 +38,7 @@ class BaseModel extends ActiveRecord
     {
         $modelName = $this->tableName();
         parent::afterDelete();
-        if($modelName != 'data' && $modelName != 'eventlog' && $modelName != 'topic'){
+        if($modelName != 'data' && $modelName != 'eventlog' && $modelName != 'tracelog'){
             Yii::$app->session->setFlash('success', 'Запись c ID='. $this->id .' была удалена!');
         }
     }

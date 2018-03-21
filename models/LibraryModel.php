@@ -3,6 +3,7 @@
 namespace app\models;
 
 use app\modules\admin\models\Eventlog;
+use app\modules\admin\models\Tracelog;
 use Yii;
 use yii\base\Model;
 
@@ -57,6 +58,14 @@ class LibraryModel extends Model
         $log->user_ip = self::GetRealIp();
         $log->type = $type;
         $log->is_read = 0;
+        $log->msg = $msg;
+        $log->save();
+        return true;
+    }
+
+    public static function AddTraceLog($type,$msg){
+        $log = new Tracelog();
+        $log->type = $type;
         $log->msg = $msg;
         $log->save();
         return true;

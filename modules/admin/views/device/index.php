@@ -236,9 +236,10 @@ $js = <<<JS
              success: function(res){
                 alert("Сервер вернул вот что: " + res);
              },
-             error: function(){
-                alert('Error!');
-             }
+             	error: function (xhr, ajaxOptions, thrownError) {
+       	        alert(xhr.status);
+        	    alert(thrownError);
+      	     }
          });
          return false;
     });
@@ -251,8 +252,9 @@ $js = <<<JS
              success: function(res){
                 alert("Сервер вернул вот что: " + res);
              },
-             error: function(){
-                alert('Error!');
+             error: function (xhr, ajaxOptions, thrownError) {
+       	        alert(xhr.status);
+        	    alert(thrownError);
              }
          });
          return false;
@@ -277,8 +279,9 @@ $js = <<<JS
              success: function(res){
                 alert("Сервер вернул вот что: " + res);
              },
-             error: function(){
-                alert('Error!');
+             error: function (xhr, ajaxOptions, thrownError) {
+       	        alert(xhr.status);
+        	    alert(thrownError);
              }
          });
          return false;
