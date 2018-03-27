@@ -24,30 +24,6 @@ $this->params['breadcrumbs'][] = $this->title;
 
         <?php
         Modal::begin([
-            'header' => '<h3>Активация\Деактивация</h3>',
-            'toggleButton' => ['label' => '<i class="fa fa-flash" aria-hidden="true"></i> Активация','class'=>'btn btn-primary'],
-            //'footer' => 'Низ окна',
-        ]);
-
-        $form = ActiveForm::begin([
-            'id' => 'set-active-form',
-            //'enableAjaxValidation' => true,
-            'action' => ['index']
-        ]); ?>
-
-        <?= $form->field($command, 'device')->hiddenInput(['class' => 'id_device'])->label(false) ?>
-        <?= $form->field($command, 'active')->dropDownList(['1'=>'Активировать','0'=>'Деактивировать']) ?>
-        <?= $form->field($command, 'online')->dropDownList(['1'=>'Поддержка ONLINE','0'=>'Нет поддержки ONLINE']) ?>
-
-        <div class="form-group">
-            <?= Html::submitButton('Отправить', ['class' => 'btn btn-success','id'=>'set-active']) ?>
-        </div>
-
-        <?php ActiveForm::end();
-
-        Modal::end();
-
-        Modal::begin([
             'header' => '<h3>Установка режима работы</h3>',
             'toggleButton' => ['label' => '<i class="fa fa-gears" aria-hidden="true"></i> Режим работы','class'=>'btn btn-primary'],
             //'footer' => 'Низ окна',
@@ -63,7 +39,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <?= $form->field($command, 'mode')->dropDownList(['0'=>'Нормальный', '1'=>'Блокировка', '2'=>'Свободный проход','3'=>'Ожидание свободного прохода']) ?>
 
         <div class="form-group">
-            <?= Html::submitButton('Отправить', ['class' => 'btn btn-success','id'=>'set-mode']) ?>
+            <?= Html::submitButton('Установить', ['class' => 'btn btn-success','id'=>'set-mode']) ?>
         </div>
 
         <?php ActiveForm::end();
@@ -86,7 +62,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <?= $form->field($command, 'zone')->dropDownList($zone) ?>
 
         <div class="form-group">
-            <?= Html::submitButton('Отправить', ['class' => 'btn btn-success','id'=>'set-timezone']) ?>
+            <?= Html::submitButton('Установить', ['class' => 'btn btn-success','id'=>'set-timezone']) ?>
         </div>
 
         <?php ActiveForm::end();
@@ -169,7 +145,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'label' => 'Режим работы',
                 'attribute' => 'mode',
-                'filter' => ['0' => 'Нормальный', '1' => 'Блокирующий', '2' => 'Свободный проход', '3' => 'Ожидание свободного прохода'],
+                'filter' => ['0' => 'Нормальный', '1' => 'Блокирующий', '2' => 'Свободный проход', '3' => 'Ожидание свободного прохода', '12' => 'Не установлен'],
                 //'filterInputOptions' => ['prompt' => 'All educations', 'class' => 'form-control', 'id' => null]
                 'value' => function ($model, $key, $index, $column) {
                     $mode = $model->{$column->attribute};
@@ -185,6 +161,9 @@ $this->params['breadcrumbs'][] = $this->title;
                             break;
                         case 3:
                             $val = 'Ожидание свободного прохода';
+                            break;
+                        case 12:
+                            $val = 'Не установлен';
                             break;
                     }
                     return $val;
@@ -227,22 +206,7 @@ $js = <<<JS
         else
             $('.btn-primary').prop('disabled', true);
     });
-    $('#set-active-form').on('beforeSubmit', function(){
-         var data = $(this).serialize();
-         $.ajax({
-             url: '/admin/device/set-active',
-             type: 'POST',
-             data: data,
-             success: function(res){
-                alert("Сервер вернул вот что: " + res);
-             },
-             	error: function (xhr, ajaxOptions, thrownError) {
-       	        alert(xhr.status);
-        	    alert(thrownError);
-      	     }
-         });
-         return false;
-    });
+    
     $('#set-mode-form').on('beforeSubmit', function(){
          var data = $(this).serialize();
          $.ajax({
@@ -250,11 +214,12 @@ $js = <<<JS
              type: 'POST',
              data: data,
              success: function(res){
-                alert("Сервер вернул вот что: " + res);
+                //alert("Сервер вернул вот что: " + res);
+                if(res=='OK')
+                    window.location.replace("/admin/device");
              },
              error: function (xhr, ajaxOptions, thrownError) {
-       	        alert(xhr.status);
-        	    alert(thrownError);
+       	        alert(xhr.status+' '+thrownError);
              }
          });
          return false;
@@ -277,11 +242,12 @@ $js = <<<JS
              type: 'POST',
              data: data,
              success: function(res){
-                alert("Сервер вернул вот что: " + res);
+                //alert("Сервер вернул вот что: " + res);
+                if(res=='OK')
+                    window.location.replace("/admin/device");
              },
              error: function (xhr, ajaxOptions, thrownError) {
-       	        alert(xhr.status);
-        	    alert(thrownError);
+       	        alert(xhr.status+' '+thrownError);
              }
          });
          return false;

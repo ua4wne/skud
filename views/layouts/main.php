@@ -279,9 +279,9 @@ AppAsset::register($this);
             </li>
 
             <li class="">
-                <a href="/admin/events/index">
+                <a href="/main/event/index">
                     <i class="menu-icon fa fa-bell-o" aria-hidden="true"></i>
-                    <span class="menu-text"> События 2</span>
+                    <span class="menu-text"> События </span>
                 </a>
 
                 <b class="arrow"></b>

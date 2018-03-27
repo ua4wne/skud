@@ -4,13 +4,13 @@ namespace app\modules\main\controllers;
 
 use app\models\LibraryModel;
 use app\modules\admin\models\Device;
+use app\modules\admin\models\Task;
 use app\modules\main\models\Card;
 use app\modules\main\models\Event;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use Yii;
 use stdClass;
-use yii\web\Response;
 
 class DataController extends \yii\web\Controller
 {
@@ -49,17 +49,17 @@ class DataController extends \yii\web\Controller
      //   \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
         //$session = Yii::$app->session;
         //Получить JSON как строку
-  //      $json_str = file_get_contents('php://input');
+        $json_str = file_get_contents('php://input');
         //$json_str = '{"type":"Z5RWEB","sn":44374,"messages":[{"id":1856669179,"operation":"power_on","fw":"a.a","conn_fw":"1.0.120","active":1,"mode":0}]}';
-        $json_str = '{"type":"Z5RWEB","sn":44374,"messages":[{"id":1856669179,"operation":"ping","active":1,"mode":0}]}';
+        //$json_str = '{"type":"Z5RWEB","sn":44374,"messages":[{"id":1856669179,"operation":"ping","active":1,"mode":0}]}';
+        //$json_str = '{"type":"Z5RWEB","sn":44374,"messages":[{"id":1856669179,"success":1}]}';
         //Получить объект
         $json = json_decode($json_str);
 
-        //$session['z5j'] = json_decode(file_get_contents("php://input"));
         if(!empty($json)) {
             //запись в лог
-            $log = 'Сообщение от контроллера <strong>' . $json_str . '</strong>';
-            LibraryModel::AddTraceLog('request', $log);
+    //        $log = 'Сообщение от контроллера <strong>' . $json_str . '</strong>';
+    //        LibraryModel::AddTraceLog('request', $log);
 
             $sn = $json->sn; //серийный номер контроллера Z5R-WEB
             $type = $json->type; //тип контроллера Z5R-WEB
@@ -75,27 +75,72 @@ class DataController extends \yii\web\Controller
 
             //пинг
             if ($json->messages[0]->operation == "ping") {
-                //если запросов нет то готовим пустое сообщение
+
+                //проверяем mode
+                $mode = Device::findOne(['type'=>$type,'snum'=>$sn])->mode;
+                if($json->messages[0]->mode != $mode) {
+                    $msg = new \stdClass();
+                    $msg->id = $json->messages[0]->id;
+                    $msg->operation = 'set_mode';
+                    $msg->mode = $mode;
+                }
+                else {
+                    //проверяем нет ли сформированных команд контроллеру
+                    $tasks = Task::find()->select('json')->all();
+                    if(empty($tasks)){
+                        $msg = null;
+                    }
+                    else{
+                        $msg = array();
+                        foreach ($tasks as $task){
+                            array_push($msg,json_decode($task->json));
+                        }
+                    }
+                }
+            }
+
+            //events
+            if ($json->messages[0]->operation == "events") {
+                $event_success = 0;
+                $device_id = Device::findOne(['type'=>$type,'snum'=>$sn])->id;
+                //обрабатываем каждое событие
+                foreach($json->messages[0]->events as $item){
+                    $model = new Event();
+                    $model->device_id = $device_id;
+                    $model->event_type = $item->event;
+                    $model->card = $item->card;
+                    $model->event_time = $item->time;
+                    $model->created_at = date('Y-m-d H:m:s');
+                    $model->save();
+                    $event_success++;
+                }
+                $msg = new \stdClass();
+                $msg->id = $json->messages[0]->id;
+                $msg->operation = 'events';
+                $msg->events_success = $event_success;
+            }
+
+            //success = 1
+            if ($json->messages[0]->success == 1) {
+                $dt = date('Y-m-d H:m:s');
+                //удаляем старые команды контроллеру
+                Task::deleteAll("created_at < '$dt'");
                 $msg = null;
             }
 
             //преобразование и отправка сообщения контроллеру
             $send = new stdClass();
             $send->date = date('Y-m-d H:i:s');
-            $send->interval = 8;
-            if(isset($msg))
-                $send->messages[0] = $msg;
-            else
+            $send->interval = 10;
+            //if(isset($msg))
+            //    $send->messages[0] = $msg;
+            //else
                 $send->messages = $msg;
-            //$send = ['date'=>date('Y-m-d H:i:s'),'interval'=>10,'messages' => ['id'=>10,'operation'=>'set_active','active'=>1,'online'=>1]];
             $data = json_encode($send);
             //запись в лог
-            $log = 'Ответ от сервера <strong>' . $data . '</strong>';
-            LibraryModel::AddTraceLog('response', $log);
+        //    $log = 'Ответ от сервера <strong>' . $data . '</strong>';
+        //    LibraryModel::AddTraceLog('response', $log);
 
-            //echo json_encode($session['z3']->$sn);
-            //header('Access-Control-Allow-Origin: *');
-            //header('Content-Type: application/json');
             return $data;
         }
     }

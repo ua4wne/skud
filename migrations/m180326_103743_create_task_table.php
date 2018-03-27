@@ -3,9 +3,9 @@
 use yii\db\Migration;
 
 /**
- * Handles the creation of table `event`.
+ * Handles the creation of table `task`.
  */
-class m180302_123137_create_event_table extends Migration
+class m180326_103743_create_task_table extends Migration
 {
     /**
      * {@inheritdoc}
@@ -16,13 +16,11 @@ class m180302_123137_create_event_table extends Migration
             $tableOptions = 'CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE=InnoDB';
         }
 
-        $this->createTable('event', [
+        $this->createTable('task', [
             'id' => $this->primaryKey(),
-            'device_id' => $this->integer()->notNull(),
-            'event_type' => $this->string(2)->notNull(),
-            'card' => $this->string(20),
-            'flag' => $this->string(3),
-            'event_time' => $this->dateTime()->notNull(),
+            'type' => $this->string(10)->notNull(),
+            'snum' => $this->string(10)->notNull(),
+            'json' => $this->text()->notNull(),
             'created_at' => $this->dateTime()->notNull(),
             'updated_at' => $this->dateTime()->notNull(),
         ], $tableOptions);
@@ -33,6 +31,6 @@ class m180302_123137_create_event_table extends Migration
      */
     public function safeDown()
     {
-        $this->dropTable('event');
+        $this->dropTable('task');
     }
 }

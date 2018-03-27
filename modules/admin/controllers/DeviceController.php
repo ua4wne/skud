@@ -3,6 +3,7 @@
 namespace app\modules\admin\controllers;
 
 use app\modules\admin\models\Command;
+use app\modules\admin\models\Task;
 use app\modules\admin\models\TimeZone;
 use app\modules\main\models\Event;
 use app\modules\main\models\UploadImage;
@@ -57,20 +58,19 @@ class DeviceController extends Controller
         ]);
     }
 
-    public function actionSetActive(){
+    public function actionSetMode()
+    {
         $model = new Command();
-        if(\Yii::$app->request->isAjax){
-            if($model->load(\Yii::$app->request->post())){
-                return $model->SetActive($model->device);
-            }
-        }
-    }
-
-    public function actionSetMode(){
-        $model = new Command();
-        if(\Yii::$app->request->isAjax){
-            if($model->load(\Yii::$app->request->post())){
-                return $model->SetMode($model->device);
+        if (\Yii::$app->request->isAjax) {
+            if ($model->load(\Yii::$app->request->post())) {
+                $device = Device::findOne($model->device);
+                if (isset($device)) {
+                    $device->mode = $model->mode;
+                    $device->save(false);
+                    return 'OK';
+                }
+                else
+                    return 'ERR';
             }
         }
     }
@@ -79,7 +79,25 @@ class DeviceController extends Controller
         $model = new Command();
         if(\Yii::$app->request->isAjax){
             if($model->load(\Yii::$app->request->post())){
-                return $model->SetTimeZone($model->device);
+                $device = Device::findOne($model->device);
+                $tzone = TimeZone::findOne($model->zone);
+                $msg = new \stdClass();
+                $msg->id = rand();
+                $msg->operation = 'set_timezone';
+                $msg->zone = $tzone->zone;
+                $msg->begin = $tzone->begin;
+                $msg->end = $tzone->end;
+                $msg->days = $tzone->days;
+                $data = json_encode($msg);
+                $task = new Task();
+                $task->type = $device->type;
+                $task->snum = $device->snum;
+                $task->json = $data;
+                $task->created_at = date('Y-m-d H:m:s');
+                $task->save();
+                $device->zone_id = $model->zone;
+                $device->save(false);
+                return 'OK';
             }
         }
     }
@@ -121,7 +139,7 @@ class DeviceController extends Controller
         }
         else{
             $active = array('1' => 'Активный', '0' => 'Не активный');
-            $mode = array('0' => 'Норма', '1' => 'Блокировка', '2' => 'Свободный проход', '3' => 'Ожидание свободного прохода');
+            $mode = array('0' => 'Норма', '1' => 'Блокировка', '2' => 'Свободный проход', '3' => 'Ожидание свободного прохода', '12' => 'Не установлен');
             $zones = TimeZone::find()->select(['id', 'zone', 'text'])->asArray()->all();
             $zone = array();
             foreach ($zones as $val) {
@@ -169,7 +187,7 @@ class DeviceController extends Controller
         }
         else{
             $active = array('1' => 'Активный', '0' => 'Не активный');
-            $mode = array('0' => 'Норма', '1' => 'Блокировка', '2' => 'Свободный проход', '3' => 'Ожидание свободного прохода');
+            $mode = array('0' => 'Норма', '1' => 'Блокировка', '2' => 'Свободный проход', '3' => 'Ожидание свободного прохода', '12' => 'Не установлен');
             $zones = TimeZone::find()->select(['id', 'zone', 'text'])->asArray()->all();
             $zone = array();
             foreach ($zones as $val) {

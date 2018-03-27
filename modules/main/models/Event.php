@@ -4,6 +4,7 @@ namespace app\modules\main\models;
 
 use Yii;
 use app\models\BaseModel;
+use app\modules\admin\models\Device;
 
 /**
  * This is the model class for table "event".
@@ -17,7 +18,6 @@ use app\models\BaseModel;
  * @property string $updated_at
  *
  * @property Device $device
- * @property Idcard $card
  */
 class Event extends BaseModel
 {
@@ -35,13 +35,13 @@ class Event extends BaseModel
     public function rules()
     {
         return [
-            [['device_id', 'event_type', 'card_id', 'event_time'], 'required'],
-            [['device_id', 'card_id'], 'integer'],
+            [['device_id', 'event_type', 'card', 'event_time'], 'required'],
+            [['device_id'], 'integer'],
             [['created_at', 'updated_at', 'event_time'], 'safe'],
             [['event_type'], 'string', 'max' => 2],
+            [['card'], 'string', 'max' => 20],
             [['flag'], 'string', 'max' => 3],
             [['device_id'], 'exist', 'skipOnError' => true, 'targetClass' => Device::className(), 'targetAttribute' => ['device_id' => 'id']],
-            [['card_id'], 'exist', 'skipOnError' => true, 'targetClass' => Idcard::className(), 'targetAttribute' => ['card_id' => 'id']],
         ];
     }
 
@@ -54,7 +54,7 @@ class Event extends BaseModel
             'id' => 'ID',
             'device_id' => 'Контроллер СКУД',
             'event_type' => 'Событие',
-            'card_id' => 'Карта доступа',
+            'card' => 'Карта доступа',
             'flag' => 'Флаг',
             'event_time' => 'Время события',
             'created_at' => 'Дата создания',
@@ -68,13 +68,5 @@ class Event extends BaseModel
     public function getDevice()
     {
         return $this->hasOne(Device::className(), ['id' => 'device_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getCard()
-    {
-        return $this->hasOne(Idcard::className(), ['id' => 'card_id']);
     }
 }
