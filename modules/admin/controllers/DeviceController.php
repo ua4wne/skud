@@ -65,6 +65,22 @@ class DeviceController extends Controller
             if ($model->load(\Yii::$app->request->post())) {
                 $device = Device::findOne($model->device);
                 if (isset($device)) {
+                    $msg = new \stdClass();
+                    $msg->id = rand();
+                    $msg->operation = 'set_mode';
+                    $msg->mode = $model->mode;
+                    $data = json_encode($msg);
+                    $task = new Task();
+                    $task->type = $device->type;
+                    $task->snum = $device->snum;
+                    $task->json = $data;
+                    $count = Task::find(['status'=>1])->count(); //есть уже активные задания?
+                    if($count)
+                        $task->status = 0;
+                    else
+                        $task->status = 1;
+                    $task->created_at = date('Y-m-d H:m:s');
+                    $task->save();
                     $device->mode = $model->mode;
                     $device->save(false);
                     return 'OK';
@@ -93,6 +109,11 @@ class DeviceController extends Controller
                 $task->type = $device->type;
                 $task->snum = $device->snum;
                 $task->json = $data;
+                $count = Task::find(['status'=>1])->count(); //есть уже активные задания?
+                if($count)
+                    $task->status = 0;
+                else
+                    $task->status = 1;
                 $task->created_at = date('Y-m-d H:m:s');
                 $task->save();
                 $device->zone_id = $model->zone;

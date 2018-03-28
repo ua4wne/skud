@@ -2,9 +2,11 @@
 
 namespace app\modules\main\models;
 
+use app\modules\admin\models\EventType;
 use Yii;
 use app\models\BaseModel;
 use app\modules\admin\models\Device;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "event".
@@ -68,5 +70,15 @@ class Event extends BaseModel
     public function getDevice()
     {
         return $this->hasOne(Device::className(), ['id' => 'device_id']);
+    }
+
+    public static function getEventList()
+    {
+        // Выбираем тайм-зоны для фильтра
+        $type = EventType::find()
+            ->select(['code', 'text'])
+            ->all();
+
+        return ArrayHelper::map($type, 'code', 'text');
     }
 }

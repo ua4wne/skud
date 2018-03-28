@@ -44,8 +44,9 @@ class Task extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['type', 'snum', 'json', 'created_at'], 'required'],
+            [['type', 'snum', 'json', 'status', 'created_at'], 'required'],
             [['json'], 'string'],
+            [['status'], 'integer', 'max' => 1],
             [['created_at', 'updated_at'], 'safe'],
             [['type', 'snum'], 'string', 'max' => 10],
         ];
@@ -61,6 +62,7 @@ class Task extends \yii\db\ActiveRecord
             'type' => 'Type',
             'snum' => 'Snum',
             'json' => 'Json',
+            'status' => 'Status',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
         ];

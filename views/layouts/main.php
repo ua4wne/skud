@@ -97,9 +97,6 @@ AppAsset::register($this);
                 <li class="light-blue dropdown-modal">
                     <a data-toggle="dropdown" href="#" class="dropdown-toggle">
                         <img class="nav-user-photo" src="<?= Yii::$app->user->identity->image ?? '/images/male.png' ?>" alt="image" />
-                        <span class="user-info">
-									<?= Yii::$app->user->identity->fname ?? ' ' .'<br>'.Yii::$app->user->identity->lname ?? ' ' ?>
-								</span>
 
                         <i class="ace-icon fa fa-caret-down"></i>
                     </a>

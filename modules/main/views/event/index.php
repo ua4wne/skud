@@ -23,7 +23,16 @@ $this->params['breadcrumbs'][] = $this->title;
 
             //'id',
             'device_id',
-            'event_type',
+            //'event_type',
+            [
+                'attribute'=>'event_type',
+                'label'=>'Событие',
+                'format'=>'text', // Возможные варианты: raw, html
+            //    'content'=>function($data){
+            //        return $data->getZoneName();
+            //    },
+                'filter' => \app\modules\main\models\Event::getEventList()
+            ],
             'card',
             'flag',
             'event_time',

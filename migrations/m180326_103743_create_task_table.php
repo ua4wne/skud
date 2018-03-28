@@ -21,6 +21,7 @@ class m180326_103743_create_task_table extends Migration
             'type' => $this->string(10)->notNull(),
             'snum' => $this->string(10)->notNull(),
             'json' => $this->text()->notNull(),
+            'status' => $this->boolean()->notNull()->defaultValue(0),
             'created_at' => $this->dateTime()->notNull(),
             'updated_at' => $this->dateTime()->notNull(),
         ], $tableOptions);
