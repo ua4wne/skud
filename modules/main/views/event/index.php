@@ -22,7 +22,16 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\SerialColumn'],
 
             //'id',
-            'device_id',
+            //'device_id',
+            [
+                'attribute'=>'device_id',
+                'label'=>'Контроллер',
+                'format'=>'text', // Возможные варианты: raw, html
+                //    'content'=>function($data){
+                //        return $data->getZoneName();
+                //    },
+                'filter' => \app\modules\main\models\Event::getDeviceList()
+            ],
             //'event_type',
             [
                 'attribute'=>'event_type',
@@ -39,7 +48,7 @@ $this->params['breadcrumbs'][] = $this->title;
             //'created_at',
             //'updated_at',
 
-            ['class' => 'yii\grid\ActionColumn'],
+            //['class' => 'yii\grid\ActionColumn'],
         ],
     ]); ?>
 </div>

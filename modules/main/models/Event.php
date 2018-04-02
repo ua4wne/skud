@@ -81,4 +81,13 @@ class Event extends BaseModel
 
         return ArrayHelper::map($type, 'code', 'text');
     }
+
+    public static function getDeviceList(){
+        // Выбираем тайм-зоны для фильтра
+        $type = Device::find()
+            ->select(['id', 'text'])
+            ->all();
+
+        return ArrayHelper::map($type, 'id', 'text');
+    }
 }

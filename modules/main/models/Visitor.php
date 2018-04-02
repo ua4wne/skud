@@ -48,7 +48,6 @@ class Visitor extends BaseModel
             [['fname', 'lname', 'renter_id', 'card_id'], 'required'],
             [['renter_id', 'card_id', 'car_id'], 'integer'],
             [['created_at', 'updated_at'], 'safe'],
-            [['is_worker', 'status'], 'string', 'max' => 1],
             [['fname', 'mname', 'lname'], 'string', 'max' => 50],
             [['image', 'doc_type'], 'string', 'max' => 30],
             [['car_num', 'doc_num'], 'string', 'max' => 10],
@@ -66,14 +65,12 @@ class Visitor extends BaseModel
     {
         return [
             'id' => 'ID',
-            'is_worker' => 'Тип',
             'fname' => 'Имя',
             'mname' => 'Отчество',
             'lname' => 'Фамилия',
             'image' => 'Фото',
             'renter_id' => 'Организация',
-            'status' => 'Статус',
-            'card_id' => 'Карта',
+            'card_id' => 'Карта доступа',
             'car_id' => 'Транспортное средство',
             'car_num' => 'Регистрационный номер',
             'doc_type' => 'Документ',

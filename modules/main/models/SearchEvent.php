@@ -47,6 +47,15 @@ class SearchEvent extends Event
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'pagination' => [
+                'pageSize' => 15,
+            ],
+            'sort' => [
+                'defaultOrder' => [
+                    'event_time' => SORT_DESC,
+                    //'title' => SORT_ASC,
+                ]
+            ],
         ]);
 
         $this->load($params);

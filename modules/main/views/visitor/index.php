@@ -37,13 +37,11 @@ $this->params['breadcrumbs'][] = $this->title;
                     ]);
                 },
             ],
-            'is_worker',
             'fname',
             'mname',
             'lname',
             //'image',
             'renter_id',
-            'status',
             'card_id',
             'car_id',
             'car_num',

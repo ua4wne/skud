@@ -81,7 +81,7 @@ class DataController extends \yii\web\Controller
 
                     //проверяем mode
                     $mode = Device::findOne(['type'=>$type,'snum'=>$sn])->mode;
-                    if($json->messages[0]->mode != $mode) {
+                    if($message->mode != $mode) {
                         $msg = new \stdClass();
                         $msg->id = $message->id;
                         $msg->operation = 'set_mode';
@@ -108,18 +108,34 @@ class DataController extends \yii\web\Controller
                         $model = new Event();
                         $model->device_id = $device_id;
                         $model->event_type = $item->event;
-                        $model->card = $item->card;
+                        $model->card = hexdec($item->card);
                         if(isset($item->flag))
                             $model->flag = $item->flag;
                         $model->event_time = $item->time;
                         $model->created_at = date('Y-m-d H:m:s');
-                        $model->save(false);
+                        if($item->card != '000000000000')
+                            $model->save(false);
                         $event_success++;
                     }
                     $msg = new \stdClass();
                     $msg->id = $message->id;
                     $msg->operation = 'events';
                     $msg->events_success = $event_success;
+                }
+
+                //проверка доступа
+                if ($message->operation == "check_access") {
+                    $card = hexdec($message->card);
+                    //есть такая карта в базе?
+                    $model = Card::findOne(['code'=>$card]);
+                    $msg = new \stdClass();
+                    $msg->id = $message->id;
+                    $msg->operation = 'check_access';
+                    if(empty($model))
+                        $msg->granted = 1; //проход запрещен
+                    else
+                        $msg->granted = $model->granted;
+
                 }
 
                 //success = 1
@@ -193,69 +209,4 @@ class DataController extends \yii\web\Controller
         return true;
     }
 
-    private function check_access($type,$sn,$msg){
-        //проверяем наличие контроллера в базе
-        $device = Device::findOne(['type'=>$type,'snum'=>$sn]);
-        if(empty($device)){
-            //нет такого контроллера
-            $send = ['date'=>date('Y-m-d H:i:s'),'interval'=>10,'messages' => ['id'=>1,'operation'=>'check_access','granted'=>0]];
-        }
-        else{ //есть такой контроллер
-            $card = Card::findOne(['code'=>$msg->card]);
-            if(empty($card)){
-                //нет такой карты в системе
-                $send = ['date'=>date('Y-m-d H:i:s'),'interval'=>10,'messages' => ['id'=>1,'operation'=>'check_access','granted'=>0]];
-            }
-            else{
-                //TODO проверить таймзону
-                if($card->granted){
-                    $send = ['date'=>date('Y-m-d H:i:s'),'interval'=>10,'messages' => ['id'=>1,'operation'=>'check_access','granted'=>1]];
-                }
-                else{
-                    $send = ['date'=>date('Y-m-d H:i:s'),'interval'=>10,'messages' => ['id'=>1,'operation'=>'check_access','granted'=>0]];
-                }
-            }
-        }
-        return $send;
-    }
-
-    private function events($type,$sn,$msg){
-        //проверяем наличие контроллера в базе
-        $device = Device::findOne(['type'=>$type,'snum'=>$sn]);
-        $events = $msg->events;
-        $count = 0;
-        if(empty($device)){
-            //нет такого контроллера
-            //имитируем успешное прочтение, чтобы не авторизованный контроллер не долбал своими пакетами
-            foreach ($events as $val){
-                $count++;
-            }
-        }
-        else{
-            //обрабатываем события контроллера
-            foreach ($events as $val){
-                //есть такая карта?
-                $card = Card::findOne(['code'=>$val->card])->id;
-                if(empty($card)){ //нет такой карты - игнорируем ее
-                    $count++;
-                }
-                else{
-                    $event = Event::findOne(['event_type'=>$val->event, 'card_id'=>$card, 'event_time'=>$val->time]);
-                    if(empty($event)){
-                        //нет такого события в журнале
-                        $model = new Event();
-                        $model->device_id = $device->id;
-                        $model->event_type = $val->event;
-                        $model->card_id = $card;
-                        $model->flag = $val->flag;
-                        $model->event_time = $val->time;
-                        $model->save();
-                    }
-                    $count++;
-                }
-            }
-        }
-        $send = ['date'=>date('Y-m-d H:i:s'),'interval'=>10,'messages' => ['id'=>100,'operation'=>'events','events_success'=>$count]];
-        return $send;
-    }
 }

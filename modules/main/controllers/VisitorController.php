@@ -2,6 +2,11 @@
 
 namespace app\modules\main\controllers;
 
+use app\modules\admin\models\CarType;
+use app\modules\admin\models\DocType;
+use app\modules\main\models\Renter;
+use app\modules\main\models\UploadImage;
+use yii\web\UploadedFile;
 use Yii;
 use app\modules\main\models\Visitor;
 use app\modules\main\models\SearchVisitor;
@@ -65,13 +70,42 @@ class VisitorController extends Controller
     public function actionCreate()
     {
         $model = new Visitor();
+        $upload = new UploadImage();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($model->load(Yii::$app->request->post())) {
+            $upload->image = UploadedFile::getInstance($upload, 'image');
+            if(!empty($upload->image)) {
+                $fname = $upload->upload();
+                //обновляем данные картинки
+                $model->image = $fname;
+            }
+            else
+                $model->image = '/images/noimage.jpg';
+            if($model->save())
+                return $this->redirect(['view', 'id' => $model->id]);
         }
 
+        $renters = Renter::find()->select(['id', 'title'])->where('status=1')->asArray()->all();
+        $rentsel = array();
+        foreach ($renters as $val) {
+            $rentsel[$val['id']] = $val['title']; //массив для заполнения данных в select формы
+        }
+        $doctype = DocType::find()->select(['id', 'text'])->asArray()->all();
+        $docs = array();
+        foreach ($doctype as $val) {
+            $docs[$val['id']] = $val['text']; //массив для заполнения данных в select формы
+        }
+        $cartype = CarType::find()->select(['id', 'text'])->asArray()->all();
+        $cars = array();
+        foreach ($cartype as $val) {
+            $cars[$val['id']] = $val['text']; //массив для заполнения данных в select формы
+        }
         return $this->render('create', [
             'model' => $model,
+            'rentsel' => $rentsel,
+            'docs' => $docs,
+            'upload' => $upload,
+            'cars' => $cars,
         ]);
     }
 
@@ -85,13 +119,47 @@ class VisitorController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+        $old_image = substr($model->image,1); //старый файл изображения
+        $upload = new UploadImage();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            $upload->image = UploadedFile::getInstance($upload, 'new_image');
+            if(!empty($upload->image)){
+                $fname = $upload->upload();
+                //обновляем данные картинки
+                $model->image = $fname;
+                if(!empty($old_image)){
+                    //удаляем связанный файл изображения если это не общая картинка noimage.jpg
+                    $pos = strpos($old_image, 'noimage.jpg');
+                    if($pos === false)
+                        unlink($old_image);
+                }
+            }
+            $model->save();
+                return $this->redirect(['view', 'id' => $model->id]);
         }
 
+        $renters = Renter::find()->select(['id', 'title'])->where('status=1')->asArray()->all();
+        $rentsel = array();
+        foreach ($renters as $val) {
+            $rentsel[$val['id']] = $val['title']; //массив для заполнения данных в select формы
+        }
+        $doctype = DocType::find()->select(['id', 'text'])->asArray()->all();
+        $docs = array();
+        foreach ($doctype as $val) {
+            $docs[$val['id']] = $val['text']; //массив для заполнения данных в select формы
+        }
+        $cartype = CarType::find()->select(['id', 'text'])->asArray()->all();
+        $cars = array();
+        foreach ($cartype as $val) {
+            $cars[$val['id']] = $val['text']; //массив для заполнения данных в select формы
+        }
         return $this->render('update', [
             'model' => $model,
+            'rentsel' => $rentsel,
+            'docs' => $docs,
+            'upload' => $upload,
+            'cars' => $cars,
         ]);
     }
 

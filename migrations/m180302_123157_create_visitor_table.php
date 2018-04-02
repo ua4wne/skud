@@ -18,14 +18,12 @@ class m180302_123157_create_visitor_table extends Migration
 
         $this->createTable('visitor', [
             'id' => $this->primaryKey(),
-            'is_worker' => $this->boolean()->notNull()->defaultValue(0),
             'fname' => $this->string(50)->notNull(),
             'mname' => $this->string(50)->defaultValue(null),
             'lname' => $this->string(50)->notNull(),
             'image' => $this->string(30)->defaultValue(null),
             'card_id' => $this->integer()->notNull(),
             'renter_id' => $this->integer()->notNull(),
-            'status' => $this->boolean()->notNull()->defaultValue(0),
             'car_id' => $this->integer(),
             'car_num' => $this->string(10),
             'doc_type' => $this->string(30),

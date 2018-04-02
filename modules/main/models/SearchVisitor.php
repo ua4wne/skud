@@ -19,7 +19,7 @@ class SearchVisitor extends Visitor
     {
         return [
             [['id', 'renter_id', 'card_id', 'car_id'], 'integer'],
-            [['is_worker', 'fname', 'mname', 'lname', 'image', 'status', 'car_num', 'doc_type', 'doc_series', 'doc_num', 'phone', 'created_at', 'updated_at'], 'safe'],
+            [['fname', 'mname', 'lname', 'image', 'car_num', 'doc_type', 'doc_series', 'doc_num', 'phone', 'created_at', 'updated_at'], 'safe'],
         ];
     }
 
@@ -67,12 +67,10 @@ class SearchVisitor extends Visitor
             'updated_at' => $this->updated_at,
         ]);
 
-        $query->andFilterWhere(['like', 'is_worker', $this->is_worker])
-            ->andFilterWhere(['like', 'fname', $this->fname])
+        $query->andFilterWhere(['like', 'fname', $this->fname])
             ->andFilterWhere(['like', 'mname', $this->mname])
             ->andFilterWhere(['like', 'lname', $this->lname])
             ->andFilterWhere(['like', 'image', $this->image])
-            ->andFilterWhere(['like', 'status', $this->status])
             ->andFilterWhere(['like', 'car_num', $this->car_num])
             ->andFilterWhere(['like', 'doc_type', $this->doc_type])
             ->andFilterWhere(['like', 'doc_series', $this->doc_series])
