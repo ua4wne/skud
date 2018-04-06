@@ -21,6 +21,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <div>
         <?= Html::a('Новая запись', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::Button('Удалить все карты', ['class' => 'btn btn-danger','id'=>'clear_card']) ?>
 
         <?php
         Modal::begin([
@@ -197,11 +198,15 @@ $this->params['breadcrumbs'][] = $this->title;
 <?php
 $js = <<<JS
     $('.btn-primary').prop('disabled', true);
+    $('#clear_card').prop('disabled', true);
+    var dev_id;
     $('.seldev').click (function(){
         var id = $(this).children().val();
+        dev_id = id;
         if(id){
             $('.btn-primary').prop('disabled', false);
             $('.id_device').val(id);
+            $('#clear_card').prop('disabled', false);
         }
         else
             $('.btn-primary').prop('disabled', true);
@@ -251,6 +256,23 @@ $js = <<<JS
              }
          });
          return false;
+    });
+    
+    $('#clear_card').click(function(e){
+        e.preventDefault();
+        $.ajax({
+             url: '/admin/device/clear-card',
+             type: 'POST',
+             data: {'id':dev_id},
+             success: function(res){
+                //alert("Сервер вернул вот что: " + res);
+                if(res=='OK')
+                   alert('Задание на очистку карт из памяти контроллера создано!');
+             },
+             error: function (xhr, ajaxOptions, thrownError) {
+       	        alert(xhr.status+' '+thrownError);
+             }
+         });
     });
 JS;
 

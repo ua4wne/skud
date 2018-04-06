@@ -123,6 +123,29 @@ class DeviceController extends Controller
         }
     }
 
+    public function actionClearCard(){
+        if(\Yii::$app->request->isAjax){
+            $id = $_POST['id'];
+            $device = Device::findOne($id);
+            $msg = new \stdClass();
+            $msg->id = rand();
+            $msg->operation = 'clear_cards';
+            $data = json_encode($msg);
+            $task = new Task();
+            $task->type = $device->type;
+            $task->snum = $device->snum;
+            $task->json = $data;
+            $count = Task::find(['status'=>1])->count(); //есть уже активные задания?
+            if($count)
+                $task->status = 0;
+            else
+                $task->status = 1;
+            $task->created_at = date('Y-m-d H:m:s');
+            $task->save();
+            return 'OK';
+        }
+    }
+
     /**
      * Displays a single Device model.
      * @param integer $id

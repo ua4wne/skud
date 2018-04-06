@@ -151,7 +151,7 @@ class DataController extends \yii\web\Controller
                             $next->status = 1;
                             $next->save(false);
                         }
-                        //$msg = null;
+                        $msg = null;
                     }
                 }
             }
@@ -168,8 +168,11 @@ class DataController extends \yii\web\Controller
             //запись в лог
         //    $log = 'Ответ от сервера ' . $data;
         //    LibraryModel::AddTraceLog('response', $log);
+            header('Content-type: application/json');
+            header("Connection: Keep-Alive");
 
-            return $data;
+            echo $data;
+            die;
         }
     }
 

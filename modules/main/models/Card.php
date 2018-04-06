@@ -22,6 +22,7 @@ use app\models\BaseModel;
  */
 class Card extends BaseModel
 {
+    public $device;
     /**
      * @inheritdoc
      */
@@ -37,10 +38,10 @@ class Card extends BaseModel
     {
         return [
             [['code', 'zone'], 'required'],
-            [['flags', 'zone'], 'integer'],
+            [['flags', 'zone', 'device'], 'integer'],
             [['created_at', 'updated_at'], 'safe'],
             [['code'], 'string', 'max' => 20],
-            [['granted', 'share'], 'string', 'max' => 1],
+            [['granted', 'share'], 'integer', 'max' => 1],
             [['code'], 'unique'],
         ];
     }
@@ -52,11 +53,12 @@ class Card extends BaseModel
     {
         return [
             'id' => 'ID',
+            'device' => 'Контроллер СКУД',
             'code' => 'Идентификатор',
             'granted' => 'Активность',
             'flags' => 'Флаг',
             'zone' => 'Временная зона',
-            'share' => 'Гостевая',
+            'share' => 'Тип карты',
             'created_at' => 'Дата создания',
             'updated_at' => 'Дата обновления',
         ];

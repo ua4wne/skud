@@ -4,15 +4,15 @@ use yii\helpers\Html;
 use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
-/* @var $model app\modules\main\models\Visitor */
+/* @var $model app\modules\main\models\Card */
 
-$this->title = $model->id;
-$this->params['breadcrumbs'][] = ['label' => 'Посетители', 'url' => ['index']];
+$this->title = $model->code;
+$this->params['breadcrumbs'][] = ['label' => 'Карты доступа', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="visitor-view">
+<div class="card-view">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    <h1 class="text-center"><?= Html::encode($this->title) ?></h1>
 
     <p>
         <?= Html::a('Обновить', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
@@ -29,22 +29,13 @@ $this->params['breadcrumbs'][] = $this->title;
         'model' => $model,
         'attributes' => [
             'id',
-            'is_worker',
-            'fname',
-            'mname',
-            'lname',
-            'image',
-            'renter_id',
-            'status',
-            'card_id',
-            'car_id',
-            'car_num',
-            'doc_type',
-            'doc_series',
-            'doc_num',
-            'phone',
-            //'created_at',
-            //'updated_at',
+            'code',
+            'granted',
+            'flags',
+            'zone',
+            'share',
+            'created_at',
+            'updated_at',
         ],
     ]) ?>
 

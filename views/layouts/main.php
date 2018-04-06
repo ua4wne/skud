@@ -196,6 +196,14 @@ AppAsset::register($this);
                         <b class="arrow"></b>
                     </li>
                     <li class="">
+                        <a href="/admin/card">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            Карты доступа
+                        </a>
+
+                        <b class="arrow"></b>
+                    </li>
+                    <li class="">
                         <a href="/admin/time-zone">
                             <i class="menu-icon fa fa-caret-right"></i>
                             Временные зоны
@@ -261,6 +269,15 @@ AppAsset::register($this);
                 <a href="/main/visitor">
                     <i class="menu-icon fa fa-user"></i>
                     <span class="menu-text">Посетители</span>
+                </a>
+
+                <b class="arrow"></b>
+            </li>
+
+            <li class="">
+                <a href="/main/task">
+                    <i class="menu-icon fa fa-tasks"></i>
+                    <span class="menu-text">Очередь заданий</span>
                 </a>
 
                 <b class="arrow"></b>
