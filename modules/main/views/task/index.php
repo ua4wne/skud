@@ -61,7 +61,6 @@ $this->params['breadcrumbs'][] = $this->title;
 <?php
 $js = <<<JS
 setTimeout(function() {window.location.reload();}, 10000);
-alert('Update');
 JS;
 $this->registerJs($js);
 ?>
