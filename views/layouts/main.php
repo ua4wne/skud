@@ -268,7 +268,7 @@ AppAsset::register($this);
             <li class="">
                 <a href="/main/visitor">
                     <i class="menu-icon fa fa-user"></i>
-                    <span class="menu-text">Посетители</span>
+                    <span class="menu-text">Сотрудники</span>
                 </a>
 
                 <b class="arrow"></b>

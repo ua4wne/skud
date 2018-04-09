@@ -18,8 +18,8 @@ class SearchVisitor extends Visitor
     public function rules()
     {
         return [
-            [['id', 'renter_id', 'card_id', 'car_id'], 'integer'],
-            [['fname', 'mname', 'lname', 'image', 'car_num', 'doc_type', 'doc_series', 'doc_num', 'phone', 'created_at', 'updated_at'], 'safe'],
+            [['id', 'renter_id', 'card', 'car_id'], 'integer'],
+            [['fname', 'mname', 'lname', 'image', 'car_num', 'doc_id', 'doc_series', 'doc_num', 'phone', 'created_at', 'updated_at'], 'safe'],
         ];
     }
 
@@ -61,7 +61,7 @@ class SearchVisitor extends Visitor
         $query->andFilterWhere([
             'id' => $this->id,
             'renter_id' => $this->renter_id,
-            'card_id' => $this->card_id,
+            'card' => $this->card,
             'car_id' => $this->car_id,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
@@ -72,7 +72,7 @@ class SearchVisitor extends Visitor
             ->andFilterWhere(['like', 'lname', $this->lname])
             ->andFilterWhere(['like', 'image', $this->image])
             ->andFilterWhere(['like', 'car_num', $this->car_num])
-            ->andFilterWhere(['like', 'doc_type', $this->doc_type])
+            ->andFilterWhere(['like', 'doc_id', $this->doc_id])
             ->andFilterWhere(['like', 'doc_series', $this->doc_series])
             ->andFilterWhere(['like', 'doc_num', $this->doc_num])
             ->andFilterWhere(['like', 'phone', $this->phone]);

@@ -37,9 +37,9 @@ use yii\widgets\ActiveForm;
 
                         <?= $form->field($model, 'renter_id')->dropDownList($rentsel) ?>
 
-                        <?= $form->field($model, 'card_id')->textInput() ?>
+                        <?= $form->field($model, 'card')->textInput(['id'=>'card']) ?>
 
-                        <?= $form->field($model, 'doc_type')->dropDownList($docs) ?>
+                        <?= $form->field($model, 'doc_id')->dropDownList($docs) ?>
 
                         <?= $form->field($model, 'doc_series')->textInput(['maxlength' => true]) ?>
 

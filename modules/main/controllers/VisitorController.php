@@ -5,6 +5,7 @@ namespace app\modules\main\controllers;
 use app\modules\admin\models\CarType;
 use app\modules\admin\models\DocType;
 use app\modules\main\models\Renter;
+use app\modules\main\models\Card;
 use app\modules\main\models\UploadImage;
 use yii\web\UploadedFile;
 use Yii;
@@ -107,6 +108,27 @@ class VisitorController extends Controller
             'upload' => $upload,
             'cars' => $cars,
         ]);
+    }
+
+    public function actionCheck(){
+        $model = new Visitor();
+        if(\Yii::$app->request->isAjax){
+            if ($model->load(Yii::$app->request->post())) {
+                //проверяем наличие карты
+                $card = Card::findOne(['code'=>$model->card]);
+                if(empty($card)){
+                    return 'NO_CARD';
+                }
+                //проверяем что карта не занята
+                $busy = Visitor::findOne(['card'=>$model->card]);
+                if(empty($busy)){
+                    return 'OK';
+                }
+                else{
+                    return 'BUSY';
+                }
+            }
+        }
     }
 
     /**

@@ -2,12 +2,13 @@
 
 use yii\helpers\Html;
 use yii\grid\GridView;
+use yii\helpers\Url;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\modules\main\models\SearchVisitor */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Посетители';
+$this->title = 'Сотрудники';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="visitor-index">
@@ -16,7 +17,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <p>
-        <?= Html::a('Новый посетитель', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Новый сотрудник', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?= GridView::widget([
@@ -41,11 +42,38 @@ $this->params['breadcrumbs'][] = $this->title;
             'mname',
             'lname',
             //'image',
-            'renter_id',
-            'card_id',
-            'car_id',
+            //'renter_id',
+            [
+                'attribute'=>'renter_id',
+                'label'=>'Организация',
+                'format'=>'text', // Возможные варианты: raw, html
+                'content'=>function($data){
+                    return $data->getRenterName();
+                },
+                'filter' => \app\modules\main\models\Visitor::getRenterList(),
+            ],
+            'card',
+            //'car_id',
+            [
+                'attribute'=>'car_id',
+                'label'=>'Транспортное средство',
+                'format'=>'text', // Возможные варианты: raw, html
+                'content'=>function($data){
+                    return $data->getCarName();
+                },
+                'filter' => \app\modules\main\models\Visitor::getCarList(),
+            ],
             'car_num',
-            'doc_type',
+            //'doc_id',
+            [
+                'attribute'=>'doc_id',
+                'label'=>'Документ',
+                'format'=>'text', // Возможные варианты: raw, html
+                'content'=>function($data){
+                    return $data->getDocName();
+                },
+                'filter' => \app\modules\main\models\Visitor::getDocList(),
+            ],
             'doc_series',
             'doc_num',
             'phone',

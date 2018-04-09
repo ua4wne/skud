@@ -6,13 +6,13 @@ use yii\widgets\DetailView;
 /* @var $this yii\web\View */
 /* @var $model app\modules\main\models\Visitor */
 
-$this->title = $model->id;
+$this->title = $model->fname . ' ' . $model->lname;
 $this->params['breadcrumbs'][] = ['label' => 'Посетители', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="visitor-view">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    <h1 class="text-center"><?= Html::encode($this->title) ?></h1>
 
     <p>
         <?= Html::a('Обновить', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
@@ -29,17 +29,15 @@ $this->params['breadcrumbs'][] = $this->title;
         'model' => $model,
         'attributes' => [
             'id',
-            'is_worker',
             'fname',
             'mname',
             'lname',
             'image',
             'renter_id',
-            'status',
-            'card_id',
+            'card',
             'car_id',
             'car_num',
-            'doc_type',
+            'doc_id',
             'doc_series',
             'doc_num',
             'phone',
