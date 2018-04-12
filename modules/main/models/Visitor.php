@@ -52,7 +52,7 @@ class Visitor extends BaseModel
             [['renter_id', 'car_id', 'doc_id'], 'integer'],
             [['created_at', 'updated_at'], 'safe'],
             [['fname', 'mname', 'lname'], 'string', 'max' => 50],
-            [['image'], 'string', 'max' => 30],
+            [['image'], 'string', 'max' => 50],
             [['car_num', 'doc_num'], 'string', 'max' => 10],
             [['doc_series'], 'string', 'max' => 7],
             [['phone'], 'string', 'max' => 20],

@@ -3,7 +3,10 @@
 namespace app\modules\main\controllers;
 
 use app\modules\admin\models\Device;
+use app\modules\admin\models\EventType;
 use app\modules\admin\models\SearchDevice;
+use app\modules\main\models\Card;
+use app\modules\main\models\Event;
 use app\modules\main\models\SearchEvent;
 use app\modules\main\models\Renter;
 use app\modules\admin\models\CarType;
@@ -66,8 +69,8 @@ class DefaultController extends Controller
             'devopt' => $devopt,
             'dataDeviceProvider' => $dataDeviceProvider,
             //'searchDeviceModel' => $searchDeviceModel,
-            'dataEventProvider' => $dataEventProvider,
-            'searchEventModel' => $searchEventModel,
+            //'dataEventProvider' => $dataEventProvider,
+            //'searchEventModel' => $searchEventModel,
             'model' => $model,
             'rentsel' => $rentsel,
             'docs' => $docs,
@@ -102,6 +105,151 @@ class DefaultController extends Controller
             }
             else
                 return 'ERR';
+        }
+    }
+
+    public function actionCheckEvent(){
+        if(\Yii::$app->request->isAjax){
+            $persona = '<div class="profile-user-info profile-user-info-striped">';
+            //определяем последнее событие в системе
+            $event = Event::find()->orderBy(['id' => SORT_DESC,])->limit(1)->all();
+            $event_type = $event[0]['event_type'];
+            $code = $event[0]['card'];
+            $device = Device::findOne($event[0]['device_id'])->text;
+            //определяем авторизована ли карта
+            $card = Card::findOne(['code'=>$code]);
+            $time = $event[0]['event_time'];
+            $text = EventType::findOne(['code'=>$event_type])->text;
+            if(empty($card)){
+                $image = '<img src="images/stop.png" alt="stop">';
+                $persona .= '<div class="profile-info-row">
+								<div class="profile-info-name"> ФИО </div>
+								<div class="profile-info-value">
+									<span class="editable" id="username">Нет данных</span>
+								</div>
+							</div>
+							<div class="profile-info-row">
+								<div class="profile-info-name"> Организация </div>
+								<div class="profile-info-value">
+									<span class="editable" id="username">Нет данных</span>
+								</div>
+							</div>
+							<div class="profile-info-row">
+								<div class="profile-info-name"> Точка прохода </div>
+								<div class="profile-info-value">
+									<span class="editable" id="username">'.$device.'</span>
+								</div>
+							</div>
+							<div class="profile-info-row">
+								<div class="profile-info-name"> Карта доступа </div>
+								<div class="profile-info-value">
+									<span class="editable" id="username">'.$code.'</span>
+								</div>
+							</div>
+							<div class="profile-info-row">
+								<div class="profile-info-name"> Событие </div>
+								<div class="profile-info-value">
+									<span class="editable" id="username">'.$text.'</span>
+								</div>
+							</div>
+							<div class="profile-info-row">
+								<div class="profile-info-name"> Время события </div>
+								<div class="profile-info-value">
+									<span class="editable" id="username">'.$time.'</span>
+								</div>
+							</div>';
+            }
+            else{
+                //определяем текущую привязку карты к сотруднику
+                $visitor = Visitor::findOne(['card'=>$card]);
+                if(empty($visitor)){
+                    $image = '<img src="images/noimage.jpg" alt="photo">';
+                    $persona .= '<div class="profile-info-row">
+								<div class="profile-info-name"> ФИО </div>
+								<div class="profile-info-value">
+									<span class="editable" id="username">Нет привязки</span>
+								</div>
+							</div>
+							<div class="profile-info-row">
+								<div class="profile-info-name"> Организация </div>
+								<div class="profile-info-value">
+									<span class="editable" id="username">Нет привязки</span>
+								</div>
+							</div>
+							<div class="profile-info-row">
+								<div class="profile-info-name"> Точка прохода </div>
+								<div class="profile-info-value">
+									<span class="editable" id="username">'.$device.'</span>
+								</div>
+							</div>
+							<div class="profile-info-row">
+								<div class="profile-info-name"> Карта доступа </div>
+								<div class="profile-info-value">
+									<span class="editable" id="username">'.$card->code.'</span>
+								</div>
+							</div>
+							<div class="profile-info-row">
+								<div class="profile-info-name"> Событие </div>
+								<div class="profile-info-value">
+									<span class="editable" id="username">'.$text.'</span>
+								</div>
+							</div>
+							<div class="profile-info-row">
+								<div class="profile-info-name"> Время события </div>
+								<div class="profile-info-value">
+									<span class="editable" id="username">'.$time.'</span>
+								</div>
+							</div>';
+                }
+                else{
+                    $image = '<img src="'.$visitor->image.'" alt="photo">';
+                    $persona .= '<div class="profile-info-row">
+								<div class="profile-info-name"> ФИО </div>
+								<div class="profile-info-value">
+									<span class="editable" id="username">'.$visitor->lname.' '.$visitor->fname.' '.$visitor->mname.'</span>
+								</div>
+							</div>
+							<div class="profile-info-row">
+								<div class="profile-info-name"> Организация </div>
+								<div class="profile-info-value">
+									<span class="editable" id="username">'.$visitor->renter->title.'</span>
+								</div>
+							</div>
+							<div class="profile-info-row">
+								<div class="profile-info-name"> Точка прохода </div>
+								<div class="profile-info-value">
+									<span class="editable" id="username">'.$device.'</span>
+								</div>
+							</div>
+							<div class="profile-info-row">
+								<div class="profile-info-name"> Карта доступа </div>
+								<div class="profile-info-value">
+									<span class="editable" id="username">'.$card->code.'</span>
+								</div>
+							</div>
+							<div class="profile-info-row">
+								<div class="profile-info-name"> Событие </div>
+								<div class="profile-info-value">
+									<span class="editable" id="username">'.$text.'</span>
+								</div>
+							</div>
+							<div class="profile-info-row">
+								<div class="profile-info-name"> Время события </div>
+								<div class="profile-info-value">
+									<span class="editable" id="username">'.$time.'</span>
+								</div>
+							</div>';
+                }
+
+            }
+
+            $persona .= '</div';
+
+            $content = '<div class="row">';
+            $content .= '<div class="col-xs-6 col-md-3 col-md-offset-1 thumbnail">'.$image.'</div>';
+            $content .= '<div class="col-xs-6 col-md-7">'.$persona.'</div>';
+            $content .= '</div>';
+            return $content;
         }
     }
 

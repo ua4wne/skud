@@ -49,19 +49,33 @@ class DataController extends \yii\web\Controller
      //   \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
         //$session = Yii::$app->session;
         //Получить JSON как строку
-        //$json_str = file_get_contents('php://input');
-        $json_str = '{"type":"Z5RWEB","sn":44374,"messages":[{"id":1138095455,"operation":"power_on","fw":"a.a","conn_fw":"1.0.121","active":0,"mode":12}]}';
+        $json_str = file_get_contents('php://input');
+        //$json_str = '{"type":"Z5RWEB","sn":44374,"messages":[{"id":1138095455,"operation":"power_on","fw":"a.a","conn_fw":"1.0.121","active":0,"mode":12}]}';
         //$json_str = '{"type":"Z5RWEB","sn":44374,"messages":[{"id":1856669179,"operation":"ping","active":1,"mode":0}]}';
-        //$json_str = '{"type":"Z5RWEB","sn":44374,"messages":[{"id":1856669179,"success":1}]}';
         //$json_str = '{"type":"Z5RWEB","sn":44374,"messages":[{"id":719885386,"operation":"events","events":[{"flag": 264,"event": 37,"time": "2018-03-27 17:25:34","card": "000000000000"}]}]}';
-        //$json_str = '{"type":"Z5RWEB","sn":44374,"messages":[{ "id":846930886, "success":1},{"id":1681692777,"operation":"events","events":[{"flag": 264,"event": 37,"time": "2018-03-27 17:25:32","card": "000000000000"}]}]}';
+        //$json_str = '{"type":"Z5RWEB","sn":44374,"messages":[{ "id":358931379, "success":1},{"id":663594565,"operation":"events","events":[{"flag": 264,"event": 37,"time": "2018-04-10 10:49:12","card": "000000000000"}]}]}';
             //Получить объект
         $json = json_decode($json_str);
 
+        //проверяем успешность выполнения последнего задания
+        $pos = strpos($json_str, '"success":1');
+        if($pos){
+            //удаляем активную команду контроллеру и ставим следующую, если есть
+            $active = Task::findOne(['status'=>1]);
+            if(!empty($active))
+                $active->delete();
+            $count = Task::find()->where(['status'=>0])->count();
+            if($count){
+                $next = Task::findOne(['status'=>0]);
+                $next->status = 1;
+                $next->save(false);
+            }
+        }
+
         if(!empty($json)) {
             //запись в лог
-    //        $log = 'Сообщение от контроллера ' . $json_str;
-    //        LibraryModel::AddTraceLog('request', $log);
+            $log = 'Сообщение от контроллера ' . $json_str;
+            LibraryModel::AddTraceLog('request', $log);
 
             $sn = $json->sn; //серийный номер контроллера Z5R-WEB
             $type = $json->type; //тип контроллера Z5R-WEB
@@ -78,24 +92,13 @@ class DataController extends \yii\web\Controller
 
                 //пинг
                 if ($message->operation == "ping") {
-
-                    //проверяем mode
-                    $mode = Device::findOne(['type'=>$type,'snum'=>$sn])->mode;
-                    if($message->mode != $mode) {
-                        $msg = new \stdClass();
-                        $msg->id = $message->id;
-                        $msg->operation = 'set_mode';
-                        $msg->mode = $mode;
+                    //проверяем нет ли сформированных команд контроллеру
+                    $task = Task::findOne(['status'=>1]);
+                    if(empty($task)){
+                        $msg = null;
                     }
-                    else {
-                        //проверяем нет ли сформированных команд контроллеру
-                        $task = Task::findOne(['status'=>1]);
-                        if(empty($task)){
-                            $msg = null;
-                        }
-                        else{
-                            $msg = json_decode($task->json);
-                        }
+                    else{
+                        $msg = json_decode($task->json);
                     }
                 }
 
@@ -137,23 +140,6 @@ class DataController extends \yii\web\Controller
                         $msg->granted = $model->granted;
 
                 }
-
-                //success = 1
-                if(isset($message->success)){
-                    if ($message->success == 1) {
-                        //удаляем активную команду контроллеру и ставим следующую, если есть
-                        $active = Task::findOne(['status'=>1]);
-                        if(!empty($active))
-                            $active->delete();
-                        $count = Task::find()->where(['status'=>0])->count();
-                        if($count){
-                            $next = Task::findOne(['status'=>0]);
-                            $next->status = 1;
-                            $next->save(false);
-                        }
-                        $msg = null;
-                    }
-                }
             }
 
             //преобразование и отправка сообщения контроллеру
@@ -166,18 +152,14 @@ class DataController extends \yii\web\Controller
                 $send->messages = $msg;
             $data = json_encode($send);
             //запись в лог
-        //    $log = 'Ответ от сервера ' . $data;
-        //    LibraryModel::AddTraceLog('response', $log);
-            header('Content-type: application/json');
-            header("Connection: Keep-Alive");
-
-            echo $data;
-            die;
+            $log = 'Ответ от сервера ' . $data;
+            LibraryModel::AddTraceLog('response', $log);
+            return $data;
         }
     }
 
     private function power_on($type,$sn,$msg){
-        $ip = LibraryModel::GetRealIp();
+        //$ip = LibraryModel::GetRealIp();
         //проверяем наличие контроллера в базе
         $device = Device::findOne(['type'=>$type,'snum'=>$sn]);
         if(empty($device)){ //новая запись
@@ -188,7 +170,7 @@ class DataController extends \yii\web\Controller
             $model->conn_fw = $msg->conn_fw;
             $model->is_active = $msg->active;
             $model->mode = $msg->mode;
-            $model->address = $ip;
+            $model->address = $msg->conntroller_ip;
             $model->image = '/images/noimage.jpg';
             $model->zone_id = 1;
             $model->created_at = date('Y-m-d H:i:s');
@@ -203,7 +185,7 @@ class DataController extends \yii\web\Controller
             $device->conn_fw = $msg->conn_fw;
             $device->is_active = $msg->active;
             $device->mode = $msg->mode;
-            $device->address = $ip;
+            $device->address = $msg->conntroller_ip;
             $device->save(false);
             //запись в лог
             //$log = 'Данные контроллера <strong>'. $device->type .' (sn '. $device->snum .')</strong> были обновлены '.date('d-m-Y H:i:s');

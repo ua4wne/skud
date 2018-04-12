@@ -163,7 +163,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         case 3:
                             $val = 'Ожидание свободного прохода';
                             break;
-                        case 12:
+                        default:
                             $val = 'Не установлен';
                             break;
                     }

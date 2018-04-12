@@ -65,7 +65,7 @@ class DeviceController extends Controller
             if ($model->load(\Yii::$app->request->post())) {
                 $device = Device::findOne($model->device);
                 if (isset($device)) {
-                    /*$msg = new \stdClass();
+                    $msg = new \stdClass();
                     $msg->id = rand();
                     $msg->operation = 'set_mode';
                     $msg->mode = $model->mode;
@@ -80,7 +80,7 @@ class DeviceController extends Controller
                     else
                         $task->status = 1;
                     $task->created_at = date('Y-m-d H:m:s');
-                    $task->save();*/
+                    $task->save();
                     $device->mode = $model->mode;
                     $device->save(false);
                     return 'OK';

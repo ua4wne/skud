@@ -144,7 +144,7 @@ class VisitorController extends Controller
         $old_image = substr($model->image,1); //старый файл изображения
         $upload = new UploadImage();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post())) {
             $upload->image = UploadedFile::getInstance($upload, 'new_image');
             if(!empty($upload->image)){
                 $fname = $upload->upload();
@@ -157,8 +157,8 @@ class VisitorController extends Controller
                         unlink($old_image);
                 }
             }
-            $model->save();
-                return $this->redirect(['view', 'id' => $model->id]);
+            $model->save(false);
+            return $this->redirect(['view', 'id' => $model->id]);
         }
 
         $renters = Renter::find()->select(['id', 'title'])->where('status=1')->asArray()->all();

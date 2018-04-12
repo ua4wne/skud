@@ -96,7 +96,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="tabbable">
             <ul class="nav nav-tabs padding-12 tab-color-blue background-blue" id="myTab4">
                 <li class="active">
-                    <a data-toggle="tab" href="#home">Текущие события</a>
+                    <a data-toggle="tab" href="#home">Контроль</a>
                 </li>
 
                 <li>
@@ -111,42 +111,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
             <div class="tab-content">
                 <div id="home" class="tab-pane in active">
-                    <?= GridView::widget([
-                        'dataProvider' => $dataEventProvider,
-                        'filterModel' => $searchEventModel,
-                        'columns' => [
-                            ['class' => 'yii\grid\SerialColumn'],
 
-                            //'id',
-                            //'device_id',
-                            [
-                                'attribute'=>'device_id',
-                                'label'=>'Контроллер',
-                                'format'=>'text', // Возможные варианты: raw, html
-                                //    'content'=>function($data){
-                                //        return $data->getZoneName();
-                                //    },
-                                'filter' => \app\modules\main\models\Event::getDeviceList()
-                            ],
-                            //'event_type',
-                            [
-                                'attribute'=>'event_type',
-                                'label'=>'Событие',
-                                'format'=>'text', // Возможные варианты: raw, html
-                                //    'content'=>function($data){
-                                //        return $data->getZoneName();
-                                //    },
-                                'filter' => \app\modules\main\models\Event::getEventList()
-                            ],
-                            'card',
-                            'flag',
-                            'event_time',
-                            //'created_at',
-                            //'updated_at',
-
-                            //['class' => 'yii\grid\ActionColumn'],
-                        ],
-                    ]); ?>
                 </div>
 
                 <div id="registry" class="tab-pane">
@@ -164,10 +129,10 @@ $this->params['breadcrumbs'][] = $this->title;
 
                                 <?= $form->field($model, 'renter_id')->dropDownList($rentsel) ?>
 
-                                <?= $form->field($model, 'card_id')->textInput() ?>
+                                <?= $form->field($model, 'card')->textInput() ?>
                             </div>
                             <div class="col-sm-6">
-                                <?= $form->field($model, 'doc_type')->dropDownList($docs) ?>
+                                <?= $form->field($model, 'doc_id')->dropDownList($docs) ?>
 
                                 <?= $form->field($model, 'doc_series')->textInput(['maxlength' => true]) ?>
 
@@ -262,7 +227,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                         case 3:
                                             $val = 'Ожидание свободного прохода';
                                             break;
-                                        case 12:
+                                        default:
                                             $val = 'Не установлен';
                                             break;
                                     }
@@ -320,7 +285,26 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <?php
 $js = <<<JS
-        
+
+    function show()  
+    {  
+        $.ajax({
+            url: '/main/default/check-event',
+            type: 'POST',
+            data: {'data':'check'},
+            cache: false,
+            success: function(res){
+                //alert("Сервер вернул вот что: " + res);
+                $('#home').html(res);
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(xhr.status+' '+thrownError);
+            }
+        });  
+    }
+
+    window.setInterval(function () { show(); }, 1000);
+
     $('#btn_block').click(function(e){
         e.preventDefault();
         var device=$('#form-field-select-4 :selected').val();
@@ -423,6 +407,7 @@ $js = <<<JS
 						 else $('#form-field-select-4').removeClass('tag-input-style');
 					});
 				}
+		
 JS;
 
 $this->registerJs($js);
