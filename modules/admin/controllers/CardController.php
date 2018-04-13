@@ -69,6 +69,8 @@ class CardController extends Controller
     public function actionCreate()
     {
         $model = new Card();
+        $model->flags = 0;
+        $model->zone = 255;
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             $device = Device::findOne($model->device);
             //формируем команду для записи карты в контроллер
@@ -79,7 +81,7 @@ class CardController extends Controller
             while(strlen($card)<12){
                 $card = '0'.$card;
             }
-            if(empty($model->flags))
+            if(empty($model->flags) || is_null($model->flags))
                 $flags = 0;
             else
                 $flags = $model->flags;

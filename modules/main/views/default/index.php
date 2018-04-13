@@ -15,21 +15,20 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="row">
     <div class="col-lg-3 col-xs-6">
         <!-- small box -->
-        <div class="small-box bg-aqua">
+        <div class="small-box bg-blue">
             <div class="inner">
                 <h3>
-                    150
+                    Гостевые карты
                 </h3>
                 <p>
-                    New Orders
+                    <span class="line-height-1 bigger-120"> Свободно - <?= $free ?>  </span>
+                    <span class="line-height-1 bigger-120 pull-right"> Выдано - <?= $busy ?> </span>
                 </p>
+
             </div>
             <div class="icon">
                 <i class="ion ion-bag"></i>
             </div>
-            <a href="#" class="small-box-footer">
-                More info <i class="fa fa-arrow-circle-right"></i>
-            </a>
         </div>
     </div><!-- ./col -->
     <div class="col-lg-3 col-xs-6">
@@ -37,18 +36,16 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="small-box bg-green">
             <div class="inner">
                 <h3>
-                    53<sup style="font-size: 20px">%</sup>
+                    На территории
                 </h3>
                 <p>
-                    Bounce Rate
+                    <span class="line-height-1 bigger-120"> Сотрудников - <?= $empl_cnt ?>  </span>
+                    <span class="line-height-1 bigger-120 pull-right"> Посетителей - <?= $visit_cnt ?> </span>
                 </p>
             </div>
             <div class="icon">
                 <i class="ion ion-stats-bars"></i>
             </div>
-            <a href="#" class="small-box-footer">
-                More info <i class="fa fa-arrow-circle-right"></i>
-            </a>
         </div>
     </div><!-- ./col -->
     <div class="col-lg-3 col-xs-6">
@@ -56,37 +53,33 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="small-box bg-yellow">
             <div class="inner">
                 <h3>
-                    44
+                    Автотранспорт
                 </h3>
                 <p>
-                    User Registrations
-                </p>
-            </div>
-            <div class="icon">
-                <i class="ion ion-person-add"></i>
-            </div>
-            <a href="#" class="small-box-footer">
-                More info <i class="fa fa-arrow-circle-right"></i>
-            </a>
-        </div>
-    </div><!-- ./col -->
-    <div class="col-lg-3 col-xs-6">
-        <!-- small box -->
-        <div class="small-box bg-red">
-            <div class="inner">
-                <h3>
-                    65
-                </h3>
-                <p>
-                    Unique Visitors
+                    <span class="line-height-1 bigger-120"> Сотрудников - 0  </span>
+                    <span class="line-height-1 bigger-120 pull-right"> Посетителей - 0 </span>
                 </p>
             </div>
             <div class="icon">
                 <i class="ion ion-pie-graph"></i>
             </div>
-            <a href="#" class="small-box-footer">
-                More info <i class="fa fa-arrow-circle-right"></i>
-            </a>
+        </div>
+    </div><!-- ./col -->
+    <div class="col-lg-3 col-xs-6">
+        <!-- small box -->
+        <div class="small-box bg-blue">
+            <div class="inner">
+                <h3>
+                    Зарегистрировано
+                </h3>
+                <p>
+                    <span class="line-height-1 bigger-120"> Организаций - <?= $rent_cnt ?>  </span>
+                    <span class="line-height-1 bigger-120 pull-right"> Сотрудников - <?= $empl ?> </span>
+                </p>
+            </div>
+            <div class="icon">
+                <i class="ion ion-person-add"></i>
+            </div>
         </div>
     </div><!-- ./col -->
 </div><!-- /.row -->

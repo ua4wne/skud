@@ -68,7 +68,23 @@ class DeviceController extends Controller
                     $msg = new \stdClass();
                     $msg->id = rand();
                     $msg->operation = 'set_mode';
-                    $msg->mode = $model->mode;
+                    switch ($model->mode) {
+                        case "0":
+                            $msg->mode = 0;
+                            break;
+                        case "1":
+                            $msg->mode = 1;
+                            break;
+                        case "2":
+                            $msg->mode = 2;
+                            break;
+                        case "3":
+                            $msg->mode = 3;
+                            break;
+                        default:
+                            $msg->mode = 0;
+                            break;
+                    }
                     $data = json_encode($msg);
                     $task = new Task();
                     $task->type = $device->type;

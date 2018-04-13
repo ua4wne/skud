@@ -49,8 +49,8 @@ class DataController extends \yii\web\Controller
      //   \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
         //$session = Yii::$app->session;
         //Получить JSON как строку
-        $json_str = file_get_contents('php://input');
-        //$json_str = '{"type":"Z5RWEB","sn":44374,"messages":[{"id":1138095455,"operation":"power_on","fw":"a.a","conn_fw":"1.0.121","active":0,"mode":12}]}';
+        //$json_str = file_get_contents('php://input');
+        $json_str = '{"type":"Z5RWEB","sn":44374,"messages":[{"id":1804289383,"operation":"power_on","fw":"3.23","conn_fw":"1.0.123","active":0,"mode":0,"controller_ip":"192.168.8.9"}]}';
         //$json_str = '{"type":"Z5RWEB","sn":44374,"messages":[{"id":1856669179,"operation":"ping","active":1,"mode":0}]}';
         //$json_str = '{"type":"Z5RWEB","sn":44374,"messages":[{"id":719885386,"operation":"events","events":[{"flag": 264,"event": 37,"time": "2018-03-27 17:25:34","card": "000000000000"}]}]}';
         //$json_str = '{"type":"Z5RWEB","sn":44374,"messages":[{ "id":358931379, "success":1},{"id":663594565,"operation":"events","events":[{"flag": 264,"event": 37,"time": "2018-04-10 10:49:12","card": "000000000000"}]}]}';
@@ -95,7 +95,7 @@ class DataController extends \yii\web\Controller
                     //проверяем нет ли сформированных команд контроллеру
                     $task = Task::findOne(['status'=>1]);
                     if(empty($task)){
-                        $msg = null;
+                        //$msg=null;
                     }
                     else{
                         $msg = json_decode($task->json);
@@ -149,7 +149,7 @@ class DataController extends \yii\web\Controller
             if(isset($msg))
                 $send->messages[0] = $msg;
             else
-                $send->messages = $msg;
+                $send->messages = array();
             $data = json_encode($send);
             //запись в лог
             $log = 'Ответ от сервера ' . $data;
@@ -170,7 +170,7 @@ class DataController extends \yii\web\Controller
             $model->conn_fw = $msg->conn_fw;
             $model->is_active = $msg->active;
             $model->mode = $msg->mode;
-            $model->address = $msg->conntroller_ip;
+            $model->address = $msg->controller_ip;
             $model->image = '/images/noimage.jpg';
             $model->zone_id = 1;
             $model->created_at = date('Y-m-d H:i:s');

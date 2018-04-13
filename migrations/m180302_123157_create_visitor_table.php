@@ -22,7 +22,7 @@ class m180302_123157_create_visitor_table extends Migration
             'mname' => $this->string(50)->defaultValue(null),
             'lname' => $this->string(50)->notNull(),
             'image' => $this->string(50)->defaultValue(null),
-            'card' => $this->string(20)->notNull()->unique(),
+            'card' => $this->string(20),
             'renter_id' => $this->integer()->notNull(),
             'car_id' => $this->integer(),
             'car_num' => $this->string(10),

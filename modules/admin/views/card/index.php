@@ -79,8 +79,8 @@ $this->params['breadcrumbs'][] = $this->title;
                  * Задаем выпадающий список с заданными значениями вместо поля для ввода
                  */
                 'filter' => [
-                    0 => 'Действующая',
-                    1 => 'Заблокирована',
+                    0 => 'Заблокирована',
+                    1 => 'Действующая',
                 ],
                 /**
                  * Переопределяем отображение самих данных.
@@ -91,9 +91,9 @@ $this->params['breadcrumbs'][] = $this->title;
                     $active = $model->{$column->attribute} === 1;
                     return \yii\helpers\Html::tag(
                         'span',
-                        $active ? 'Заблокирована' : 'Действующая',
+                        $active ? 'Действующая' : 'Заблокирована',
                         [
-                            'class' => 'label label-' . ($active ? 'danger' : 'success'),
+                            'class' => 'label label-' . ($active ? 'success' : 'danger'),
                         ]
                     );
                 },

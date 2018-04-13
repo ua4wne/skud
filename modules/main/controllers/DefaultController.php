@@ -40,9 +40,6 @@ class DefaultController extends Controller
         $searchDeviceModel = new SearchDevice();
         $dataDeviceProvider = $searchDeviceModel->search(Yii::$app->request->queryParams);
 
-        $searchEventModel = new SearchEvent();
-        $dataEventProvider = $searchEventModel->search(Yii::$app->request->queryParams);
-
         $devices = Device::find()->select(['id','type','text'])->all();
         $devopt = '';
         foreach ($devices as $device){
@@ -65,16 +62,72 @@ class DefaultController extends Controller
             $cars[$val['id']] = $val['text']; //массив для заполнения данных в select формы
         }
 
+        //определяем кол-во свободных гостевых карт
+        $query = "select count(*) as cnt from card where share=1 and code not in (select card from visitor where card is not null)";
+        // подключение к базе данных
+        $connection = \Yii::$app->db;
+        // Составляем SQL запрос
+        $conn = $connection->createCommand($query);
+        //Осуществляем запрос к базе данных, переменная $model содержит ассоциативный массив с данными
+        $row = $conn->queryAll();
+        $free = $row[0]['cnt'];
+        //определяем кол-во розданых гостевых карт
+        $query = "select count(*) as cnt from card where share=1 and code in (select card from visitor where card is not null)";
+        // Составляем SQL запрос
+        $conn = $connection->createCommand($query);
+        //Осуществляем запрос к базе данных, переменная $model содержит ассоциативный массив с данными
+        $row = $conn->queryAll();
+        $busy = $row[0]['cnt'];
+
+        //кол-во действующих организаций
+        $rent_cnt = Renter::find()->where(['status'=>1])->count();
+        //кол-во действующих сотрудников
+        $query = "select count(*) as cnt from visitor where card in (select code from card where granted = 1 and share = 0)";
+        // Составляем SQL запрос
+        $conn = $connection->createCommand($query);
+        //Осуществляем запрос к базе данных, переменная $model содержит ассоциативный массив с данными
+        $row = $conn->queryAll();
+        $empl = $row[0]['cnt'];
+
+        //кол-во посетителей на территории
+        $query = "select count(*) as cnt from visitor where card in (select code from card where granted = 1 and share = 1)";
+        // Составляем SQL запрос
+        $conn = $connection->createCommand($query);
+        //Осуществляем запрос к базе данных, переменная $model содержит ассоциативный массив с данными
+        $row = $conn->queryAll();
+        $visit_cnt = $row[0]['cnt'];
+
+        $data = date('Y-m-d');
+        //кол-во зашедших сотрудников за день
+        $query = "select count(*) as cnt from event where event_time like '$data%' and event_type=16 and card in (select code from card where share=0)";
+        // Составляем SQL запрос
+        $conn = $connection->createCommand($query);
+        //Осуществляем запрос к базе данных, переменная $model содержит ассоциативный массив с данными
+        $row = $conn->queryAll();
+        $in = $row[0]['cnt'];
+        //кол-во вышедших сотрудников за день
+        $query = "select count(*) as cnt from event where event_time like '$data%' and event_type=17 and card in (select code from card where share=0)";
+        // Составляем SQL запрос
+        $conn = $connection->createCommand($query);
+        //Осуществляем запрос к базе данных, переменная $model содержит ассоциативный массив с данными
+        $row = $conn->queryAll();
+        $out = $row[0]['cnt'];
+        $empl_cnt = $in - $out;
+
         return $this->render('index',[
             'devopt' => $devopt,
             'dataDeviceProvider' => $dataDeviceProvider,
             //'searchDeviceModel' => $searchDeviceModel,
-            //'dataEventProvider' => $dataEventProvider,
-            //'searchEventModel' => $searchEventModel,
             'model' => $model,
             'rentsel' => $rentsel,
             'docs' => $docs,
             'cars' => $cars,
+            'free' => $free,
+            'busy' => $busy,
+            'rent_cnt' => $rent_cnt,
+            'empl' => $empl,
+            'empl_cnt' => $empl_cnt,
+            'visit_cnt' => $visit_cnt,
         ]);
         /*else{
             throw new HttpException(404 ,'Доступ запрещен');
