@@ -49,10 +49,10 @@ class DataController extends \yii\web\Controller
      //   \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
         //$session = Yii::$app->session;
         //Получить JSON как строку
-        //$json_str = file_get_contents('php://input');
-        $json_str = '{"type":"Z5RWEB","sn":44374,"messages":[{"id":1804289383,"operation":"power_on","fw":"3.23","conn_fw":"1.0.123","active":0,"mode":0,"controller_ip":"192.168.8.9"}]}';
+        $json_str = file_get_contents('php://input');
+        //$json_str = '{"type":"Z5RWEB","sn":44374,"messages":[{"id":1804289383,"operation":"power_on","fw":"3.23","conn_fw":"1.0.123","active":0,"mode":0,"controller_ip":"192.168.8.9"}]}';
         //$json_str = '{"type":"Z5RWEB","sn":44374,"messages":[{"id":1856669179,"operation":"ping","active":1,"mode":0}]}';
-        //$json_str = '{"type":"Z5RWEB","sn":44374,"messages":[{"id":719885386,"operation":"events","events":[{"flag": 264,"event": 37,"time": "2018-03-27 17:25:34","card": "000000000000"}]}]}';
+        //$json_str = '{"type":"Z5RWEB","sn":44374,"messages":[{"id":719885386,"operation":"events","events":[{"flag": 0,"event": 17,"time": "2018-04-15 20:25:34","card": "0000002982C6"}]}]}';
         //$json_str = '{"type":"Z5RWEB","sn":44374,"messages":[{ "id":358931379, "success":1},{"id":663594565,"operation":"events","events":[{"flag": 264,"event": 37,"time": "2018-04-10 10:49:12","card": "000000000000"}]}]}';
             //Получить объект
         $json = json_decode($json_str);
@@ -74,8 +74,8 @@ class DataController extends \yii\web\Controller
 
         if(!empty($json)) {
             //запись в лог
-            $log = 'Сообщение от контроллера ' . $json_str;
-            LibraryModel::AddTraceLog('request', $log);
+//            $log = 'Сообщение от контроллера ' . $json_str;
+//            LibraryModel::AddTraceLog('request', $log);
 
             $sn = $json->sn; //серийный номер контроллера Z5R-WEB
             $type = $json->type; //тип контроллера Z5R-WEB
@@ -152,8 +152,8 @@ class DataController extends \yii\web\Controller
                 $send->messages = array();
             $data = json_encode($send);
             //запись в лог
-            $log = 'Ответ от сервера ' . $data;
-            LibraryModel::AddTraceLog('response', $log);
+//            $log = 'Ответ от сервера ' . $data;
+//            LibraryModel::AddTraceLog('response', $log);
             return $data;
         }
     }

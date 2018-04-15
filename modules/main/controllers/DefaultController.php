@@ -36,6 +36,7 @@ class DefaultController extends Controller
 
     public function actionIndex()
     {
+        $car = new CarType();
         $model = new Visitor();
         $searchDeviceModel = new SearchDevice();
         $dataDeviceProvider = $searchDeviceModel->search(Yii::$app->request->queryParams);
@@ -128,6 +129,7 @@ class DefaultController extends Controller
             'empl' => $empl,
             'empl_cnt' => $empl_cnt,
             'visit_cnt' => $visit_cnt,
+            'car' => $car,
         ]);
         /*else{
             throw new HttpException(404 ,'Доступ запрещен');

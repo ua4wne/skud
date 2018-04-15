@@ -2,7 +2,9 @@
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\helpers\Url;
+use yii\bootstrap\Modal;
 use yii\widgets\ActiveForm;
+
 $this->title = 'Панель управления';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
@@ -108,8 +110,32 @@ $this->params['breadcrumbs'][] = $this->title;
                 </div>
 
                 <div id="registry" class="tab-pane">
-                    <div class="visitor-form">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <?php
+                            Modal::begin([
+                                'header' => '<h3>Новое транспортное средство</h3>',
+                                'toggleButton' => ['label' => '<i class="ace-icon fa fa-truck bigger-160" aria-hidden="true"></i>  Новое ТС','class'=>'btn btn-primary btn-xs pull-right'],
+                                //'footer' => 'Низ окна',
+                            ]);
 
+                            $carform = ActiveForm::begin([
+                                'id' => 'add-new-tc',
+                                //'enableAjaxValidation' => true,
+                                'action' => ['index']
+                            ]); ?>
+                            <?= $carform->field($car, 'text')->textInput(['maxlength' => true]) ?>
+
+                            <div class="form-group">
+                                <?= Html::submitButton('Сохранить', ['class' => 'btn btn-success','id'=>'add-car']) ?>
+                            </div>
+
+                            <?php ActiveForm::end();
+
+                            Modal::end(); ?>
+                        </div>
+                    </div>
+                    <div class="visitor-form">
                         <?php $form = ActiveForm::begin(); ?>
 
                         <div class="row">
@@ -131,16 +157,13 @@ $this->params['breadcrumbs'][] = $this->title;
 
                                 <?= $form->field($model, 'doc_num')->textInput(['maxlength' => true]) ?>
 
-                                <?= $form->field($model, 'car_id')->dropDownList($cars) ?>
+                                <?= $form->field($model, 'car_id')->dropDownList($cars,['class'=>'select2']) ?>
 
                                 <?= $form->field($model, 'car_num')->textInput(['maxlength' => true]) ?>
 
-                                <?= $form->field($model, 'phone')->widget(\yii\widgets\MaskedInput::className(), [
-                                    'mask' => '(999) 999-99-99',
-                                ]) ?>
-                            </div>
-                            <div class="form-group">
-                                <?= Html::submitButton('Сохранить', ['class' => 'btn btn-success']) ?>
+                                <div class="form-group">
+                                    <?= Html::submitButton('Сохранить', ['class' => 'btn btn-success']) ?>
+                                </div>
                             </div>
                         </div>
 
@@ -372,6 +395,15 @@ $js = <<<JS
              alert('Не выбран контроллер из списка!');
          return false;
     });
+    
+    //select2
+	$('.select2').css('width','675').select2({allowClear:false})
+	/*$('#select2-multiple-style .btn').on('click', function(e){
+		var target = $(this).find('input[type=radio]');
+		var which = parseInt(target.val());
+		if(which == 2) $('.select2').addClass('tag-input-style');
+		else $('.select2').removeClass('tag-input-style');
+	});*/
     
     if(!ace.vars['touch']) {
 					$('.chosen-select').chosen({allow_single_deselect:true}); 

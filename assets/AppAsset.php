@@ -20,7 +20,7 @@ class AppAsset extends AssetBundle
     public $css = [
         'css/bootstrap.min.css',
         'css/font-awesome.min.css',
-        //'css/jquery-ui.custom.min.css',
+        'css/select2.min.css',
         'css/chosen.min.css',
         //'css/fullcalendar.min.css',
         'css/fonts.googleapis.com.css',
@@ -46,7 +46,7 @@ class AppAsset extends AssetBundle
         'js/jquery.dataTables.min.js',
         'js/dataTables.bootstrap.min.js',
         'js/dataTables.responsive.js',
-        //'js/raphael-min.js',
+        'js/select2.min.js',
         'js/raphael-2.1.4.min.js',
         'js/morris.js',
         //'js/caldraw.js',
