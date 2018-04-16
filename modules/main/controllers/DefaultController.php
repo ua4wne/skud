@@ -136,6 +136,81 @@ class DefaultController extends Controller
         }*/
     }
 
+    public function actionAddTruck(){
+        $model = new CarType();
+        if (\Yii::$app->request->isAjax) {
+            if ($model->load(\Yii::$app->request->post()) && $model->save()) {
+                $id = $model->id;
+                $html = '<label class="control-label" for="car_type">Транспортное средство</label>
+                         <select id="car_type" class="select2" name="Visitor[car_id]">';
+                $cars = CarType::find()->select(['id','text'])->all();
+                foreach ($cars as $car){
+                    if($car->id==$id){
+                        $html .= '<option selected value="'.$car->id.'">'.$car->text.'</option>';
+                    }
+                    else{
+                        $html .= '<option value="'.$car->id.'">'.$car->text.'</option>';
+                    }
+                }
+                $html .= '</select>';
+                return $html;
+            }
+        }
+        return 'ERR';
+    }
+
+    public function actionAddVisitor(){
+        $model = new Visitor();
+        if (\Yii::$app->request->isAjax) {
+            if ($model->load(\Yii::$app->request->post())) {
+                //проверка что карта есть и она гостевая и проход по ней разрешен
+                $card = Card::findOne(['code'=>$model->card]);
+                if(empty($card)){
+                    return 'Карта с номером '. $model->card . ' не обнаружена в системе! Для авторизации карты обратитесь к начальнику охраны.';
+                }
+                else{
+                    if($card->share && $card->granted){
+                        //проверяем что карта не привязана к другому человеку
+                        $busy = Visitor::find()->where(['card'=>$model->card])->count();
+                        if($busy){
+                            return 'Карта с номером '. $model->card . ' уже была выдана ранее! Выдача одной карты нескольким посетителям запрещена. Выберите другую карту, а эту сдайте администратору';
+                        }
+                        else{
+                            //Все нормально, можно выдавать. Проверяем не был ли ранее зарегистрирован данный чел
+                            $visitor = Visitor::findOne(['doc_id'=>$model->doc_id,'doc_series'=>$model->doc_series,'doc_num'=>$model->doc_num]);
+                            if(empty($visitor)){ //новый
+                                if(empty($model->car_num)){
+                                    $model->image = '/images/man.png';
+                                }
+                                else{
+                                    $model->image = '/images/truck.png';
+                                }
+                                $model->save();
+                            }
+                            else{//был уже
+                                $visitor->mname = $model->mname;
+                                $visitor->card = $model->card;
+                                $visitor->car_id = $model->car_id;
+                                $visitor->car_num = $model->car_num;
+                                $visitor->renter_id = $model->renter_id;
+                                $visitor->save();
+                            }
+                            return 'OK';
+                        }
+                    }
+                    elseif(!$card->share){
+                        return 'Карта не является гостевой! Выберите другую карту, а эту сдайте начальнику охраны.';
+                    }
+                    elseif(!$card->granted){
+                        return 'Проход по карте с номером '. $model->card . ' запрещен! Для авторизации карты обратитесь к начальнику охраны.';
+                    }
+                }
+
+            }
+        }
+        return 'ERR';
+    }
+
     public function actionSetMode(){
         if(\Yii::$app->request->isAjax){
             $id = $_POST['device'];
@@ -180,37 +255,37 @@ class DefaultController extends Controller
                 $persona .= '<div class="profile-info-row">
 								<div class="profile-info-name"> ФИО </div>
 								<div class="profile-info-value">
-									<span class="editable" id="username">Нет данных</span>
+									<span class="editable">Нет данных</span>
 								</div>
 							</div>
 							<div class="profile-info-row">
 								<div class="profile-info-name"> Организация </div>
 								<div class="profile-info-value">
-									<span class="editable" id="username">Нет данных</span>
+									<span class="editable">Нет данных</span>
 								</div>
 							</div>
 							<div class="profile-info-row">
 								<div class="profile-info-name"> Точка прохода </div>
 								<div class="profile-info-value">
-									<span class="editable" id="username">'.$device.'</span>
+									<span class="editable">'.$device.'</span>
 								</div>
 							</div>
 							<div class="profile-info-row">
 								<div class="profile-info-name"> Карта доступа </div>
 								<div class="profile-info-value">
-									<span class="editable" id="username">'.$code.'</span>
+									<span class="editable">'.$code.'</span>
 								</div>
 							</div>
 							<div class="profile-info-row">
 								<div class="profile-info-name"> Событие </div>
 								<div class="profile-info-value">
-									<span class="editable" id="username">'.$text.'</span>
+									<span class="editable">'.$text.'</span>
 								</div>
 							</div>
 							<div class="profile-info-row">
 								<div class="profile-info-name"> Время события </div>
 								<div class="profile-info-value">
-									<span class="editable" id="username">'.$time.'</span>
+									<span class="editable">'.$time.'</span>
 								</div>
 							</div>';
             }
@@ -222,37 +297,37 @@ class DefaultController extends Controller
                     $persona .= '<div class="profile-info-row">
 								<div class="profile-info-name"> ФИО </div>
 								<div class="profile-info-value">
-									<span class="editable" id="username">Нет привязки</span>
+									<span class="editable">Нет привязки</span>
 								</div>
 							</div>
 							<div class="profile-info-row">
 								<div class="profile-info-name"> Организация </div>
 								<div class="profile-info-value">
-									<span class="editable" id="username">Нет привязки</span>
+									<span class="editable">Нет привязки</span>
 								</div>
 							</div>
 							<div class="profile-info-row">
 								<div class="profile-info-name"> Точка прохода </div>
 								<div class="profile-info-value">
-									<span class="editable" id="username">'.$device.'</span>
+									<span class="editable">'.$device.'</span>
 								</div>
 							</div>
 							<div class="profile-info-row">
 								<div class="profile-info-name"> Карта доступа </div>
 								<div class="profile-info-value">
-									<span class="editable" id="username">'.$card->code.'</span>
+									<span class="editable">'.$card->code.'</span>
 								</div>
 							</div>
 							<div class="profile-info-row">
 								<div class="profile-info-name"> Событие </div>
 								<div class="profile-info-value">
-									<span class="editable" id="username">'.$text.'</span>
+									<span class="editable">'.$text.'</span>
 								</div>
 							</div>
 							<div class="profile-info-row">
 								<div class="profile-info-name"> Время события </div>
 								<div class="profile-info-value">
-									<span class="editable" id="username">'.$time.'</span>
+									<span class="editable">'.$time.'</span>
 								</div>
 							</div>';
                 }
@@ -261,39 +336,53 @@ class DefaultController extends Controller
                     $persona .= '<div class="profile-info-row">
 								<div class="profile-info-name"> ФИО </div>
 								<div class="profile-info-value">
-									<span class="editable" id="username">'.$visitor->lname.' '.$visitor->fname.' '.$visitor->mname.'</span>
+									<span class="editable">'.$visitor->lname.' '.$visitor->fname.' '.$visitor->mname.'</span>
 								</div>
 							</div>
 							<div class="profile-info-row">
 								<div class="profile-info-name"> Организация </div>
 								<div class="profile-info-value">
-									<span class="editable" id="username">'.$visitor->renter->title.'</span>
+									<span class="editable">'.$visitor->renter->title.'</span>
 								</div>
 							</div>
 							<div class="profile-info-row">
 								<div class="profile-info-name"> Точка прохода </div>
 								<div class="profile-info-value">
-									<span class="editable" id="username">'.$device.'</span>
+									<span class="editable">'.$device.'</span>
 								</div>
 							</div>
 							<div class="profile-info-row">
 								<div class="profile-info-name"> Карта доступа </div>
 								<div class="profile-info-value">
-									<span class="editable" id="username">'.$card->code.'</span>
+									<span class="editable">'.$card->code.'</span>
 								</div>
 							</div>
 							<div class="profile-info-row">
 								<div class="profile-info-name"> Событие </div>
 								<div class="profile-info-value">
-									<span class="editable" id="username">'.$text.'</span>
+									<span class="editable">'.$text.'</span>
 								</div>
 							</div>
 							<div class="profile-info-row">
 								<div class="profile-info-name"> Время события </div>
 								<div class="profile-info-value">
-									<span class="editable" id="username">'.$time.'</span>
+									<span class="editable">'.$time.'</span>
 								</div>
 							</div>';
+                    if(!empty($visitor->car_id)){
+                        $persona .= '<div class="profile-info-row">
+								<div class="profile-info-name"> Марка ТС </div>
+								<div class="profile-info-value">
+									<span class="editable">'.$visitor->car->text.'</span>
+								</div>
+							</div>
+							<div class="profile-info-row">
+								<div class="profile-info-name"> Рег № </div>
+								<div class="profile-info-value">
+									<span class="editable">'.$visitor->car_num.'</span>
+								</div>
+							</div>';
+                    }
                 }
 
             }

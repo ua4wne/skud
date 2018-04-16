@@ -117,6 +117,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'header' => '<h3>Новое транспортное средство</h3>',
                                 'toggleButton' => ['label' => '<i class="ace-icon fa fa-truck bigger-160" aria-hidden="true"></i>  Новое ТС','class'=>'btn btn-primary btn-xs pull-right'],
                                 //'footer' => 'Низ окна',
+                                'id'=>'car-modal',
                             ]);
 
                             $carform = ActiveForm::begin([
@@ -124,7 +125,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 //'enableAjaxValidation' => true,
                                 'action' => ['index']
                             ]); ?>
-                            <?= $carform->field($car, 'text')->textInput(['maxlength' => true]) ?>
+                            <?= $carform->field($car, 'text')->textInput(['maxlength' => true],['id'=>'car_type']) ?>
 
                             <div class="form-group">
                                 <?= Html::submitButton('Сохранить', ['class' => 'btn btn-success','id'=>'add-car']) ?>
@@ -136,7 +137,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         </div>
                     </div>
                     <div class="visitor-form">
-                        <?php $form = ActiveForm::begin(); ?>
+                        <?php $form = ActiveForm::begin(['id'=>'add_visitor']); ?>
 
                         <div class="row">
                             <div class="col-sm-6">
@@ -157,7 +158,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
                                 <?= $form->field($model, 'doc_num')->textInput(['maxlength' => true]) ?>
 
-                                <?= $form->field($model, 'car_id')->dropDownList($cars,['class'=>'select2']) ?>
+                                <?= $form->field($model, 'car_id')->dropDownList($cars,['class'=>'select2','id'=>'car_type']) ?>
 
                                 <?= $form->field($model, 'car_num')->textInput(['maxlength' => true]) ?>
 
@@ -319,7 +320,7 @@ $js = <<<JS
         });  
     }
 
-    window.setInterval(function () { show(); }, 1000);
+    window.setInterval(function () { show(); }, 2000);
 
     $('#btn_block').click(function(e){
         e.preventDefault();
@@ -346,6 +347,7 @@ $js = <<<JS
              alert('Не выбран контроллер из списка!');
          return false;
     });
+    
     $('#btn_free').click(function(e){
         e.preventDefault();
         var device=$('#form-field-select-4 :selected').val();
@@ -396,8 +398,81 @@ $js = <<<JS
          return false;
     });
     
+    $('#add-new-tc').on('beforeSubmit', function(){
+         var data = $(this).serialize();
+         $.ajax({
+             url: '/main/default/add-truck',
+             type: 'POST',
+             data: data,
+             cache: false,
+             success: function(res){
+                //alert("Сервер вернул вот что: " + res);
+                if(res=='ERR'){
+                    alert('Попытка ввода дублирующего значения. Такое ТС уже есть в справочнике.');
+                    $('#add-new-tc')[0].reset();
+                }
+                else{
+                    $('.field-car_type').html(res);
+                    $('.select2').css('width','100%').select2({allowClear:false});
+                    $("#car-modal").modal('hide');
+                }              
+             },
+             error: function (xhr, ajaxOptions, thrownError) {
+       	        alert(xhr.status+' '+thrownError);
+             }
+         });
+         return false;
+    });
+    
+    $('#add_visitor').submit(function () {
+        var err = false;
+        
+        if($('#visitor-card').val()==''){
+            alert('Не указана карта доступа!');
+            $('#visitor-card').focus();
+            err = true;
+        }
+        if($('#visitor-doc_series').val()==''){
+            alert('Не указана серия документа!');
+            $('#visitor-doc_series').focus();
+            err = true;
+        }
+        if($('#visitor-doc_num').val()==''){
+            alert('Не указан номер документа!');
+            $('#visitor-doc_num').focus();
+            err = true;
+        }
+                
+        if(!err){
+            var data = $(this).serialize();
+             $.ajax({
+                 url: '/main/default/add-visitor',
+                 type: 'POST',
+                 data: data,
+                 //cache: false,
+                 success: function(res){
+                    //alert("Сервер вернул вот что: " + res);
+                    if(res=='ERR'){
+                        alert('Не известная ошибка. Обратитесь к администратору.');
+                    }
+                    if(res=='OK'){
+                        alert('Данные были успешно записаны');
+                        $('#add_visitor')[0].reset();
+                    }
+                    else{
+                        alert(res);
+                    }              
+                 },
+                 error: function (xhr, ajaxOptions, thrownError) {
+                    alert(xhr.status+' '+thrownError);
+                 }
+             });
+        }
+        return false;
+    });
+        
     //select2
-	$('.select2').css('width','675').select2({allowClear:false})
+	$('.select2').css('width','100%').select2({allowClear:false})
 	/*$('#select2-multiple-style .btn').on('click', function(e){
 		var target = $(this).find('input[type=radio]');
 		var which = parseInt(target.val());
