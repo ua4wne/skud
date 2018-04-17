@@ -69,19 +69,25 @@ class CardController extends Controller
     public function actionCreate()
     {
         $model = new Card();
+        $model->flags = 0;
+        $model->zone = 255;
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             $device = Device::findOne($model->device);
             //формируем команду для записи карты в контроллер
             $msg = new \stdClass();
             $msg->id = rand();
             $msg->operation = 'add_cards';
-            $msg->cards = new \stdClass();
-            $msg->cards->card = strtoupper(dechex($model->code));
-            if(empty($model->flags))
-                $msg->cards->flags = 0;
+            $card = dechex($model->code);
+            while(strlen($card)<12){
+                $card = '0'.$card;
+            }
+            if(empty($model->flags) || is_null($model->flags))
+                $flags = 0;
             else
-                $msg->cards->flags = $model->flags;
-            $msg->cards->tz = $model->zone;
+                $flags = $model->flags;
+            $tz = $model->zone;
+            $msg->cards = array();
+            $msg->cards[0] = ['card'=>strtoupper($card), 'flags'=>$flags,'tz'=>$tz];
             $data = json_encode($msg);
             $task = new Task();
             $task->type = $device->type;
@@ -142,7 +148,7 @@ class CardController extends Controller
     public function actionDelete($id)
     {
         //проверяем наличие связанных записей
-        $visitor = Visitor::findOne(['card_id'=>$id]);
+        $visitor = Visitor::findOne(['card'=>$id]);
         if(empty($visitor)){
             //формируем команду на удаление карты из контроллеров
             $device = Device::find()->select(['type','snum'])->all();
@@ -152,7 +158,11 @@ class CardController extends Controller
                 $msg->id = rand();
                 $msg->operation = 'del_cards';
                 $msg->cards = array();
-                $msg->cards[0] = strtoupper(dechex($this->findModel($id)->code)); //символы в верхний регистр
+                $card = dechex($this->findModel($id)->code);
+                while(strlen($card)<12){
+                    $card = '0'.$card;
+                }
+                $msg->cards[0] = strtoupper($card); //символы в верхний регистр
                 $data = json_encode($msg);
                 $task = new Task();
                 $task->type = $val->type;

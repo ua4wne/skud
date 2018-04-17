@@ -16,7 +16,7 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'code')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'granted')->dropDownList(['0' => 'Действующая','1' => 'Заблокирована']) ?>
+    <?= $form->field($model, 'granted')->dropDownList(['0' => 'Заблокирована','1' => 'Действующая']) ?>
 
     <?= $form->field($model, 'flags')->textInput() ?>
 

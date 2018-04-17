@@ -2,7 +2,9 @@
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\helpers\Url;
+use yii\bootstrap\Modal;
 use yii\widgets\ActiveForm;
+
 $this->title = 'Панель управления';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
@@ -15,21 +17,20 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="row">
     <div class="col-lg-3 col-xs-6">
         <!-- small box -->
-        <div class="small-box bg-aqua">
+        <div class="small-box bg-blue">
             <div class="inner">
                 <h3>
-                    150
+                    Гостевые карты
                 </h3>
                 <p>
-                    New Orders
+                    <span class="line-height-1 bigger-120"> Свободно - <?= $free ?>  </span>
+                    <span class="line-height-1 bigger-120 pull-right"> Выдано - <?= $busy ?> </span>
                 </p>
+
             </div>
             <div class="icon">
                 <i class="ion ion-bag"></i>
             </div>
-            <a href="#" class="small-box-footer">
-                More info <i class="fa fa-arrow-circle-right"></i>
-            </a>
         </div>
     </div><!-- ./col -->
     <div class="col-lg-3 col-xs-6">
@@ -37,18 +38,16 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="small-box bg-green">
             <div class="inner">
                 <h3>
-                    53<sup style="font-size: 20px">%</sup>
+                    На территории
                 </h3>
                 <p>
-                    Bounce Rate
+                    <span class="line-height-1 bigger-120"> Сотрудников - <?= $empl_cnt ?>  </span>
+                    <span class="line-height-1 bigger-120 pull-right"> Посетителей - <?= $visit_cnt ?> </span>
                 </p>
             </div>
             <div class="icon">
                 <i class="ion ion-stats-bars"></i>
             </div>
-            <a href="#" class="small-box-footer">
-                More info <i class="fa fa-arrow-circle-right"></i>
-            </a>
         </div>
     </div><!-- ./col -->
     <div class="col-lg-3 col-xs-6">
@@ -56,37 +55,33 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="small-box bg-yellow">
             <div class="inner">
                 <h3>
-                    44
+                    Автотранспорт
                 </h3>
                 <p>
-                    User Registrations
-                </p>
-            </div>
-            <div class="icon">
-                <i class="ion ion-person-add"></i>
-            </div>
-            <a href="#" class="small-box-footer">
-                More info <i class="fa fa-arrow-circle-right"></i>
-            </a>
-        </div>
-    </div><!-- ./col -->
-    <div class="col-lg-3 col-xs-6">
-        <!-- small box -->
-        <div class="small-box bg-red">
-            <div class="inner">
-                <h3>
-                    65
-                </h3>
-                <p>
-                    Unique Visitors
+                    <span class="line-height-1 bigger-120"> Сотрудников - 0  </span>
+                    <span class="line-height-1 bigger-120 pull-right"> Посетителей - 0 </span>
                 </p>
             </div>
             <div class="icon">
                 <i class="ion ion-pie-graph"></i>
             </div>
-            <a href="#" class="small-box-footer">
-                More info <i class="fa fa-arrow-circle-right"></i>
-            </a>
+        </div>
+    </div><!-- ./col -->
+    <div class="col-lg-3 col-xs-6">
+        <!-- small box -->
+        <div class="small-box bg-blue">
+            <div class="inner">
+                <h3>
+                    Зарегистрировано
+                </h3>
+                <p>
+                    <span class="line-height-1 bigger-120"> Организаций - <?= $rent_cnt ?>  </span>
+                    <span class="line-height-1 bigger-120 pull-right"> Сотрудников - <?= $empl ?> </span>
+                </p>
+            </div>
+            <div class="icon">
+                <i class="ion ion-person-add"></i>
+            </div>
         </div>
     </div><!-- ./col -->
 </div><!-- /.row -->
@@ -96,7 +91,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="tabbable">
             <ul class="nav nav-tabs padding-12 tab-color-blue background-blue" id="myTab4">
                 <li class="active">
-                    <a data-toggle="tab" href="#home">Текущие события</a>
+                    <a data-toggle="tab" href="#home">Контроль</a>
                 </li>
 
                 <li>
@@ -111,48 +106,38 @@ $this->params['breadcrumbs'][] = $this->title;
 
             <div class="tab-content">
                 <div id="home" class="tab-pane in active">
-                    <?= GridView::widget([
-                        'dataProvider' => $dataEventProvider,
-                        'filterModel' => $searchEventModel,
-                        'columns' => [
-                            ['class' => 'yii\grid\SerialColumn'],
 
-                            //'id',
-                            //'device_id',
-                            [
-                                'attribute'=>'device_id',
-                                'label'=>'Контроллер',
-                                'format'=>'text', // Возможные варианты: raw, html
-                                //    'content'=>function($data){
-                                //        return $data->getZoneName();
-                                //    },
-                                'filter' => \app\modules\main\models\Event::getDeviceList()
-                            ],
-                            //'event_type',
-                            [
-                                'attribute'=>'event_type',
-                                'label'=>'Событие',
-                                'format'=>'text', // Возможные варианты: raw, html
-                                //    'content'=>function($data){
-                                //        return $data->getZoneName();
-                                //    },
-                                'filter' => \app\modules\main\models\Event::getEventList()
-                            ],
-                            'card',
-                            'flag',
-                            'event_time',
-                            //'created_at',
-                            //'updated_at',
-
-                            //['class' => 'yii\grid\ActionColumn'],
-                        ],
-                    ]); ?>
                 </div>
 
                 <div id="registry" class="tab-pane">
-                    <div class="visitor-form">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <?php
+                            Modal::begin([
+                                'header' => '<h3>Новое транспортное средство</h3>',
+                                'toggleButton' => ['label' => '<i class="ace-icon fa fa-truck bigger-160" aria-hidden="true"></i>  Новое ТС','class'=>'btn btn-primary btn-xs pull-right'],
+                                //'footer' => 'Низ окна',
+                                'id'=>'car-modal',
+                            ]);
 
-                        <?php $form = ActiveForm::begin(); ?>
+                            $carform = ActiveForm::begin([
+                                'id' => 'add-new-tc',
+                                //'enableAjaxValidation' => true,
+                                'action' => ['index']
+                            ]); ?>
+                            <?= $carform->field($car, 'text')->textInput(['maxlength' => true],['id'=>'car_type']) ?>
+
+                            <div class="form-group">
+                                <?= Html::submitButton('Сохранить', ['class' => 'btn btn-success','id'=>'add-car']) ?>
+                            </div>
+
+                            <?php ActiveForm::end();
+
+                            Modal::end(); ?>
+                        </div>
+                    </div>
+                    <div class="visitor-form">
+                        <?php $form = ActiveForm::begin(['id'=>'add_visitor']); ?>
 
                         <div class="row">
                             <div class="col-sm-6">
@@ -162,27 +147,24 @@ $this->params['breadcrumbs'][] = $this->title;
 
                                 <?= $form->field($model, 'mname')->textInput(['maxlength' => true]) ?>
 
-                                <?= $form->field($model, 'renter_id')->dropDownList($rentsel) ?>
+                                <?= $form->field($model, 'renter_id')->dropDownList($rentsel,['class'=>'select2','id'=>'renter']) ?>
 
-                                <?= $form->field($model, 'card_id')->textInput() ?>
+                                <?= $form->field($model, 'card')->textInput() ?>
                             </div>
                             <div class="col-sm-6">
-                                <?= $form->field($model, 'doc_type')->dropDownList($docs) ?>
+                                <?= $form->field($model, 'doc_id')->dropDownList($docs) ?>
 
                                 <?= $form->field($model, 'doc_series')->textInput(['maxlength' => true]) ?>
 
                                 <?= $form->field($model, 'doc_num')->textInput(['maxlength' => true]) ?>
 
-                                <?= $form->field($model, 'car_id')->dropDownList($cars) ?>
+                                <?= $form->field($model, 'car_id')->dropDownList($cars,['class'=>'select2','id'=>'car_type']) ?>
 
                                 <?= $form->field($model, 'car_num')->textInput(['maxlength' => true]) ?>
 
-                                <?= $form->field($model, 'phone')->widget(\yii\widgets\MaskedInput::className(), [
-                                    'mask' => '(999) 999-99-99',
-                                ]) ?>
-                            </div>
-                            <div class="form-group">
-                                <?= Html::submitButton('Сохранить', ['class' => 'btn btn-success']) ?>
+                                <div class="form-group">
+                                    <?= Html::submitButton('Сохранить', ['class' => 'btn btn-success']) ?>
+                                </div>
                             </div>
                         </div>
 
@@ -262,7 +244,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                         case 3:
                                             $val = 'Ожидание свободного прохода';
                                             break;
-                                        case 12:
+                                        default:
                                             $val = 'Не установлен';
                                             break;
                                     }
@@ -320,7 +302,26 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <?php
 $js = <<<JS
-        
+
+    function show()  
+    {  
+        $.ajax({
+            url: '/main/default/check-event',
+            type: 'POST',
+            data: {'data':'check'},
+            cache: false,
+            success: function(res){
+                //alert("Сервер вернул вот что: " + res);
+                $('#home').html(res);
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(xhr.status+' '+thrownError);
+            }
+        });  
+    }
+
+    window.setInterval(function () { show(); }, 2000);
+
     $('#btn_block').click(function(e){
         e.preventDefault();
         var device=$('#form-field-select-4 :selected').val();
@@ -346,6 +347,7 @@ $js = <<<JS
              alert('Не выбран контроллер из списка!');
          return false;
     });
+    
     $('#btn_free').click(function(e){
         e.preventDefault();
         var device=$('#form-field-select-4 :selected').val();
@@ -396,33 +398,146 @@ $js = <<<JS
          return false;
     });
     
+    $('#add-new-tc').on('beforeSubmit', function(){
+         var data = $(this).serialize();
+         $.ajax({
+             url: '/main/default/add-truck',
+             type: 'POST',
+             data: data,
+             cache: false,
+             success: function(res){
+                //alert("Сервер вернул вот что: " + res);
+                if(res=='ERR'){
+                    alert('Попытка ввода дублирующего значения. Такое ТС уже есть в справочнике.');
+                    $('#add-new-tc')[0].reset();
+                }
+                else{
+                    $('.field-car_type').html(res);
+                    $('.select2').css('width','100%').select2({allowClear:false});
+                    $("#car-modal").modal('hide');
+                }              
+             },
+             error: function (xhr, ajaxOptions, thrownError) {
+       	        alert(xhr.status+' '+thrownError);
+             }
+         });
+         return false;
+    });
+    
+    $('#add_visitor').submit(function () {
+        var err = false;
+        
+        if($('#visitor-card').val()==''){
+            alert('Не указана карта доступа!');
+            $('#visitor-card').focus();
+            err = true;
+        }
+        if($('#visitor-doc_series').val()==''){
+            alert('Не указана серия документа!');
+            $('#visitor-doc_series').focus();
+            err = true;
+        }
+        if($('#visitor-doc_num').val()==''){
+            alert('Не указан номер документа!');
+            $('#visitor-doc_num').focus();
+            err = true;
+        }
+                
+        if(!err){
+            var data = $(this).serialize();
+             $.ajax({
+                 url: '/main/default/add-visitor',
+                 type: 'POST',
+                 data: data,
+                 //cache: false,
+                 success: function(res){
+                    //alert("Сервер вернул вот что: " + res);
+                    if(res=='ERR'){
+                        alert('Не известная ошибка. Обратитесь к администратору.');
+                    }
+                    if(res=='OK'){
+                        alert('Данные были успешно записаны');
+                        $('#add_visitor')[0].reset();
+                    }
+                    else{
+                        alert(res);
+                    }              
+                 },
+                 error: function (xhr, ajaxOptions, thrownError) {
+                    alert(xhr.status+' '+thrownError);
+                 }
+             });
+        }
+        return false;
+    });
+        
+    //select2
+	$('.select2').css('width','100%').select2({allowClear:false})
+	/*$('#select2-multiple-style .btn').on('click', function(e){
+		var target = $(this).find('input[type=radio]');
+		var which = parseInt(target.val());
+		if(which == 2) $('.select2').addClass('tag-input-style');
+		else $('.select2').removeClass('tag-input-style');
+	});*/
+    
     if(!ace.vars['touch']) {
-					$('.chosen-select').chosen({allow_single_deselect:true}); 
-					//resize the chosen on window resize
+		$('.chosen-select').chosen({allow_single_deselect:true}); 
+			//resize the chosen on window resize
 			
-					$(window)
-					.off('resize.chosen')
-					.on('resize.chosen', function() {
-						$('.chosen-select').each(function() {
-							 $(this).next().css({'width': $(this).parent().width()});
-						})
-					}).trigger('resize.chosen');
-					//resize chosen on sidebar collapse/expand
-					$(document).on('settings.ace.chosen', function(e, event_name, event_val) {
-						if(event_name != 'sidebar_collapsed') return;
-						$('.chosen-select').each(function() {
-							 $(this).next().css({'width': $(this).parent().width()});
-						})
-					});
+		$(window)
+			.off('resize.chosen')
+			.on('resize.chosen', function() {
+				$('.chosen-select').each(function() {
+					$(this).next().css({'width': $(this).parent().width()});
+				})
+			}).trigger('resize.chosen');
+			//resize chosen on sidebar collapse/expand
+			$(document).on('settings.ace.chosen', function(e, event_name, event_val) {
+				if(event_name != 'sidebar_collapsed') return;
+				$('.chosen-select').each(function() {
+					$(this).next().css({'width': $(this).parent().width()});
+				})
+			});			
 			
-			
-					$('#chosen-multiple-style .btn').on('click', function(e){
-						var target = $(this).find('input[type=radio]');
-						var which = parseInt(target.val());
-						if(which == 2) $('#form-field-select-4').addClass('tag-input-style');
-						 else $('#form-field-select-4').removeClass('tag-input-style');
-					});
-				}
+			$('#chosen-multiple-style .btn').on('click', function(e){
+				var target = $(this).find('input[type=radio]');
+				var which = parseInt(target.val());
+				if(which == 2) $('#form-field-select-4').addClass('tag-input-style');
+				else $('#form-field-select-4').removeClass('tag-input-style');
+			});
+	}
+	
+	$( "#visitor-doc_num" ).blur(function() {
+        var doc_id = $('#visitor-doc_id').val();
+        var doc_series = $('#visitor-doc_series').val();
+        var doc_num = $('#visitor-doc_num').val();
+        if(doc_id.length>0 && doc_series.length>0 && doc_num.length>0){
+            $.ajax({
+                 url: '/main/default/find-visitor',
+                 type: 'POST',
+                 data: {'docid':doc_id,'series':doc_series,'docnum':doc_num},
+                 success: function(res){
+                    //alert("Сервер вернул вот что: " + res);
+                    if(res=="ERR"){}
+                    else{
+                        var obj = jQuery.parseJSON(res);
+                        $('#visitor-lname').val(obj.lname);
+                        $('#visitor-fname').val(obj.fname);
+                        $('#visitor-mname').val(obj.mname);
+                        $("#renter [value='"+obj.renter_id+"']").attr("selected", "selected");
+                        $("#car_type [value='"+obj.car_id+"']").attr("selected", "selected");
+                        $('#visitor-car_num').val(obj.car_num);
+                        $('.select2').css('width','100%').select2({allowClear:false});
+                    }
+                    
+                 },
+                 error: function (xhr, ajaxOptions, thrownError) {
+                    alert(xhr.status+' '+thrownError);
+                 }
+            });
+        }
+    });
+		
 JS;
 
 $this->registerJs($js);

@@ -48,16 +48,15 @@ class Visitor extends BaseModel
     public function rules()
     {
         return [
-            [['fname', 'lname', 'renter_id', 'card', 'doc_id'], 'required'],
+            [['fname', 'lname', 'renter_id', 'doc_id'], 'required'],
             [['renter_id', 'car_id', 'doc_id'], 'integer'],
             [['created_at', 'updated_at'], 'safe'],
             [['fname', 'mname', 'lname'], 'string', 'max' => 50],
-            [['image'], 'string', 'max' => 30],
+            [['image'], 'string', 'max' => 50],
             [['car_num', 'doc_num'], 'string', 'max' => 10],
             [['doc_series'], 'string', 'max' => 7],
             [['phone'], 'string', 'max' => 20],
             [['card'], 'string', 'max' => 20],
-            [['card'], 'unique'],
             [['renter_id'], 'exist', 'skipOnError' => true, 'targetClass' => Renter::className(), 'targetAttribute' => ['renter_id' => 'id']],
             [['car_id'], 'exist', 'skipOnError' => true, 'targetClass' => CarType::className(), 'targetAttribute' => ['car_id' => 'id']],
             [['doc_id'], 'exist', 'skipOnError' => true, 'targetClass' => DocType::className(), 'targetAttribute' => ['doc_id' => 'id']],

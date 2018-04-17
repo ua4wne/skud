@@ -1,7 +1,7 @@
 -- --------------------------------------------------------
--- Хост:                         127.0.0.1
--- Версия сервера:               5.6.38-log - MySQL Community Server (GPL)
--- Операционная система:         Win32
+-- Хост:                         192.168.8.7
+-- Версия сервера:               5.7.21-0ubuntu0.16.04.1 - (Ubuntu)
+-- Операционная система:         Linux
 -- HeidiSQL Версия:              9.5.0.5196
 -- --------------------------------------------------------
 
@@ -126,11 +126,14 @@ CREATE TABLE IF NOT EXISTS `card` (
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `code` (`code`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
--- Дамп данных таблицы skud.card: ~0 rows (приблизительно)
+-- Дамп данных таблицы skud.card: ~2 rows (приблизительно)
 DELETE FROM `card`;
 /*!40000 ALTER TABLE `card` DISABLE KEYS */;
+INSERT INTO `card` (`id`, `code`, `granted`, `flags`, `zone`, `share`, `created_at`, `updated_at`) VALUES
+	(3, '2720454', 0, NULL, 255, 0, '2018-04-11 12:48:14', '2018-04-11 12:48:14'),
+	(4, '2723355', 0, NULL, 255, 0, '2018-04-11 13:59:08', '2018-04-11 13:59:08');
 /*!40000 ALTER TABLE `card` ENABLE KEYS */;
 
 -- Дамп структуры для таблица skud.device
@@ -153,14 +156,13 @@ CREATE TABLE IF NOT EXISTS `device` (
   UNIQUE KEY `snum` (`snum`),
   KEY `FK_device_time_zone` (`zone_id`),
   CONSTRAINT `FK_device_time_zone` FOREIGN KEY (`zone_id`) REFERENCES `time_zone` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
--- Дамп данных таблицы skud.device: ~1 rows (приблизительно)
+-- Дамп данных таблицы skud.device: ~0 rows (приблизительно)
 DELETE FROM `device`;
 /*!40000 ALTER TABLE `device` DISABLE KEYS */;
 INSERT INTO `device` (`id`, `type`, `snum`, `fware`, `conn_fw`, `image`, `text`, `address`, `is_active`, `mode`, `zone_id`, `created_at`, `updated_at`) VALUES
-	(6, 'Z5RWEB', '44374', 'a.a', '1.0.120', '/images/noimage.jpg', '', '127.0.0.1', 1, 0, 2, '2018-03-09 22:32:20', '2018-03-12 20:03:46'),
-	(9, 'ggggg', '1313', '2423', '452', '/images/gallery/55168aece115.jpg', '', '', 1, 0, 1, '2018-03-10 21:26:15', '2018-03-10 21:26:44');
+	(10, 'Z5RWEB', '44374', '3.23', '1.0.123', '/images/noimage.jpg', 'Турникет КПП', '192.168.8.9', 1, 0, 1, '2018-03-13 14:36:34', '2018-04-13 16:18:03');
 /*!40000 ALTER TABLE `device` ENABLE KEYS */;
 
 -- Дамп структуры для таблица skud.doc_type
@@ -191,21 +193,68 @@ CREATE TABLE IF NOT EXISTS `event` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `device_id` int(11) NOT NULL,
   `event_type` varchar(2) COLLATE utf8_unicode_ci NOT NULL,
-  `card_id` int(11) NOT NULL,
+  `card` varchar(20) COLLATE utf8_unicode_ci NOT NULL,
   `flag` varchar(3) COLLATE utf8_unicode_ci DEFAULT NULL,
   `event_time` datetime NOT NULL,
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `FK_event_device` (`device_id`),
-  KEY `FK_event_idcard` (`card_id`),
-  CONSTRAINT `FK_event_device` FOREIGN KEY (`device_id`) REFERENCES `device` (`id`),
-  CONSTRAINT `FK_event_idcard` FOREIGN KEY (`card_id`) REFERENCES `card` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  CONSTRAINT `FK_event_device` FOREIGN KEY (`device_id`) REFERENCES `device` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5473 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
--- Дамп данных таблицы skud.event: ~0 rows (приблизительно)
+-- Дамп данных таблицы skud.event: ~48 rows (приблизительно)
 DELETE FROM `event`;
 /*!40000 ALTER TABLE `event` DISABLE KEYS */;
+INSERT INTO `event` (`id`, `device_id`, `event_type`, `card`, `flag`, `event_time`, `created_at`, `updated_at`) VALUES
+	(5402, 10, '17', '2713962', '0', '2018-04-05 15:27:25', '2018-04-05 15:28:41', '2018-04-05 15:28:41'),
+	(5426, 10, '2', '2723355', '0', '2018-04-10 14:36:03', '2018-04-10 14:36:05', '2018-04-10 14:36:05'),
+	(5427, 10, '3', '2723355', '0', '2018-04-10 14:36:06', '2018-04-10 14:36:08', '2018-04-10 14:36:08'),
+	(5428, 10, '2', '2717462', '0', '2018-04-10 15:05:17', '2018-04-10 15:07:29', '2018-04-10 15:07:29'),
+	(5429, 10, '3', '2717462', '0', '2018-04-10 15:05:19', '2018-04-10 15:07:29', '2018-04-10 15:07:29'),
+	(5430, 10, '2', '2720454', '0', '2018-04-11 12:44:00', '2018-04-11 12:44:01', '2018-04-11 12:44:01'),
+	(5431, 10, '3', '2720454', '0', '2018-04-11 12:44:02', '2018-04-11 12:44:04', '2018-04-11 12:44:04'),
+	(5432, 10, '4', '2720454', '0', '2018-04-11 12:55:21', '2018-04-11 12:55:23', '2018-04-11 12:55:23'),
+	(5433, 10, '16', '2720454', '0', '2018-04-11 12:55:21', '2018-04-11 12:55:23', '2018-04-11 12:55:23'),
+	(5434, 10, '5', '2720454', '0', '2018-04-11 12:55:26', '2018-04-11 12:55:27', '2018-04-11 12:55:27'),
+	(5435, 10, '17', '2720454', '0', '2018-04-11 12:55:26', '2018-04-11 12:55:27', '2018-04-11 12:55:27'),
+	(5436, 10, '5', '2723355', '0', '2018-04-11 14:17:02', '2018-04-11 14:17:08', '2018-04-11 14:17:08'),
+	(5437, 10, '17', '2723355', '0', '2018-04-11 14:17:02', '2018-04-11 14:17:08', '2018-04-11 14:17:08'),
+	(5438, 10, '4', '2720454', '0', '2018-04-11 14:20:41', '2018-04-11 14:22:37', '2018-04-11 14:22:37'),
+	(5439, 10, '16', '2720454', '0', '2018-04-11 14:20:41', '2018-04-11 14:22:37', '2018-04-11 14:22:37'),
+	(5440, 10, '4', '2723355', '0', '2018-04-11 14:20:46', '2018-04-11 14:22:37', '2018-04-11 14:22:37'),
+	(5441, 10, '16', '2723355', '0', '2018-04-11 14:20:46', '2018-04-11 14:22:37', '2018-04-11 14:22:37'),
+	(5442, 10, '5', '2723355', '0', '2018-04-11 14:26:13', '2018-04-11 14:26:15', '2018-04-11 14:26:15'),
+	(5443, 10, '17', '2723355', '0', '2018-04-11 14:26:13', '2018-04-11 14:26:15', '2018-04-11 14:26:15'),
+	(5444, 10, '5', '2720454', '0', '2018-04-11 14:26:18', '2018-04-11 14:26:20', '2018-04-11 14:26:20'),
+	(5445, 10, '17', '2720454', '0', '2018-04-11 14:26:18', '2018-04-11 14:26:20', '2018-04-11 14:26:20'),
+	(5446, 10, '4', '2720454', '0', '2018-04-12 10:01:30', '2018-04-12 10:01:32', '2018-04-12 10:01:32'),
+	(5447, 10, '16', '2720454', '0', '2018-04-12 10:01:30', '2018-04-12 10:01:32', '2018-04-12 10:01:32'),
+	(5448, 10, '16', '2720454', '0', '2018-04-12 10:07:58', '2018-04-12 10:10:10', '2018-04-12 10:10:10'),
+	(5449, 10, '5', '2720454', '0', '2018-04-12 10:08:02', '2018-04-12 10:10:10', '2018-04-12 10:10:10'),
+	(5450, 10, '17', '2720454', '0', '2018-04-12 10:08:02', '2018-04-12 10:10:10', '2018-04-12 10:10:10'),
+	(5451, 10, '4', '2723355', '0', '2018-04-12 10:08:50', '2018-04-12 10:10:10', '2018-04-12 10:10:10'),
+	(5452, 10, '16', '2723355', '0', '2018-04-12 10:08:50', '2018-04-12 10:10:10', '2018-04-12 10:10:10'),
+	(5453, 10, '5', '2723355', '0', '2018-04-12 10:08:54', '2018-04-12 10:10:10', '2018-04-12 10:10:10'),
+	(5454, 10, '17', '2723355', '0', '2018-04-12 10:08:54', '2018-04-12 10:10:10', '2018-04-12 10:10:10'),
+	(5455, 10, '4', '2720454', '0', '2018-04-12 10:09:53', '2018-04-12 10:10:10', '2018-04-12 10:10:10'),
+	(5456, 10, '16', '2720454', '0', '2018-04-12 10:09:53', '2018-04-12 10:10:10', '2018-04-12 10:10:10'),
+	(5457, 10, '5', '2720454', '0', '2018-04-12 10:09:57', '2018-04-12 10:10:10', '2018-04-12 10:10:10'),
+	(5458, 10, '17', '2720454', '0', '2018-04-12 10:09:57', '2018-04-12 10:10:10', '2018-04-12 10:10:10'),
+	(5459, 10, '2', '2717462', '0', '2018-04-12 10:39:14', '2018-04-12 10:39:14', '2018-04-12 10:39:14'),
+	(5460, 10, '3', '2717462', '0', '2018-04-12 10:39:18', '2018-04-12 10:39:18', '2018-04-12 10:39:18'),
+	(5461, 10, '4', '2720454', '0', '2018-04-12 10:40:10', '2018-04-12 10:40:10', '2018-04-12 10:40:10'),
+	(5462, 10, '16', '2720454', '0', '2018-04-12 10:40:10', '2018-04-12 10:40:10', '2018-04-12 10:40:10'),
+	(5463, 10, '5', '2720454', '0', '2018-04-12 10:40:20', '2018-04-12 10:40:20', '2018-04-12 10:40:20'),
+	(5464, 10, '17', '2720454', '0', '2018-04-12 10:40:20', '2018-04-12 10:40:20', '2018-04-12 10:40:20'),
+	(5465, 10, '2', '1367783', '0', '2018-04-12 13:22:13', '2018-04-12 13:22:12', '2018-04-12 13:22:12'),
+	(5466, 10, '3', '1367783', '0', '2018-04-12 13:22:15', '2018-04-12 13:22:14', '2018-04-12 13:22:14'),
+	(5467, 10, '2', '2720454', '0', '2018-04-14 10:29:25', '2018-04-14 10:29:28', '2018-04-14 10:29:28'),
+	(5468, 10, '3', '2720454', '0', '2018-04-14 10:29:29', '2018-04-14 10:29:33', '2018-04-14 10:29:33'),
+	(5469, 10, '2', '2723355', '0', '2018-04-14 10:29:33', '2018-04-14 10:29:36', '2018-04-14 10:29:36'),
+	(5470, 10, '3', '2723355', '0', '2018-04-14 10:29:35', '2018-04-14 10:29:39', '2018-04-14 10:29:39'),
+	(5471, 10, '2', '2723355', '0', '2018-04-14 10:32:11', '2018-04-14 10:32:15', '2018-04-14 10:32:15'),
+	(5472, 10, '3', '2723355', '0', '2018-04-14 10:32:15', '2018-04-14 10:32:19', '2018-04-14 10:32:19');
 /*!40000 ALTER TABLE `event` ENABLE KEYS */;
 
 -- Дамп структуры для таблица skud.eventlog
@@ -220,32 +269,24 @@ CREATE TABLE IF NOT EXISTS `eventlog` (
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=65 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
--- Дамп данных таблицы skud.eventlog: ~15 rows (приблизительно)
+-- Дамп данных таблицы skud.eventlog: ~12 rows (приблизительно)
 DELETE FROM `eventlog`;
 /*!40000 ALTER TABLE `eventlog` DISABLE KEYS */;
 INSERT INTO `eventlog` (`id`, `user_id`, `user_ip`, `type`, `msg`, `is_read`, `created_at`, `updated_at`) VALUES
-	(17, 1, '127.0.0.1', 'error', 'Команда <strong>power_on</strong> не принята контроллером Z5RWEB(sn 44374) 09-03-2018 22:08:00', 0, '2018-03-09 22:08:00', '2018-03-09 22:08:00'),
-	(18, 1, '127.0.0.1', 'access', 'Пользователь <strong>ircut</strong> вышел из системы 09-03-2018 22:28:44', 0, '2018-03-09 22:28:44', '2018-03-09 22:28:44'),
-	(19, 1, '127.0.0.1', 'access', 'Пользователь <strong>ircut</strong> вошел в систему 09-03-2018 22:29:20', 0, '2018-03-09 22:29:20', '2018-03-09 22:29:20'),
-	(20, 1, '127.0.0.1', 'access', 'Пользователь <strong>ircut</strong> вышел из системы 09-03-2018 22:30:41', 0, '2018-03-09 22:30:41', '2018-03-09 22:30:41'),
-	(21, 1, '127.0.0.1', 'access', 'Пользователь <strong>ircut</strong> вошел в систему 09-03-2018 22:30:54', 0, '2018-03-09 22:30:54', '2018-03-09 22:30:54'),
-	(22, 1, '127.0.0.1', 'access', 'Пользователь <strong>ircut</strong> вышел из системы 09-03-2018 22:31:10', 0, '2018-03-09 22:31:10', '2018-03-09 22:31:10'),
-	(23, 1, '127.0.0.1', 'access', 'Пользователь <strong>ircut</strong> вошел в систему 09-03-2018 22:31:27', 0, '2018-03-09 22:31:27', '2018-03-09 22:31:27'),
-	(24, 1, '127.0.0.1', 'access', 'Пользователь <strong>ircut</strong> вышел из системы 09-03-2018 22:32:16', 0, '2018-03-09 22:32:17', '2018-03-09 22:32:17'),
-	(25, 1, '127.0.0.1', 'access', 'Пользователь <strong>ircut</strong> вошел в систему 09-03-2018 22:32:28', 0, '2018-03-09 22:32:28', '2018-03-09 22:32:28'),
-	(26, 1, '127.0.0.1', 'access', 'Пользователь <strong>ircut</strong> вышел из системы 09-03-2018 22:33:14', 0, '2018-03-09 22:33:14', '2018-03-09 22:33:14'),
-	(27, 1, '127.0.0.1', 'access', 'Пользователь <strong>ircut</strong> вошел в систему 09-03-2018 22:33:40', 0, '2018-03-09 22:33:40', '2018-03-09 22:33:40'),
-	(28, 1, '127.0.0.1', 'access', 'Пользователь <strong>ircut</strong> вышел из системы 09-03-2018 22:34:43', 0, '2018-03-09 22:34:43', '2018-03-09 22:34:43'),
-	(29, 1, '127.0.0.1', 'access', 'Пользователь <strong>ircut</strong> вошел в систему 09-03-2018 22:35:13', 0, '2018-03-09 22:35:13', '2018-03-09 22:35:13'),
-	(30, 1, '127.0.0.1', 'access', 'Пользователь <strong>ircut</strong> вышел из системы 09-03-2018 22:38:02', 0, '2018-03-09 22:38:02', '2018-03-09 22:38:02'),
-	(31, 1, '127.0.0.1', 'access', 'Пользователь <strong>ircut</strong> вошел в систему 10-03-2018 18:48:08', 0, '2018-03-10 18:48:08', '2018-03-10 18:48:08'),
-	(32, 1, '127.0.0.1', 'access', 'Пользователь <strong>ircut</strong> вышел из системы 10-03-2018 21:50:18', 0, '2018-03-10 21:50:18', '2018-03-10 21:50:18'),
-	(33, 1, '127.0.0.1', 'access', 'Пользователь <strong>ircut</strong> вошел в систему 11-03-2018 11:59:29', 0, '2018-03-11 11:59:29', '2018-03-11 11:59:29'),
-	(34, 1, '127.0.0.1', 'access', 'Пользователь <strong>ircut</strong> вышел из системы 11-03-2018 21:19:53', 0, '2018-03-11 21:19:53', '2018-03-11 21:19:53'),
-	(35, 1, '127.0.0.1', 'access', 'Пользователь <strong>ircut</strong> вошел в систему 12-03-2018 19:22:21', 0, '2018-03-12 19:22:21', '2018-03-12 19:22:21'),
-	(36, 1, '127.0.0.1', 'access', 'Пользователь <strong>ircut</strong> вышел из системы 12-03-2018 21:30:14', 0, '2018-03-12 21:30:14', '2018-03-12 21:30:14');
+	(53, 1, '192.168.7.2', 'access', 'Пользователь <strong>ircut</strong> вошел в систему 17-03-2018 20:54:14', 0, '2018-03-17 20:54:14', '2018-03-17 20:54:14'),
+	(54, 1, '192.168.7.2', 'access', 'Пользователь <strong>ircut</strong> вошел в систему 20-03-2018 20:13:54', 0, '2018-03-20 20:13:54', '2018-03-20 20:13:54'),
+	(55, 1, '192.168.8.150', 'access', 'Пользователь <strong>ircut</strong> вошел в систему 27-03-2018 14:00:43', 0, '2018-03-27 14:00:43', '2018-03-27 14:00:43'),
+	(56, 1, '192.168.8.150', 'access', 'Пользователь <strong>ircut</strong> вошел в систему 05-04-2018 12:09:05', 0, '2018-04-05 12:09:05', '2018-04-05 12:09:05'),
+	(57, 1, '192.168.8.150', 'access', 'Пользователь <strong>ircut</strong> вошел в систему 10-04-2018 10:27:58', 0, '2018-04-10 10:27:58', '2018-04-10 10:27:58'),
+	(58, 1, '192.168.8.150', 'access', 'Пользователь <strong>ircut</strong> вошел в систему 10-04-2018 14:55:51', 0, '2018-04-10 14:55:51', '2018-04-10 14:55:51'),
+	(59, 1, '192.168.8.150', 'access', 'Пользователь <strong>ircut</strong> вошел в систему 11-04-2018 12:47:22', 0, '2018-04-11 12:47:22', '2018-04-11 12:47:22'),
+	(60, 1, '192.168.8.150', 'access', 'Пользователь <strong>ircut</strong> вошел в систему 11-04-2018 13:56:56', 0, '2018-04-11 13:56:56', '2018-04-11 13:56:56'),
+	(61, 1, '192.168.8.150', 'access', 'Пользователь <strong>ircut</strong> вышел из системы 11-04-2018 15:57:58', 0, '2018-04-11 15:57:58', '2018-04-11 15:57:58'),
+	(62, 1, '192.168.8.150', 'access', 'Пользователь <strong>ircut</strong> вошел в систему 12-04-2018 10:03:05', 0, '2018-04-12 10:03:05', '2018-04-12 10:03:05'),
+	(63, 1, '192.168.7.2', 'access', 'Пользователь <strong>ircut</strong> вошел в систему 13-04-2018 16:17:51', 0, '2018-04-13 16:17:51', '2018-04-13 16:17:51'),
+	(64, 1, '192.168.7.2', 'access', 'Пользователь <strong>ircut</strong> вышел из системы 13-04-2018 16:21:00', 0, '2018-04-13 16:21:00', '2018-04-13 16:21:00');
 /*!40000 ALTER TABLE `eventlog` ENABLE KEYS */;
 
 -- Дамп структуры для таблица skud.event_type
@@ -374,6 +415,24 @@ INSERT INTO `role` (`id`, `name`, `alias`, `created_at`, `updated_at`) VALUES
 	(3, 'operator', 'Оператор', '2018-03-08 11:56:08', '2018-03-08 11:56:08');
 /*!40000 ALTER TABLE `role` ENABLE KEYS */;
 
+-- Дамп структуры для таблица skud.task
+DROP TABLE IF EXISTS `task`;
+CREATE TABLE IF NOT EXISTS `task` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `type` varchar(10) COLLATE utf8_unicode_ci NOT NULL,
+  `snum` varchar(10) COLLATE utf8_unicode_ci NOT NULL,
+  `json` text COLLATE utf8_unicode_ci NOT NULL,
+  `status` tinyint(1) NOT NULL DEFAULT '0',
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- Дамп данных таблицы skud.task: ~0 rows (приблизительно)
+DELETE FROM `task`;
+/*!40000 ALTER TABLE `task` DISABLE KEYS */;
+/*!40000 ALTER TABLE `task` ENABLE KEYS */;
+
 -- Дамп структуры для таблица skud.time_zone
 DROP TABLE IF EXISTS `time_zone`;
 CREATE TABLE IF NOT EXISTS `time_zone` (
@@ -389,13 +448,38 @@ CREATE TABLE IF NOT EXISTS `time_zone` (
   UNIQUE KEY `zone` (`zone`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
--- Дамп данных таблицы skud.time_zone: ~1 rows (приблизительно)
+-- Дамп данных таблицы skud.time_zone: ~2 rows (приблизительно)
 DELETE FROM `time_zone`;
 /*!40000 ALTER TABLE `time_zone` DISABLE KEYS */;
 INSERT INTO `time_zone` (`id`, `zone`, `begin`, `end`, `days`, `text`, `created_at`, `updated_at`) VALUES
 	(1, 0, '00:01:00', '23:59:00', '01111111', 'test', '0000-00-00 00:00:00', '2018-02-14 15:51:25'),
 	(2, 1, '00:00:00', '08:00:00', '1000100', 'test zona', '2018-03-12 19:31:20', '2018-03-12 19:31:20');
 /*!40000 ALTER TABLE `time_zone` ENABLE KEYS */;
+
+-- Дамп структуры для таблица skud.tracelog
+DROP TABLE IF EXISTS `tracelog`;
+CREATE TABLE IF NOT EXISTS `tracelog` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `type` varchar(10) COLLATE utf8_unicode_ci NOT NULL,
+  `msg` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3332 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- Дамп данных таблицы skud.tracelog: ~8 rows (приблизительно)
+DELETE FROM `tracelog`;
+/*!40000 ALTER TABLE `tracelog` DISABLE KEYS */;
+INSERT INTO `tracelog` (`id`, `type`, `msg`, `created_at`, `updated_at`) VALUES
+	(3324, 'request', 'Сообщение от контроллера {"type":"Z5RWEB","sn":44374,"messages":[{"id":1804289383,"operation":"power_on","fw":"3.23","conn_fw":"1.0.123","active":0,"mode":0,"controller_ip":"192.168.8.9"}]}', '2018-04-13 15:02:44', '2018-04-13 15:02:44'),
+	(3325, 'response', 'Ответ от сервера {"date":"2018-04-13 15:02:44","interval":10,"messages":[{"id":1804289383,"operation":"set_active","active":1,"online":1}]}', '2018-04-13 15:02:44', '2018-04-13 15:02:44'),
+	(3326, 'request', 'Сообщение от контроллера {"type":"Z5RWEB","sn":44374,"messages":[{"id":846930886,"operation":"ping","active":1,"mode":8}]}', '2018-04-13 15:02:44', '2018-04-13 15:02:44'),
+	(3327, 'response', 'Ответ от сервера {"date":"2018-04-13 15:02:44","interval":10,"messages":[]}', '2018-04-13 15:02:44', '2018-04-13 15:02:44'),
+	(3328, 'request', 'Сообщение от контроллера {"type":"Z5RWEB","sn":44374,"messages":[{"id":1681692777,"operation":"ping","active":1,"mode":8}]}', '2018-04-13 15:02:54', '2018-04-13 15:02:54'),
+	(3329, 'response', 'Ответ от сервера {"date":"2018-04-13 15:02:54","interval":10,"messages":[]}', '2018-04-13 15:02:54', '2018-04-13 15:02:54'),
+	(3330, 'request', 'Сообщение от контроллера {"type":"Z5RWEB","sn":44374,"messages":[{"id":1714636915,"operation":"ping","active":1,"mode":8}]}', '2018-04-13 15:03:03', '2018-04-13 15:03:03'),
+	(3331, 'response', 'Ответ от сервера {"date":"2018-04-13 15:03:03","interval":10,"messages":[]}', '2018-04-13 15:03:03', '2018-04-13 15:03:03');
+/*!40000 ALTER TABLE `tracelog` ENABLE KEYS */;
 
 -- Дамп структуры для таблица skud.user
 DROP TABLE IF EXISTS `user`;
@@ -431,26 +515,26 @@ INSERT INTO `user` (`id`, `active`, `username`, `fname`, `lname`, `auth_key`, `p
 DROP TABLE IF EXISTS `visitor`;
 CREATE TABLE IF NOT EXISTS `visitor` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `is_worker` tinyint(1) NOT NULL DEFAULT '0',
   `fname` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
   `mname` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
   `lname` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
-  `image` varchar(30) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
   `renter_id` int(11) NOT NULL,
-  `status` tinyint(1) NOT NULL DEFAULT '0',
-  `card_id` int(11) NOT NULL,
+  `card` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL,
   `car_id` int(11) DEFAULT NULL,
   `car_num` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `doc_type` varchar(30) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `doc_id` int(11) NOT NULL,
   `doc_series` varchar(7) COLLATE utf8_unicode_ci DEFAULT NULL,
   `doc_num` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
   `phone` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL,
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  KEY `FK_visitor_idcard` (`card_id`),
   KEY `FK_visitor_renter` (`renter_id`),
-  CONSTRAINT `FK_visitor_idcard` FOREIGN KEY (`card_id`) REFERENCES `card` (`id`),
+  KEY `FK_visitor_car` (`car_id`),
+  KEY `FK_visitor_doc_type` (`doc_id`),
+  CONSTRAINT `FK_visitor_car` FOREIGN KEY (`car_id`) REFERENCES `car` (`id`),
+  CONSTRAINT `FK_visitor_doc_type` FOREIGN KEY (`doc_id`) REFERENCES `doc_type` (`id`),
   CONSTRAINT `FK_visitor_renter` FOREIGN KEY (`renter_id`) REFERENCES `renter` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 

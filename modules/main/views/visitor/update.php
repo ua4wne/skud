@@ -22,3 +22,43 @@ $this->params['breadcrumbs'][] = ['label' => $model->lname.' '.$model->fname, 'u
     ]) ?>
 
 </div>
+
+<?php
+$js = <<<JS
+    $('form').on('beforeSubmit', function(){
+         var data = $(this).serialize();
+         var result = false;
+         $.ajax({
+             url: '/main/visitor/check',
+             type: 'POST',
+             data: data,
+             async: false,
+             success: function(res){
+                //alert("Сервер вернул вот что: " + res);
+                if(res=='OK'){
+                    alert('Карта свободна!');
+                    result = true;
+                }
+                if(res=='SHARE'){
+                    alert('Вы выбрали гостевую карту. Гостевая карта назначается только временным посетителям!');
+                    $('#card').val('');
+                    $('#card').focus();
+                }
+                if(res=='BUSY')
+                    alert('Карта уже назначена другому сотруднику!');
+                if(res=='NO_CARD')
+                    alert('Карта еще не активирована. Обратитесь к администратору СКУД!');
+             },
+             error: function (xhr, ajaxOptions, thrownError) {
+       	        alert(xhr.status+' '+thrownError);
+             }
+         });
+         //alert('result='+result);
+         return result;
+    });
+
+JS;
+
+$this->registerJs($js);
+?>
+

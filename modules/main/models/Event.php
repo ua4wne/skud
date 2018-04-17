@@ -31,6 +31,22 @@ class Event extends BaseModel
         return 'event';
     }
 
+    public function afterSave($insert, $changedAttributes)
+    {
+        if ($insert) {
+            if($this->event_type == 17){ //проход состоялся
+                //это гостевая карта?
+                $share = Card::findOne(['code'=>$this->card])->share;
+                if($share){
+                    $visitor = Visitor::findOne(['card'=>$this->card]);
+                    $visitor->card = null;
+                    $visitor->save(false);
+                }
+            }
+        }
+        parent::afterSave($insert, $changedAttributes);
+    }
+
     /**
      * @inheritdoc
      */
