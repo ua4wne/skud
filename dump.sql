@@ -1,5 +1,5 @@
 -- --------------------------------------------------------
--- Хост:                         192.168.8.7
+-- Хост:                         93.157.171.45
 -- Версия сервера:               5.7.21-0ubuntu0.16.04.1 - (Ubuntu)
 -- Операционная система:         Linux
 -- HeidiSQL Версия:              9.5.0.5196
@@ -126,7 +126,7 @@ CREATE TABLE IF NOT EXISTS `card` (
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `code` (`code`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- Дамп данных таблицы skud.card: ~2 rows (приблизительно)
 DELETE FROM `card`;
@@ -162,7 +162,7 @@ CREATE TABLE IF NOT EXISTS `device` (
 DELETE FROM `device`;
 /*!40000 ALTER TABLE `device` DISABLE KEYS */;
 INSERT INTO `device` (`id`, `type`, `snum`, `fware`, `conn_fw`, `image`, `text`, `address`, `is_active`, `mode`, `zone_id`, `created_at`, `updated_at`) VALUES
-	(10, 'Z5RWEB', '44374', '3.23', '1.0.123', '/images/noimage.jpg', 'Турникет КПП', '192.168.8.9', 1, 0, 1, '2018-03-13 14:36:34', '2018-04-13 16:18:03');
+	(10, 'Z5RWEB', '44374', '3.23', '1.0.123', '/images/noimage.jpg', '', '192.168.8.9', 0, 8, 1, '2018-03-13 14:36:34', '2018-04-12 10:09:08');
 /*!40000 ALTER TABLE `device` ENABLE KEYS */;
 
 -- Дамп структуры для таблица skud.doc_type
@@ -201,9 +201,9 @@ CREATE TABLE IF NOT EXISTS `event` (
   PRIMARY KEY (`id`),
   KEY `FK_event_device` (`device_id`),
   CONSTRAINT `FK_event_device` FOREIGN KEY (`device_id`) REFERENCES `device` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5473 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5467 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
--- Дамп данных таблицы skud.event: ~48 rows (приблизительно)
+-- Дамп данных таблицы skud.event: ~42 rows (приблизительно)
 DELETE FROM `event`;
 /*!40000 ALTER TABLE `event` DISABLE KEYS */;
 INSERT INTO `event` (`id`, `device_id`, `event_type`, `card`, `flag`, `event_time`, `created_at`, `updated_at`) VALUES
@@ -248,13 +248,7 @@ INSERT INTO `event` (`id`, `device_id`, `event_type`, `card`, `flag`, `event_tim
 	(5463, 10, '5', '2720454', '0', '2018-04-12 10:40:20', '2018-04-12 10:40:20', '2018-04-12 10:40:20'),
 	(5464, 10, '17', '2720454', '0', '2018-04-12 10:40:20', '2018-04-12 10:40:20', '2018-04-12 10:40:20'),
 	(5465, 10, '2', '1367783', '0', '2018-04-12 13:22:13', '2018-04-12 13:22:12', '2018-04-12 13:22:12'),
-	(5466, 10, '3', '1367783', '0', '2018-04-12 13:22:15', '2018-04-12 13:22:14', '2018-04-12 13:22:14'),
-	(5467, 10, '2', '2720454', '0', '2018-04-14 10:29:25', '2018-04-14 10:29:28', '2018-04-14 10:29:28'),
-	(5468, 10, '3', '2720454', '0', '2018-04-14 10:29:29', '2018-04-14 10:29:33', '2018-04-14 10:29:33'),
-	(5469, 10, '2', '2723355', '0', '2018-04-14 10:29:33', '2018-04-14 10:29:36', '2018-04-14 10:29:36'),
-	(5470, 10, '3', '2723355', '0', '2018-04-14 10:29:35', '2018-04-14 10:29:39', '2018-04-14 10:29:39'),
-	(5471, 10, '2', '2723355', '0', '2018-04-14 10:32:11', '2018-04-14 10:32:15', '2018-04-14 10:32:15'),
-	(5472, 10, '3', '2723355', '0', '2018-04-14 10:32:15', '2018-04-14 10:32:19', '2018-04-14 10:32:19');
+	(5466, 10, '3', '1367783', '0', '2018-04-12 13:22:15', '2018-04-12 13:22:14', '2018-04-12 13:22:14');
 /*!40000 ALTER TABLE `event` ENABLE KEYS */;
 
 -- Дамп структуры для таблица skud.eventlog
@@ -269,9 +263,9 @@ CREATE TABLE IF NOT EXISTS `eventlog` (
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=65 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=63 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
--- Дамп данных таблицы skud.eventlog: ~12 rows (приблизительно)
+-- Дамп данных таблицы skud.eventlog: ~10 rows (приблизительно)
 DELETE FROM `eventlog`;
 /*!40000 ALTER TABLE `eventlog` DISABLE KEYS */;
 INSERT INTO `eventlog` (`id`, `user_id`, `user_ip`, `type`, `msg`, `is_read`, `created_at`, `updated_at`) VALUES
@@ -284,9 +278,7 @@ INSERT INTO `eventlog` (`id`, `user_id`, `user_ip`, `type`, `msg`, `is_read`, `c
 	(59, 1, '192.168.8.150', 'access', 'Пользователь <strong>ircut</strong> вошел в систему 11-04-2018 12:47:22', 0, '2018-04-11 12:47:22', '2018-04-11 12:47:22'),
 	(60, 1, '192.168.8.150', 'access', 'Пользователь <strong>ircut</strong> вошел в систему 11-04-2018 13:56:56', 0, '2018-04-11 13:56:56', '2018-04-11 13:56:56'),
 	(61, 1, '192.168.8.150', 'access', 'Пользователь <strong>ircut</strong> вышел из системы 11-04-2018 15:57:58', 0, '2018-04-11 15:57:58', '2018-04-11 15:57:58'),
-	(62, 1, '192.168.8.150', 'access', 'Пользователь <strong>ircut</strong> вошел в систему 12-04-2018 10:03:05', 0, '2018-04-12 10:03:05', '2018-04-12 10:03:05'),
-	(63, 1, '192.168.7.2', 'access', 'Пользователь <strong>ircut</strong> вошел в систему 13-04-2018 16:17:51', 0, '2018-04-13 16:17:51', '2018-04-13 16:17:51'),
-	(64, 1, '192.168.7.2', 'access', 'Пользователь <strong>ircut</strong> вышел из системы 13-04-2018 16:21:00', 0, '2018-04-13 16:21:00', '2018-04-13 16:21:00');
+	(62, 1, '192.168.8.150', 'access', 'Пользователь <strong>ircut</strong> вошел в систему 12-04-2018 10:03:05', 0, '2018-04-12 10:03:05', '2018-04-12 10:03:05');
 /*!40000 ALTER TABLE `eventlog` ENABLE KEYS */;
 
 -- Дамп структуры для таблица skud.event_type
@@ -426,7 +418,7 @@ CREATE TABLE IF NOT EXISTS `task` (
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- Дамп данных таблицы skud.task: ~0 rows (приблизительно)
 DELETE FROM `task`;
@@ -465,20 +457,11 @@ CREATE TABLE IF NOT EXISTS `tracelog` (
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3332 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3259 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
--- Дамп данных таблицы skud.tracelog: ~8 rows (приблизительно)
+-- Дамп данных таблицы skud.tracelog: ~0 rows (приблизительно)
 DELETE FROM `tracelog`;
 /*!40000 ALTER TABLE `tracelog` DISABLE KEYS */;
-INSERT INTO `tracelog` (`id`, `type`, `msg`, `created_at`, `updated_at`) VALUES
-	(3324, 'request', 'Сообщение от контроллера {"type":"Z5RWEB","sn":44374,"messages":[{"id":1804289383,"operation":"power_on","fw":"3.23","conn_fw":"1.0.123","active":0,"mode":0,"controller_ip":"192.168.8.9"}]}', '2018-04-13 15:02:44', '2018-04-13 15:02:44'),
-	(3325, 'response', 'Ответ от сервера {"date":"2018-04-13 15:02:44","interval":10,"messages":[{"id":1804289383,"operation":"set_active","active":1,"online":1}]}', '2018-04-13 15:02:44', '2018-04-13 15:02:44'),
-	(3326, 'request', 'Сообщение от контроллера {"type":"Z5RWEB","sn":44374,"messages":[{"id":846930886,"operation":"ping","active":1,"mode":8}]}', '2018-04-13 15:02:44', '2018-04-13 15:02:44'),
-	(3327, 'response', 'Ответ от сервера {"date":"2018-04-13 15:02:44","interval":10,"messages":[]}', '2018-04-13 15:02:44', '2018-04-13 15:02:44'),
-	(3328, 'request', 'Сообщение от контроллера {"type":"Z5RWEB","sn":44374,"messages":[{"id":1681692777,"operation":"ping","active":1,"mode":8}]}', '2018-04-13 15:02:54', '2018-04-13 15:02:54'),
-	(3329, 'response', 'Ответ от сервера {"date":"2018-04-13 15:02:54","interval":10,"messages":[]}', '2018-04-13 15:02:54', '2018-04-13 15:02:54'),
-	(3330, 'request', 'Сообщение от контроллера {"type":"Z5RWEB","sn":44374,"messages":[{"id":1714636915,"operation":"ping","active":1,"mode":8}]}', '2018-04-13 15:03:03', '2018-04-13 15:03:03'),
-	(3331, 'response', 'Ответ от сервера {"date":"2018-04-13 15:03:03","interval":10,"messages":[]}', '2018-04-13 15:03:03', '2018-04-13 15:03:03');
 /*!40000 ALTER TABLE `tracelog` ENABLE KEYS */;
 
 -- Дамп структуры для таблица skud.user
@@ -518,9 +501,9 @@ CREATE TABLE IF NOT EXISTS `visitor` (
   `fname` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
   `mname` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
   `lname` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
-  `image` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image` varchar(30) COLLATE utf8_unicode_ci DEFAULT NULL,
   `renter_id` int(11) NOT NULL,
-  `card` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `card` varchar(20) COLLATE utf8_unicode_ci NOT NULL,
   `car_id` int(11) DEFAULT NULL,
   `car_num` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
   `doc_id` int(11) NOT NULL,
@@ -530,6 +513,7 @@ CREATE TABLE IF NOT EXISTS `visitor` (
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
+  UNIQUE KEY `card` (`card`),
   KEY `FK_visitor_renter` (`renter_id`),
   KEY `FK_visitor_car` (`car_id`),
   KEY `FK_visitor_doc_type` (`doc_id`),

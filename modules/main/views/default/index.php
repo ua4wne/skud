@@ -147,7 +147,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
                                 <?= $form->field($model, 'mname')->textInput(['maxlength' => true]) ?>
 
-                                <?= $form->field($model, 'renter_id')->dropDownList($rentsel,['class'=>'select2','id'=>'renter']) ?>
+                                <?= $form->field($model, 'renter_id')->dropDownList($rentsel) ?>
 
                                 <?= $form->field($model, 'card')->textInput() ?>
                             </div>
@@ -481,62 +481,32 @@ $js = <<<JS
 	});*/
     
     if(!ace.vars['touch']) {
-		$('.chosen-select').chosen({allow_single_deselect:true}); 
-			//resize the chosen on window resize
+					$('.chosen-select').chosen({allow_single_deselect:true}); 
+					//resize the chosen on window resize
 			
-		$(window)
-			.off('resize.chosen')
-			.on('resize.chosen', function() {
-				$('.chosen-select').each(function() {
-					$(this).next().css({'width': $(this).parent().width()});
-				})
-			}).trigger('resize.chosen');
-			//resize chosen on sidebar collapse/expand
-			$(document).on('settings.ace.chosen', function(e, event_name, event_val) {
-				if(event_name != 'sidebar_collapsed') return;
-				$('.chosen-select').each(function() {
-					$(this).next().css({'width': $(this).parent().width()});
-				})
-			});			
+					$(window)
+					.off('resize.chosen')
+					.on('resize.chosen', function() {
+						$('.chosen-select').each(function() {
+							 $(this).next().css({'width': $(this).parent().width()});
+						})
+					}).trigger('resize.chosen');
+					//resize chosen on sidebar collapse/expand
+					$(document).on('settings.ace.chosen', function(e, event_name, event_val) {
+						if(event_name != 'sidebar_collapsed') return;
+						$('.chosen-select').each(function() {
+							 $(this).next().css({'width': $(this).parent().width()});
+						})
+					});
 			
-			$('#chosen-multiple-style .btn').on('click', function(e){
-				var target = $(this).find('input[type=radio]');
-				var which = parseInt(target.val());
-				if(which == 2) $('#form-field-select-4').addClass('tag-input-style');
-				else $('#form-field-select-4').removeClass('tag-input-style');
-			});
-	}
-	
-	$( "#visitor-doc_num" ).blur(function() {
-        var doc_id = $('#visitor-doc_id').val();
-        var doc_series = $('#visitor-doc_series').val();
-        var doc_num = $('#visitor-doc_num').val();
-        if(doc_id.length>0 && doc_series.length>0 && doc_num.length>0){
-            $.ajax({
-                 url: '/main/default/find-visitor',
-                 type: 'POST',
-                 data: {'docid':doc_id,'series':doc_series,'docnum':doc_num},
-                 success: function(res){
-                    //alert("Сервер вернул вот что: " + res);
-                    if(res=="ERR"){}
-                    else{
-                        var obj = jQuery.parseJSON(res);
-                        $('#visitor-lname').val(obj.lname);
-                        $('#visitor-fname').val(obj.fname);
-                        $('#visitor-mname').val(obj.mname);
-                        $("#renter [value='"+obj.renter_id+"']").attr("selected", "selected");
-                        $("#car_type [value='"+obj.car_id+"']").attr("selected", "selected");
-                        $('#visitor-car_num').val(obj.car_num);
-                        $('.select2').css('width','100%').select2({allowClear:false});
-                    }
-                    
-                 },
-                 error: function (xhr, ajaxOptions, thrownError) {
-                    alert(xhr.status+' '+thrownError);
-                 }
-            });
-        }
-    });
+			
+					$('#chosen-multiple-style .btn').on('click', function(e){
+						var target = $(this).find('input[type=radio]');
+						var which = parseInt(target.val());
+						if(which == 2) $('#form-field-select-4').addClass('tag-input-style');
+						 else $('#form-field-select-4').removeClass('tag-input-style');
+					});
+				}
 		
 JS;
 

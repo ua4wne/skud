@@ -185,9 +185,6 @@ class DefaultController extends Controller
                                 else{
                                     $model->image = '/images/truck.png';
                                 }
-                                if($model->car->text != 'Без ТС' && $model->car_num == ''){
-                                    return 'Не указан регистрационный номер ТС';
-                                }
                                 $model->save();
                             }
                             else{//был уже
@@ -196,9 +193,6 @@ class DefaultController extends Controller
                                 $visitor->car_id = $model->car_id;
                                 $visitor->car_num = $model->car_num;
                                 $visitor->renter_id = $model->renter_id;
-                                if($model->car->text != 'Без ТС' && $model->car_num == ''){
-                                    return 'Не указан регистрационный номер ТС';
-                                }
                                 $visitor->save();
                             }
                             return 'OK';
@@ -212,23 +206,6 @@ class DefaultController extends Controller
                     }
                 }
 
-            }
-        }
-        return 'ERR';
-    }
-
-    public function actionFindVisitor(){
-        if(\Yii::$app->request->isAjax) {
-            $doc_id = $_POST['docid'];
-            $series = $_POST['series'];
-            $doc_num = $_POST['docnum'];
-            $visitor = Visitor::findOne(['doc_id'=>$doc_id,'doc_series'=>$series,'doc_num'=>$doc_num]);
-            if(empty($visitor)){
-                return 'NO';
-            }
-            else{
-                $result = ['fname'=>$visitor->fname,'mname'=>$visitor->mname,'lname'=>$visitor->lname,'renter_id'=>$visitor->renter_id,'car_id'=>$visitor->car_id,'car_num'=>$visitor->car_num];
-                return json_encode($result);
             }
         }
         return 'ERR';
