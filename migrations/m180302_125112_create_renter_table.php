@@ -22,6 +22,7 @@ class m180302_125112_create_renter_table extends Migration
             'area' => $this->string(50)->notNull(),
             'agent' => $this->string(50)->notNull(),
             'phone' => $this->string(20),
+            'email' => $this->string(70),
             'status' => $this->smallInteger()->notNull()->defaultValue(1),
             'created_at' => $this->dateTime()->notNull(),
             'updated_at' => $this->dateTime()->notNull(),

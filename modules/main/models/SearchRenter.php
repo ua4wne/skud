@@ -19,7 +19,7 @@ class SearchRenter extends Renter
     {
         return [
             [['id', 'status'], 'integer'],
-            [['title', 'area', 'agent', 'phone', 'created_at', 'updated_at'], 'safe'],
+            [['title', 'area', 'agent', 'email', 'phone', 'created_at', 'updated_at'], 'safe'],
         ];
     }
 
@@ -68,6 +68,7 @@ class SearchRenter extends Renter
         $query->andFilterWhere(['like', 'title', $this->title])
             ->andFilterWhere(['like', 'area', $this->area])
             ->andFilterWhere(['like', 'agent', $this->agent])
+            ->andFilterWhere(['like', 'email', $this->email])
             ->andFilterWhere(['like', 'phone', $this->phone]);
 
         return $dataProvider;

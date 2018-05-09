@@ -76,7 +76,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             'doc_series',
             'doc_num',
-            'phone',
+            //'phone',
             //'created_at',
             //'updated_at',
 

@@ -30,14 +30,14 @@
     background: rgba(0, 0, 0, 0.15);
 }
 .small-box h3 {
-    font-size: 38px;
+    font-size: 1.5em;
     font-weight: bold;
     margin: 0 0 10px 0;
     white-space: nowrap;
     padding: 0;
 }
 .small-box p {
-    font-size: 15px;
+    font-size: 1em;
 }
 .small-box p > small {
     display: block;
