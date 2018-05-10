@@ -41,6 +41,7 @@ class Renter extends BaseModel
             [['title'], 'string', 'max' => 100],
             [['area', 'agent'], 'string', 'max' => 50],
             [['phone'], 'string', 'max' => 20],
+            [['email'], 'email'],
         ];
     }
 
@@ -55,6 +56,7 @@ class Renter extends BaseModel
             'area' => 'Локация',
             'agent' => 'Директор',
             'phone' => 'Телефон',
+            'email' => 'E-Mail',
             'status' => 'Статус',
             'created_at' => 'Дата создания',
             'updated_at' => 'Дата обновления',

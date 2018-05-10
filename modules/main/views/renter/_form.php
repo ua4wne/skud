@@ -18,6 +18,8 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'agent')->textInput(['maxlength' => true]) ?>
 
+    <?= $form->field($model, 'email') ?>
+
     <?= $form->field($model, 'phone')->widget(\yii\widgets\MaskedInput::className(), [
     'mask' => '(999) 999-99-99',
     ]) ?>
