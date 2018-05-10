@@ -81,6 +81,8 @@ class UserController extends Controller
             //генерим новый пароль
             $pass = $this->makepass(8);
             $model->setPassword($pass);
+            if(empty($model->image))
+                $model->image = '/images/male.png';
             //$model->save();
             if ($model->save()) {
                 $site = Yii::$app->urlManager->createAbsoluteUrl(['/']);
@@ -128,10 +130,13 @@ class UserController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post())) {
             $msg = 'Пользователь <strong>'.Yii::$app->user->identity->fname .' '.Yii::$app->user->identity->lname.'</strong> обновил учетную запись <strong>'. $model->username .'</strong>.';
             LibraryModel::AddEventLog('info',$msg);
             $model->UpdateRole($model->role->name,$model->id); //обновляем права пользователю
+            if(empty($model->image))
+                $model->image = '/images/male.png';
+            $model->save();
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             $statsel = ['0'=>'Не активный', '1'=>'Активный'];

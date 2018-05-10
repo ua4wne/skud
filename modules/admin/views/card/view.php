@@ -15,6 +15,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1 class="text-center"><?= Html::encode($this->title) ?></h1>
 
     <p>
+        <?= Html::a('Новая карта', ['create'], ['class' => 'btn btn-success']) ?>
         <?= Html::a('Обновить', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
         <?= Html::a('Удалить', ['delete', 'id' => $model->id], [
             'class' => 'btn btn-danger',
