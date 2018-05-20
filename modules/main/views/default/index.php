@@ -137,7 +137,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         </div>
                     </div>
                     <div class="visitor-form">
-                        <?php $form = ActiveForm::begin(['id'=>'add_visitor']); ?>
+                        <?php $form = ActiveForm::begin(['id'=>'add_visitor','action'=>'/main/default/add-visitor']); ?>
 
                         <div class="row">
                             <div class="col-sm-6">
@@ -147,24 +147,23 @@ $this->params['breadcrumbs'][] = $this->title;
 
                                 <?= $form->field($model, 'mname')->textInput(['maxlength' => true]) ?>
 
-                                <?= $form->field($model, 'renter_id')->dropDownList($rentsel) ?>
+                                <?= $form->field($model, 'renter_id')->dropDownList($rentsel, ['class'=>'select2','id'=>'renter_id']) ?>
 
                                 <?= $form->field($model, 'card')->textInput() ?>
                             </div>
                             <div class="col-sm-6">
-                                <?= $form->field($model, 'doc_id')->dropDownList($docs) ?>
+                                <?= $form->field($model, 'doc_id')->dropDownList($docs,['id'=>'doc_id']) ?>
 
-                                <?= $form->field($model, 'doc_series')->textInput(['maxlength' => true]) ?>
+                                <?= $form->field($model, 'doc_series')->textInput(['maxlength' => true, 'id'=>'series']) ?>
 
-                                <?= $form->field($model, 'doc_num')->textInput(['maxlength' => true]) ?>
+                                <?= $form->field($model, 'doc_num')->textInput(['maxlength' => true, 'id'=>'doc_num']) ?>
 
                                 <?= $form->field($model, 'car_id')->dropDownList($cars,['class'=>'select2','id'=>'car_type']) ?>
 
-                                <?= $form->field($model, 'car_num')->textInput(['maxlength' => true]) ?>
+                                <?= $form->field($model, 'car_num')->textInput(['maxlength' => true, 'id'=>'car_num']) ?>
 
                                 <div class="form-group">
                                     <?= Html::submitButton('Сохранить', ['class' => 'btn btn-success']) ?>
-                                    <?= Html::Button('Запустить машину', ['class' => 'btn btn-info', 'id'=>'input-direction']) ?>
                                 </div>
                             </div>
                         </div>
@@ -424,23 +423,7 @@ $js = <<<JS
          });
          return false;
     });
-    
-    $( "#input-direction" ).click(function(e) {
-        e.preventDefault();
-        var card = $('#visitor-card').val();
-        $.ajax({
-            url: '/main/default/add-event',
-            type: 'POST',
-            data: {'card':card},
-            success: function(res){
-                alert("Сервер вернул вот что: " + res);
-            },
-            error: function (xhr, ajaxOptions, thrownError) {
-                alert(xhr.status+' '+thrownError);
-            }
-        });
-    });
-    
+        
     $('#add_visitor').submit(function () {
         var err = false;
         
@@ -460,33 +443,62 @@ $js = <<<JS
             err = true;
         }
                 
-        if(!err){
-            var data = $(this).serialize();
-             $.ajax({
-                 url: '/main/default/add-visitor',
+        if(err){
+           return false;        
+        }
+        else
+            return true;
+    });
+    
+    $( "#doc_id" ).blur(function() {
+        if(check_fields())
+            findVisitor();
+    });
+    
+    $( "#series" ).blur(function() {
+        if(check_fields())
+            findVisitor();
+    });
+    
+    $( "#doc_num" ).blur(function() {
+        if(check_fields())
+            findVisitor();
+    });
+    
+    function check_fields(){
+        if($('#doc_id').val().length === 0 || $('#series').val().length === 0 || $('#doc_num').val().length === 0)
+            return false;
+        else
+            return true;
+    }
+    
+    function findVisitor(){
+        var doc_id = $('#doc_id').val();
+        var series = $('#series').val();
+        var doc_num = $('#doc_num').val();
+        $.ajax({
+                 url: '/main/default/find-visitor',
                  type: 'POST',
-                 data: data,
-                 //cache: false,
+                 data: {'doc_id':doc_id,'series':series,'doc_num':doc_num},
                  success: function(res){
                     //alert("Сервер вернул вот что: " + res);
-                    if(res=='ERR'){
-                        alert('Не известная ошибка. Обратитесь к администратору.');
+                    if(res != 'NOT'){
+                        var obj = JSON.parse(res);
+                        $('#visitor-lname').val(obj.lname);
+                        $('#visitor-fname').val(obj.fname);
+                        $('#visitor-mname').val(obj.mname);
+                        $('#renter_id').val(obj.renter_id);
+                        //$("#renter_id option[value='"+obj.renter_id+"']").attr("selected", "selected");                        
+                        $('#car_type').val(obj.car_id);
+                        //$("#car_type option[value='"+obj.car_id+"']").attr("selected", "selected");
+                        $('#car_num').val(obj.car_num);
                     }
-                    if(res=='OK'){
-                        alert('Данные были успешно записаны');
-                        //$('#add_visitor')[0].reset();                        
-                    }
-                    //else{
-                     //   alert(res);
-                    //}              
                  },
                  error: function (xhr, ajaxOptions, thrownError) {
                     alert(xhr.status+' '+thrownError);
                  }
-             });
-        }
-        return false;
-    });
+            });
+    }
         
     //select2
 	$('.select2').css('width','100%').select2({allowClear:false})

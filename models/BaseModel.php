@@ -20,7 +20,7 @@ class BaseModel extends ActiveRecord
         }
     }
 
-    public function afterSave($insert, $changedAttributes)
+    /*public function afterSave($insert, $changedAttributes)
     {
         $modelName = $this->tableName();
         parent::afterSave($insert, $changedAttributes);
@@ -32,7 +32,7 @@ class BaseModel extends ActiveRecord
                     Yii::$app->session->setFlash('success', 'Запись обновлена!');
             }
         }
-    }
+    }*/
 
     public function afterDelete()
     {

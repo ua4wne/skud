@@ -159,47 +159,25 @@ class DefaultController extends Controller
         return 'ERR';
     }
 
-    public function actionAddEvent(){ //Временная заглушка для автопрохода ТС (чтобы не прикладывать карту на въезд водителям)
-        if (\Yii::$app->request->isAjax) {
-            $card = $_POST['card'];
-            //определяем авто для посетителя
-            $visitor = Visitor::findOne(['card'=>$card]);
-            //проверяем, что выбрано ТС
-            $car = CarType::findOne($visitor->car_id)->text;
-            if($car!='Без ТС'){
-                $model = new Event();
-                $device_id = Device::findOne(['type'=>'Z5RWEB'])->id;
-                $model->device_id = $device_id;
-                $model->event_type = '16';
-                $model->card = $card;
-                $model->flag = '0';
-                //$event->visitor_id = $visitor_id;
-                $model->event_time = date('Y-m-d H:i:s');
-                //$model->created_at = date('Y-m-d H:i:s');
-                //$model->updated_at = date('Y-m-d H:i:s');
-                if(!$model->save()) {
-                    return 'ERR';
-                }
-            }
-            return 'OK';
-        }
-    }
-
     public function actionAddVisitor(){
         $model = new Visitor();
-        if (\Yii::$app->request->isAjax) {
+        //if (\Yii::$app->request->isAjax) {
             if ($model->load(\Yii::$app->request->post())) {
                 //проверка что карта есть и она гостевая и проход по ней разрешен
                 $card = Card::findOne(['code'=>$model->card]);
                 if(empty($card)){
-                    return 'Карта с номером '. $model->card . ' не обнаружена в системе! Для авторизации карты обратитесь к начальнику охраны.';
+                    //return 'Карта с номером '. $model->card . ' не обнаружена в системе! Для авторизации карты обратитесь к начальнику охраны.';
+                    Yii::$app->session->setFlash('error', 'Карта с номером '. $model->card . ' не обнаружена в системе! Для авторизации карты обратитесь к начальнику охраны.');
+                    return $this->redirect(['/']);
                 }
                 else{
                     if($card->share && $card->granted){
                         //проверяем что карта не привязана к другому человеку
                         $busy = Visitor::find()->where(['card'=>$model->card])->count();
                         if($busy){
-                            return 'Карта с номером '. $model->card . ' уже была выдана ранее! Выдача одной карты нескольким посетителям запрещена. Выберите другую карту, а эту сдайте администратору';
+                            //return 'Карта с номером '. $model->card . ' уже была выдана ранее! Выдача одной карты нескольким посетителям запрещена. Выберите другую карту, а эту сдайте администратору';
+                            Yii::$app->session->setFlash('error', 'Карта с номером '. $model->card . ' уже была выдана ранее! Выдача одной карты нескольким посетителям запрещена. Выберите другую карту, а эту сдайте администратору!');
+                            return $this->redirect(['/']);
                         }
                         else{
                             //Все нормально, можно выдавать. Проверяем не был ли ранее зарегистрирован данный чел
@@ -221,20 +199,60 @@ class DefaultController extends Controller
                                 $visitor->renter_id = $model->renter_id;
                                 $visitor->save();
                             }
-                            return 'OK';
+                            //проверяем, что выбрано ТС
+                            $car = CarType::findOne($model->car_id)->text;
+                            if($car != 'Без ТС'){
+                                $device_id = Device::findOne(['type'=>'Z5RWEB'])->id;
+                                //смотрим привязку карты к посетителю
+                                $visitor_id = Visitor::findOne(['card'=>$model->card])->id;
+                                // подключение к базе данных
+                                $connection = \Yii::$app->db;
+                                $connection->createCommand()->insert('event', [
+                                    'device_id' => $device_id,
+                                    'event_type' => '16',
+                                    'card' => $model->card,
+                                    'flag' => '0',
+                                    'event_time' => date('Y-m-d H:i:s'),
+                                    'visitor_id' => $visitor_id,
+                                    'created_at' => date('Y-m-d H:i:s'),
+                                    'updated_at' => date('Y-m-d H:i:s'),
+                                ])->execute();
+                            }
+                            //return 'OK';
+                            return $this->redirect(['/']);
                         }
                     }
                     elseif(!$card->share){
-                        return 'Карта не является гостевой! Выберите другую карту, а эту сдайте начальнику охраны.';
+                        //return 'Карта не является гостевой! Выберите другую карту, а эту сдайте начальнику охраны.';
+                        Yii::$app->session->setFlash('error', 'Карта '. $model->card . ' не является гостевой! Выберите другую карту, а эту сдайте начальнику охраны.');
+                        return $this->redirect(['/']);
                     }
                     elseif(!$card->granted){
-                        return 'Проход по карте с номером '. $model->card . ' запрещен! Для авторизации карты обратитесь к начальнику охраны.';
+                        //return 'Проход по карте с номером '. $model->card . ' запрещен! Для авторизации карты обратитесь к начальнику охраны.';
+                        Yii::$app->session->setFlash('error', 'Проход по карте с номером '. $model->card . ' запрещен! Для авторизации карты обратитесь к начальнику охраны.');
+                        return $this->redirect(['/']);
                     }
                 }
 
             }
+        //}
+        return $this->redirect(['/']);
+    }
+
+    public function actionFindVisitor(){
+        if(\Yii::$app->request->isAjax){
+            $doc_id = $_POST['doc_id'];
+            $series = $_POST['series'];
+            $doc_num = $_POST['doc_num'];
+
+            $visitor = Visitor::findOne(['doc_id'=>$doc_id, 'doc_series'=>$series, 'doc_num'=>$doc_num])->toArray();
+            if(empty($visitor)){
+                return 'NOT';
+            }
+            else{
+                return json_encode($visitor);
+            }
         }
-        return 'ERR';
     }
 
     public function actionSetMode(){
