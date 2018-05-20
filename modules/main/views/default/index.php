@@ -164,6 +164,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
                                 <div class="form-group">
                                     <?= Html::submitButton('Сохранить', ['class' => 'btn btn-success']) ?>
+                                    <?= Html::Button('Запустить машину', ['class' => 'btn btn-info', 'id'=>'input-direction']) ?>
                                 </div>
                             </div>
                         </div>
@@ -320,8 +321,8 @@ $js = <<<JS
         });  
     }
 
-    window.setInterval(function () { show(); }, 2000);
-
+    window.setInterval(function () { show(); }, 3000);
+    
     $('#btn_block').click(function(e){
         e.preventDefault();
         var device=$('#form-field-select-4 :selected').val();
@@ -424,6 +425,22 @@ $js = <<<JS
          return false;
     });
     
+    $( "#input-direction" ).click(function(e) {
+        e.preventDefault();
+        var card = $('#visitor-card').val();
+        $.ajax({
+            url: '/main/default/add-event',
+            type: 'POST',
+            data: {'card':card},
+            success: function(res){
+                alert("Сервер вернул вот что: " + res);
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(xhr.status+' '+thrownError);
+            }
+        });
+    });
+    
     $('#add_visitor').submit(function () {
         var err = false;
         
@@ -457,11 +474,11 @@ $js = <<<JS
                     }
                     if(res=='OK'){
                         alert('Данные были успешно записаны');
-                        $('#add_visitor')[0].reset();
+                        //$('#add_visitor')[0].reset();                        
                     }
-                    else{
-                        alert(res);
-                    }              
+                    //else{
+                     //   alert(res);
+                    //}              
                  },
                  error: function (xhr, ajaxOptions, thrownError) {
                     alert(xhr.status+' '+thrownError);

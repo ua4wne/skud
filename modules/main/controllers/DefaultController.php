@@ -159,6 +159,32 @@ class DefaultController extends Controller
         return 'ERR';
     }
 
+    public function actionAddEvent(){ //Временная заглушка для автопрохода ТС (чтобы не прикладывать карту на въезд водителям)
+        if (\Yii::$app->request->isAjax) {
+            $card = $_POST['card'];
+            //определяем авто для посетителя
+            $visitor = Visitor::findOne(['card'=>$card]);
+            //проверяем, что выбрано ТС
+            $car = CarType::findOne($visitor->car_id)->text;
+            if($car!='Без ТС'){
+                $model = new Event();
+                $device_id = Device::findOne(['type'=>'Z5RWEB'])->id;
+                $model->device_id = $device_id;
+                $model->event_type = '16';
+                $model->card = $card;
+                $model->flag = '0';
+                //$event->visitor_id = $visitor_id;
+                $model->event_time = date('Y-m-d H:i:s');
+                //$model->created_at = date('Y-m-d H:i:s');
+                //$model->updated_at = date('Y-m-d H:i:s');
+                if(!$model->save()) {
+                    return 'ERR';
+                }
+            }
+            return 'OK';
+        }
+    }
+
     public function actionAddVisitor(){
         $model = new Visitor();
         if (\Yii::$app->request->isAjax) {
@@ -245,6 +271,7 @@ class DefaultController extends Controller
             $event = Event::find()->orderBy(['id' => SORT_DESC,])->limit(1)->all();
             $event_type = $event[0]['event_type'];
             $code = $event[0]['card'];
+            $visitor_id = $event[0]['visitor_id'];
             $device = Device::findOne($event[0]['device_id'])->text;
             //определяем авторизована ли карта
             $card = Card::findOne(['code'=>$code]);
@@ -291,7 +318,8 @@ class DefaultController extends Controller
             }
             else{
                 //определяем текущую привязку карты к сотруднику
-                $visitor = Visitor::findOne(['card'=>$card]);
+                //$visitor = Visitor::findOne(['card'=>$card]);
+                $visitor = Visitor::findOne($visitor_id);
                 if(empty($visitor)){
                     $image = '<img src="images/noimage.jpg" alt="photo">';
                     $persona .= '<div class="profile-info-row">

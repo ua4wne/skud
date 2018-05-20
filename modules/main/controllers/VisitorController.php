@@ -128,7 +128,14 @@ class VisitorController extends Controller
                     return 'OK';
                 }
                 else{
-                    return 'BUSY';
+                    //это обновление данных уже привязанного к этой карте посетителя?
+                    $old = Visitor::findOne(['id'=>$model->id, 'card'=>$model->card]);
+                    if(empty($old)){ //нет, это попытка привязки занятой карты к другому посетителю
+                        return 'BUSY';
+                    }
+                    else{
+                        return 'OLD';
+                    }
                 }
             }
         }

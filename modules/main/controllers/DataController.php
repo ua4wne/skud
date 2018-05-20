@@ -115,7 +115,7 @@ class DataController extends \yii\web\Controller
                         if(isset($item->flag))
                             $model->flag = $item->flag;
                         $model->event_time = $item->time;
-                        $model->created_at = date('Y-m-d H:m:s');
+                        $model->created_at = date('Y-m-d H:i:s');
                         if($item->card != '000000000000')
                             $model->save(false);
                         $event_success++;

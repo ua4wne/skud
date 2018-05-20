@@ -138,19 +138,20 @@ AppAsset::register($this);
 
         <div class="sidebar-shortcuts" id="sidebar-shortcuts">
             <div class="sidebar-shortcuts-large" id="sidebar-shortcuts-large">
-                <button class="btn btn-success">
-                    <i class="ace-icon fa fa-signal"></i>
-                </button>
 
-                <a href="/main/stock/store" class="btn btn-info" title="Остатки на складе">
-                    <i class="ace-icon fa fa-stack-overflow"></i>
+                <a href="/main/visitor/index" class="btn btn-success" title="Посетители">
+                    <i class="ace-icon fa fa-vcard-o"></i>
                 </a>
 
-                <a href="/main/syslog/index" class="btn btn-warning" title="Системный журнал">
-                    <i class="ace-icon fa fa-envelope-o"></i>
+                <a href="/main/event/index" class="btn btn-info" title="События СКУД">
+                    <i class="ace-icon fa fa-bell-o"></i>
                 </a>
 
-                <a href="/main/device/index" class="btn btn-danger" title="Устройства">
+                <a href="/admin/events/index" class="btn btn-warning" title="Системный журнал">
+                    <i class="ace-icon fa fa-comments-o"></i>
+                </a>
+
+                <a href="/admin/device/index" class="btn btn-danger" title="Устройства">
                     <i class="ace-icon fa fa-cogs"></i>
                 </a>
             </div>

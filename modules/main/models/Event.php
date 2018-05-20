@@ -14,7 +14,7 @@ use yii\helpers\ArrayHelper;
  * @property int $id
  * @property int $device_id
  * @property string $event_type
- * @property int $card_id
+ * @property int $card
  * @property string $flag
  * @property string $created_at
  * @property string $updated_at
@@ -29,6 +29,14 @@ class Event extends BaseModel
     public static function tableName()
     {
         return 'event';
+    }
+
+    public function beforeSave($insert)
+    {
+        //смотрим привязку карты к посетителю
+        $visitor_id = Visitor::findOne(['card'=>$this->card])->id;
+        $this->visitor_id = $visitor_id;
+        parent::beforeSave($insert);
     }
 
     public function afterSave($insert, $changedAttributes)
@@ -54,7 +62,7 @@ class Event extends BaseModel
     {
         return [
             [['device_id', 'event_type', 'card', 'event_time'], 'required'],
-            [['device_id'], 'integer'],
+            [['device_id', 'visitor_id'], 'integer'],
             [['created_at', 'updated_at', 'event_time'], 'safe'],
             [['event_type'], 'string', 'max' => 2],
             [['card'], 'string', 'max' => 20],
@@ -74,6 +82,7 @@ class Event extends BaseModel
             'event_type' => 'Событие',
             'card' => 'Карта доступа',
             'flag' => 'Флаг',
+            'visitor_id' => 'ID посетителя',
             'event_time' => 'Время события',
             'created_at' => 'Дата создания',
             'updated_at' => 'Дата обновления',

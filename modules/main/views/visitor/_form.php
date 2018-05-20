@@ -29,6 +29,8 @@ use yii\widgets\ActiveForm;
                 <div class="tab-content">
                     <div id="home" class="tab-pane in active">
 
+                        <?= $model->isNewRecord ? '' : $form->field($model, 'id')->hiddenInput()->label(false) ?>
+
                         <?= $form->field($model, 'lname')->textInput(['maxlength' => true]) ?>
 
                         <?= $form->field($model, 'fname')->textInput(['maxlength' => true]) ?>

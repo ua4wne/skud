@@ -50,7 +50,7 @@ class Visitor extends BaseModel
         return [
             [['fname', 'lname', 'renter_id', 'doc_id'], 'required'],
             [['renter_id', 'car_id', 'doc_id'], 'integer'],
-            [['created_at', 'updated_at'], 'safe'],
+            [['id','created_at', 'updated_at'], 'safe'],
             [['fname', 'mname', 'lname'], 'string', 'max' => 50],
             [['image'], 'string', 'max' => 50],
             [['car_num', 'doc_num'], 'string', 'max' => 10],
