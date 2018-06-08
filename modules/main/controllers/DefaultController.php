@@ -245,12 +245,12 @@ class DefaultController extends Controller
             $series = $_POST['series'];
             $doc_num = $_POST['doc_num'];
 
-            $visitor = Visitor::findOne(['doc_id'=>$doc_id, 'doc_series'=>$series, 'doc_num'=>$doc_num])->toArray();
+            $visitor = Visitor::findOne(['doc_id'=>$doc_id, 'doc_series'=>$series, 'doc_num'=>$doc_num]);
             if(empty($visitor)){
                 return 'NOT';
             }
             else{
-                return json_encode($visitor);
+                return json_encode($visitor->toArray());
             }
         }
     }

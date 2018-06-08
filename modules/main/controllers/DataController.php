@@ -2,13 +2,11 @@
 
 namespace app\modules\main\controllers;
 
-use app\models\LibraryModel;
 use app\modules\admin\models\Device;
 use app\modules\admin\models\Task;
 use app\modules\main\models\Card;
 use app\modules\main\models\Event;
-use yii\filters\AccessControl;
-use yii\filters\VerbFilter;
+use app\modules\main\models\Visitor;
 use Yii;
 use stdClass;
 
@@ -25,12 +23,6 @@ class DataController extends \yii\web\Controller
                         'controllers' => ['main/data'],
                     ],
                 ]
-            ],
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'logout' => ['post'],
-                ],
             ],
         ];
     }
@@ -50,6 +42,7 @@ class DataController extends \yii\web\Controller
         //$session = Yii::$app->session;
         //Получить JSON как строку
         $json_str = file_get_contents('php://input');
+        //$json_str = ' {"type":"Z5RWEB","sn":44374,"messages":[{"id":1869470124,"operation":"events","events":[{"flag": 0,"event": 4,"time": "2018-06-08 14:26:22","card": "00000067BDC3"}]}]}';
         //$json_str = '{"type":"Z5RWEB","sn":44374,"messages":[{"id":631704567,"operation":"power_on","fw":"3.23","conn_fw":"1.0.123","active":0,"mode":0,"controller_ip":"192.168.8.9"}]}';
         //$json_str = '{"type":"Z5RWEB","sn":44374,"messages":[{"id":1856669179,"operation":"ping","active":1,"mode":0}]}';
         //$json_str = '{"type":"Z5RWEB","sn":44374,"messages":[{"id":719885386,"operation":"events","events":[{"flag": 0,"event": 17,"time": "2018-04-15 20:25:34","card": "0000002982C6"}]}]}';
@@ -112,6 +105,12 @@ class DataController extends \yii\web\Controller
                         $model->device_id = $device_id;
                         $model->event_type = $item->event;
                         $model->card = hexdec($item->card);
+                        //смотрим привязку карты к посетителю
+                        $visitor_id = Visitor::findOne(['card'=>$model->card])->id;
+                        if(!empty($visitor_id)){
+                            $model->visitor_id = $visitor_id;
+                        }
+
                         if(isset($item->flag))
                             $model->flag = $item->flag;
                         $model->event_time = $item->time;
