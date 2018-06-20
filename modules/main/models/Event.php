@@ -4,8 +4,9 @@ namespace app\modules\main\models;
 
 use app\modules\admin\models\EventType;
 use Yii;
-use app\models\BaseModel;
+//use app\models\BaseModel;
 use app\modules\admin\models\Device;
+use yii\db\ActiveRecord;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -21,7 +22,7 @@ use yii\helpers\ArrayHelper;
  *
  * @property Device $device
  */
-class Event extends BaseModel
+class Event extends ActiveRecord
 {
     /**
      * @inheritdoc
@@ -31,13 +32,13 @@ class Event extends BaseModel
         return 'event';
     }
 
-    public function beforeSave($insert)
+    /*public function beforeSave($insert)
     {
         //смотрим привязку карты к посетителю
         $visitor_id = Visitor::findOne(['card'=>$this->card])->id;
         $this->visitor_id = $visitor_id;
         parent::beforeSave($insert);
-    }
+    }*/
 
     public function afterSave($insert, $changedAttributes)
     {
@@ -47,8 +48,10 @@ class Event extends BaseModel
                 $share = Card::findOne(['code'=>$this->card])->share;
                 if($share){
                     $visitor = Visitor::findOne(['card'=>$this->card]);
-                    $visitor->card = null;
-                    $visitor->save(false);
+                    if(!empty($visitor)){
+                        $visitor->card = null;
+                        $visitor->save(false);
+                    }
                 }
             }
         }
@@ -62,8 +65,8 @@ class Event extends BaseModel
     {
         return [
             [['device_id', 'event_type', 'card', 'event_time'], 'required'],
-            [['device_id', 'visitor_id'], 'integer'],
-            [['created_at', 'updated_at', 'event_time'], 'safe'],
+            [['device_id'], 'integer'],
+            [['created_at', 'updated_at', 'event_time', 'visitor_id'], 'safe'],
             [['event_type'], 'string', 'max' => 2],
             [['card'], 'string', 'max' => 20],
             [['flag'], 'string', 'max' => 3],

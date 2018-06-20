@@ -17,6 +17,8 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <p>
         <?= Html::a('Новая карта', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::Button('Загрузить все карты', ['class' => 'btn btn-info', 'id'=>'add_cards']) ?>
+        <?= Html::Button('Удалить все карты', ['class' => 'btn btn-danger', 'id'=>'clear_cards']) ?>
     </p>
 
     <?= GridView::widget([
@@ -108,3 +110,59 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
     ]); ?>
 </div>
+
+<?php
+$js = <<<JS
+    $('#add_cards').click(function(e){
+        e.preventDefault();
+        $.ajax({
+            url: '/admin/card/add-cards',
+            type: 'POST',
+            data: {'data':'add'},
+            success: function(res){
+                //alert("Сервер вернул вот что: " + res);
+                if(res=='OK'){
+                    alert('Задачи по загрузке карт в контроллеры созданы!');                    
+                }
+                else{
+                    alert('Задачи по загрузке карт в контроллеры не созданы! Возможно есть не активные контроллеры или нет авторизованных карт для них.');
+                }
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(xhr.status+' '+thrownError);
+            }
+        });         
+    });
+
+    $('#clear_cards').click(function(e){
+        e.preventDefault();
+        var b;
+         b=confirm("Из контроллеров будут удалены все карты. Продолжить?");
+        
+         if(b==true){        
+            $.ajax({
+                url: '/admin/card/clear-cards',
+                type: 'POST',
+                data: {'data':'clear'},
+                success: function(res){
+                    //alert("Сервер вернул вот что: " + res);
+                    if(res=='OK'){
+                        alert('Задачи по удалению карт из контроллеров созданы!');                    
+                    }
+                    else{
+                        alert('Задачи по удалению карт из контроллеров не созданы! Возможно есть не активные контроллеры.');
+                    }
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert(xhr.status+' '+thrownError);
+                }
+            });         
+         }
+         else{
+            return false;
+         }        
+    });
+JS;
+$this->registerJs($js);
+?>
+

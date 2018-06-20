@@ -13,6 +13,8 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <h1 class="text-center"><?= Html::encode($this->title) ?></h1>
 
+    <?= Html::a('Удалить все задания', ['all-delete'], ['class' => 'btn btn-danger']) ?>
+
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'columns' => [

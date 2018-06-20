@@ -487,6 +487,7 @@ $js = <<<JS
                         $('#visitor-lname').val(obj.lname);
                         $('#visitor-fname').val(obj.fname);
                         $('#visitor-mname').val(obj.mname);
+                        $('#visitor-card').val(obj.card);
                         $('#renter_id').val(obj.renter_id);
                         //$("#renter_id option[value='"+obj.renter_id+"']").attr("selected", "selected");                        
                         $('#car_type').val(obj.car_id);

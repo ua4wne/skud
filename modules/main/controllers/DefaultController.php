@@ -245,12 +245,12 @@ class DefaultController extends Controller
             $series = $_POST['series'];
             $doc_num = $_POST['doc_num'];
 
-            $visitor = Visitor::findOne(['doc_id'=>$doc_id, 'doc_series'=>$series, 'doc_num'=>$doc_num])->toArray();
+            $visitor = Visitor::findOne(['doc_id'=>$doc_id, 'doc_series'=>$series, 'doc_num'=>$doc_num]);
             if(empty($visitor)){
                 return 'NOT';
             }
             else{
-                return json_encode($visitor);
+                return json_encode($visitor->toArray());
             }
         }
     }
@@ -287,17 +287,18 @@ class DefaultController extends Controller
             $persona = '<div class="profile-user-info profile-user-info-striped">';
             //определяем последнее событие в системе
             $event = Event::find()->orderBy(['id' => SORT_DESC,])->limit(1)->all();
-            $event_type = $event[0]['event_type'];
-            $code = $event[0]['card'];
-            $visitor_id = $event[0]['visitor_id'];
-            $device = Device::findOne($event[0]['device_id'])->text;
-            //определяем авторизована ли карта
-            $card = Card::findOne(['code'=>$code]);
-            $time = $event[0]['event_time'];
-            $text = EventType::findOne(['code'=>$event_type])->text;
-            if(empty($card)){
-                $image = '<img src="images/stop.png" alt="stop">';
-                $persona .= '<div class="profile-info-row">
+            if(!empty($event)){
+                $event_type = $event[0]['event_type'];
+                $code = $event[0]['card'];
+                $visitor_id = $event[0]['visitor_id'];
+                $device = Device::findOne($event[0]['device_id'])->text;
+                //определяем авторизована ли карта
+                $card = Card::findOne(['code'=>$code]);
+                $time = $event[0]['event_time'];
+                $text = EventType::findOne(['code'=>$event_type])->text;
+                if(empty($card)){
+                    $image = '<img src="images/stop.png" alt="stop">';
+                    $persona .= '<div class="profile-info-row">
 								<div class="profile-info-name"> ФИО </div>
 								<div class="profile-info-value">
 									<span class="editable">Нет данных</span>
@@ -333,14 +334,14 @@ class DefaultController extends Controller
 									<span class="editable">'.$time.'</span>
 								</div>
 							</div>';
-            }
-            else{
-                //определяем текущую привязку карты к сотруднику
-                //$visitor = Visitor::findOne(['card'=>$card]);
-                $visitor = Visitor::findOne($visitor_id);
-                if(empty($visitor)){
-                    $image = '<img src="images/noimage.jpg" alt="photo">';
-                    $persona .= '<div class="profile-info-row">
+                }
+                else{
+                    //определяем текущую привязку карты к сотруднику
+                    //$visitor = Visitor::findOne(['card'=>$card]);
+                    $visitor = Visitor::findOne($visitor_id);
+                    if(empty($visitor)){
+                        $image = '<img src="images/noimage.jpg" alt="photo">';
+                        $persona .= '<div class="profile-info-row">
 								<div class="profile-info-name"> ФИО </div>
 								<div class="profile-info-value">
 									<span class="editable">Нет привязки</span>
@@ -376,10 +377,10 @@ class DefaultController extends Controller
 									<span class="editable">'.$time.'</span>
 								</div>
 							</div>';
-                }
-                else{
-                    $image = '<img src="'.$visitor->image.'" alt="photo">';
-                    $persona .= '<div class="profile-info-row">
+                    }
+                    else{
+                        $image = '<img src="'.$visitor->image.'" alt="photo">';
+                        $persona .= '<div class="profile-info-row">
 								<div class="profile-info-name"> ФИО </div>
 								<div class="profile-info-value">
 									<span class="editable">'.$visitor->lname.' '.$visitor->fname.' '.$visitor->mname.'</span>
@@ -415,8 +416,8 @@ class DefaultController extends Controller
 									<span class="editable">'.$time.'</span>
 								</div>
 							</div>';
-                    if(!empty($visitor->car_id)){
-                        $persona .= '<div class="profile-info-row">
+                        if(!empty($visitor->car_id)){
+                            $persona .= '<div class="profile-info-row">
 								<div class="profile-info-name"> Марка ТС </div>
 								<div class="profile-info-value">
 									<span class="editable">'.$visitor->car->text.'</span>
@@ -428,7 +429,9 @@ class DefaultController extends Controller
 									<span class="editable">'.$visitor->car_num.'</span>
 								</div>
 							</div>';
+                        }
                     }
+
                 }
 
             }
