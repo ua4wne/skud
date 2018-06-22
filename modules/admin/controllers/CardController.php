@@ -200,4 +200,81 @@ class CardController extends Controller
 
         throw new NotFoundHttpException('The requested page does not exist.');
     }
+
+    public function actionAddCards(){
+        if (\Yii::$app->request->isAjax) {
+            if($_POST['data']=='add'){
+                $devices = Device::find()->where(['is_active'=>1])->all();
+                $cards = Card::find()->all();
+                if(empty($devices) || empty($cards)){
+                    return 'ERR';
+                }
+                else{
+                    foreach ($devices as $device){
+                        foreach ($cards as $card){
+                            //формируем команду для записи карты в контроллер
+                            $msg = new \stdClass();
+                            $msg->id = rand();
+                            $msg->operation = 'add_cards';
+                            $code = dechex($card->code);
+                            while(strlen($code)<12){
+                                $code = '0'.$code;
+                            }
+                            if(empty($card->flags) || is_null($card->flags))
+                                $flags = 0;
+                            else
+                                $flags = $card->flags;
+                            $tz = $card->zone;
+                            $msg->cards = array();
+                            $msg->cards[0] = ['card'=>strtoupper($code), 'flags'=>$flags,'tz'=>$tz];
+                            $data = json_encode($msg);
+                            $task = new Task();
+                            $task->type = $device->type;
+                            $task->snum = $device->snum;
+                            $task->json = $data;
+                            $count = Task::find(['status'=>1])->count(); //есть уже активные задания?
+                            if($count)
+                                $task->status = 0;
+                            else
+                                $task->status = 1;
+                            $task->created_at = date('Y-m-d H:m:s');
+                            $task->save();
+                        }
+                    }
+                }
+                return 'OK';
+            }
+            return 'ERR';
+        }
+    }
+
+    public function actionClearCards(){
+        if (\Yii::$app->request->isAjax) {
+            $devices = Device::find()->where(['is_active'=>1])->all();
+            if(empty($devices)){
+                return 'ERR';
+            }
+            else {
+                foreach ($devices as $device) {
+                    //формируем команду для записи карты в контроллер
+                    $msg = new \stdClass();
+                    $msg->id = rand();
+                    $msg->operation = 'clear_cards';
+                    $data = json_encode($msg);
+                    $task = new Task();
+                    $task->type = $device->type;
+                    $task->snum = $device->snum;
+                    $task->json = $data;
+                    $count = Task::find(['status'=>1])->count(); //есть уже активные задания?
+                    if($count)
+                        $task->status = 0;
+                    else
+                        $task->status = 1;
+                    $task->created_at = date('Y-m-d H:m:s');
+                    $task->save();
+                }
+                return 'OK';
+            }
+        }
+    }
 }

@@ -38,10 +38,19 @@ class DataController extends \yii\web\Controller
 
     public function actionIndex()
     {
-     //   \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-        //$session = Yii::$app->session;
         //Получить JSON как строку
         $json_str = file_get_contents('php://input');
+
+//        $file = './download/data.txt';
+        // The new person to add to the file
+    //            $data = $json_str."\n";
+        // Write the contents to the file,
+        // using the FILE_APPEND flag to append the content to the end of the file
+        // and the LOCK_EX flag to prevent anyone else writing to the file at the same time
+  //      file_put_contents($file, $data, FILE_APPEND | LOCK_EX);
+
+        //$json_str = '{"type":"Z5RWEB","sn":44374,"messages":[{ "id":112805732, "success":1},{"id":1120048829,"operation":"events","events":[{"flag": 0,"event": 4,"time": "2018-06-20 09:50:37","card": "00000029CF67"},{"flag": 0,"event": 16,"time": "2018-06-20 09:50:37","card": "00000029CF67"}]}]}';
+        //$json_str = '{"type":"Z5RWEB","sn":44374,"messages":[{ "id":511702305, "success":1},{"id":2084420925,"operation":"events","events":[{"flag": 0,"event": 2,"time": "2018-06-18 16:24:49","card": "00000029780F"},{"flag": 0,"event": 2,"time": "2018-06-19 00:56:46","card": "000000297D13"},{"flag": 0,"event": 2,"time": "2018-06-19 00:56:47","card": "000000297D13"},{"flag": 0,"event": 2,"time": "2018-06-19 00:56:50","card": "000000297D13"},{"flag": 0,"event": 2,"time": "2018-06-19 08:15:11","card": "000000164A84"},{"flag": 0,"event": 2,"time": "2018-06-19 08:15:15","card": "000000164A84"},{"flag": 0,"event": 2,"time": "2018-06-19 08:25:54","card": "00000029697E"},{"flag": 0,"event": 2,"time": "2018-06-19 08:29:52","card": "00000029BD87"},{"flag": 0,"event": 4,"time": "2018-06-19 10:48:30","card": "00000014DEE7"},{"flag": 0,"event": 16,"time": "2018-06-19 10:48:30","card": "00000014DEE7"},{"flag": 0,"event": 5,"time": "2018-06-19 10:48:34","card": "00000014DEE7"},{"flag": 0,"event": 17,"time": "2018-06-19 10:48:34","card": "00000014DEE7"}]}]}';
         //$json_str = ' {"type":"Z5RWEB","sn":44374,"messages":[{"id":1869470124,"operation":"events","events":[{"flag": 0,"event": 4,"time": "2018-06-08 14:26:22","card": "00000067BDC3"}]}]}';
         //$json_str = '{"type":"Z5RWEB","sn":44374,"messages":[{"id":631704567,"operation":"power_on","fw":"3.23","conn_fw":"1.0.123","active":0,"mode":0,"controller_ip":"192.168.8.9"}]}';
         //$json_str = '{"type":"Z5RWEB","sn":44374,"messages":[{"id":1856669179,"operation":"ping","active":1,"mode":0}]}';
@@ -73,6 +82,8 @@ class DataController extends \yii\web\Controller
             $sn = $json->sn; //серийный номер контроллера Z5R-WEB
             $type = $json->type; //тип контроллера Z5R-WEB
             foreach($json->messages as $message){
+//return print_r($message);
+		if(isset($message->operation)){
                 //активация контроллера
                 if ($message->operation == "power_on") {
                     $this->power_on($type, $sn, $message);
@@ -106,9 +117,9 @@ class DataController extends \yii\web\Controller
                         $model->event_type = $item->event;
                         $model->card = hexdec($item->card);
                         //смотрим привязку карты к посетителю
-                        $visitor_id = Visitor::findOne(['card'=>$model->card])->id;
-                        if(!empty($visitor_id)){
-                            $model->visitor_id = $visitor_id;
+                        $visitor = Visitor::findOne(['card'=>$model->card]);
+                        if(!empty($visitor)){
+                            $model->visitor_id = $visitor->id;
                         }
 
                         if(isset($item->flag))
@@ -140,7 +151,7 @@ class DataController extends \yii\web\Controller
 
                 }
             }
-
+        }
             //преобразование и отправка сообщения контроллеру
             $send = new stdClass();
             $send->date = date('Y-m-d H:i:s');
@@ -151,6 +162,7 @@ class DataController extends \yii\web\Controller
                 $send->messages = array();
             $data = json_encode($send);
             //запись в лог
+//file_put_contents($file,$data."\n",FILE_APPEND | LOCK_EX);
 //            $log = 'Ответ от сервера ' . $data;
 //            LibraryModel::AddTraceLog('response', $log);
             return $data;
