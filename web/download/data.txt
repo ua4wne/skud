@@ -1,54 +1,22 @@
-{"type":"Z5RWEB","sn":44374,"messages":[{"id":327254586,"operation":"ping","active":1,"mode":0}]}
-{"date":"2018-06-20 09:50:18","interval":10,"messages":[]}
-{"type":"Z5RWEB","sn":44374,"messages":[{"id":1572276965,"operation":"ping","active":1,"mode":0}]}
-{"date":"2018-06-20 09:50:28","interval":10,"messages":[]}
-{"type":"Z5RWEB","sn":44374,"messages":[{"id":269455306,"operation":"ping","active":1,"mode":0}]}
-{"date":"2018-06-20 09:50:38","interval":10,"messages":[]}
-{"type":"Z5RWEB","sn":44374,"messages":[{"id":1703964683,"operation":"check_access","card":"00000029CF67","reader":1},{"id":352406219,"operation":"ping","active":1,"mode":0}]}
-{"date":"2018-06-20 09:50:39","interval":10,"messages":[{"id":1703964683,"operation":"check_access","granted":1}]}
-{"type":"Z5RWEB","sn":44374,"messages":[{"id":1600028624,"operation":"events","events":[{"flag": 0,"event": 4,"time": "2018-06-20 09:50:37","card": "00000029CF67"},{"flag": 0,"event": 16,"time": "2018-06-20 09:50:37","card": "00000029CF67"}]}]}
-{"type":"Z5RWEB","sn":44374,"messages":[{"id":160051528,"operation":"power_on","fw":"3.25","conn_fw":"1.0.128","active":0,"mode":0,"controller_ip":"192.168.8.9","reader_protocol":"wiegand"}]}
-{"date":"2018-06-20 09:50:49","interval":10,"messages":[{"id":160051528,"operation":"set_active","active":1,"online":1}]}
-{"type":"Z5RWEB","sn":44374,"messages":[{ "id":160051528, "success":1},{"id":2040332871,"operation":"events","events":[{"flag": 0,"event": 4,"time": "2018-06-20 09:50:37","card": "00000029CF67"},{"flag": 0,"event": 16,"time": "2018-06-20 09:50:37","card": "00000029CF67"}]}]}
-{"type":"Z5RWEB","sn":44374,"messages":[{"id":112805732,"operation":"power_on","fw":"3.25","conn_fw":"1.0.128","active":0,"mode":0,"controller_ip":"192.168.8.9","reader_protocol":"wiegand"}]}
-{"date":"2018-06-20 09:51:00","interval":10,"messages":[{"id":112805732,"operation":"set_active","active":1,"online":1}]}
-{"type":"Z5RWEB","sn":44374,"messages":[{ "id":112805732, "success":1},{"id":1120048829,"operation":"events","events":[{"flag": 0,"event": 4,"time": "2018-06-20 09:50:37","card": "00000029CF67"},{"flag": 0,"event": 16,"time": "2018-06-20 09:50:37","card": "00000029CF67"}]}]}
-{"type":"Z5RWEB","sn":44374,"messages":[{"id":378409503,"operation":"power_on","fw":"3.25","conn_fw":"1.0.128","active":0,"mode":0,"controller_ip":"192.168.8.9","reader_protocol":"wiegand"}]}
-{"date":"2018-06-20 09:51:10","interval":10,"messages":[{"id":378409503,"operation":"set_active","active":1,"online":1}]}
-{"type":"Z5RWEB","sn":44374,"messages":[{ "id":378409503, "success":1},{"id":515530019,"operation":"events","events":[{"flag": 0,"event": 4,"time": "2018-06-20 09:50:37","card": "00000029CF67"},{"flag": 0,"event": 16,"time": "2018-06-20 09:50:37","card": "00000029CF67"}]}]}
-{"type":"Z5RWEB","sn":44374,"messages":[{"id":1713258270,"operation":"power_on","fw":"3.25","conn_fw":"1.0.128","active":0,"mode":0,"controller_ip":"192.168.8.9","reader_protocol":"wiegand"}]}
-{"date":"2018-06-20 09:51:20","interval":10,"messages":[{"id":1713258270,"operation":"set_active","active":1,"online":1}]}
-{"type":"Z5RWEB","sn":44374,"messages":[{ "id":1713258270, "success":1},{"id":1573363368,"operation":"events","events":[{"flag": 0,"event": 4,"time": "2018-06-20 09:50:37","card": "00000029CF67"},{"flag": 0,"event": 16,"time": "2018-06-20 09:50:37","card": "00000029CF67"}]}]}
-{"type":"Z5RWEB","sn":44374,"messages":[{"id":1409959708,"operation":"power_on","fw":"3.25","conn_fw":"1.0.128","active":0,"mode":0,"controller_ip":"192.168.8.9","reader_protocol":"wiegand"}]}
-{"date":"2018-06-20 09:51:30","interval":10,"messages":[{"id":1409959708,"operation":"set_active","active":1,"online":1}]}
-{"type":"Z5RWEB","sn":44374,"messages":[{ "id":1409959708, "success":1},{"id":2077486715,"operation":"events","events":[{"flag": 0,"event": 4,"time": "2018-06-20 09:50:37","card": "00000029CF67"},{"flag": 0,"event": 16,"time": "2018-06-20 09:50:37","card": "00000029CF67"}]}]}
-{"type":"Z5RWEB","sn":44374,"messages":[{"id":1373226340,"operation":"power_on","fw":"3.25","conn_fw":"1.0.128","active":0,"mode":0,"controller_ip":"192.168.8.9","reader_protocol":"wiegand"}]}
-{"date":"2018-06-20 09:51:41","interval":10,"messages":[{"id":1373226340,"operation":"set_active","active":1,"online":1}]}
-{"type":"Z5RWEB","sn":44374,"messages":[{ "id":1373226340, "success":1},{"id":1631518149,"operation":"events","events":[{"flag": 0,"event": 4,"time": "2018-06-20 09:50:37","card": "00000029CF67"},{"flag": 0,"event": 16,"time": "2018-06-20 09:50:37","card": "00000029CF67"}]}]}
-{"type":"Z5RWEB","sn":44374,"messages":[{"id":200747796,"operation":"power_on","fw":"3.25","conn_fw":"1.0.128","active":0,"mode":0,"controller_ip":"192.168.8.9","reader_protocol":"wiegand"}]}
-{"date":"2018-06-20 09:51:51","interval":10,"messages":[{"id":200747796,"operation":"set_active","active":1,"online":1}]}
-{"type":"Z5RWEB","sn":44374,"messages":[{ "id":200747796, "success":1},{"id":289700723,"operation":"events","events":[{"flag": 0,"event": 4,"time": "2018-06-20 09:50:37","card": "00000029CF67"},{"flag": 0,"event": 16,"time": "2018-06-20 09:50:37","card": "00000029CF67"}]}]}
-{"type":"Z5RWEB","sn":44374,"messages":[{"id":1117142618,"operation":"power_on","fw":"3.25","conn_fw":"1.0.128","active":0,"mode":0,"controller_ip":"192.168.8.9","reader_protocol":"wiegand"}]}
-{"date":"2018-06-20 09:52:01","interval":10,"messages":[{"id":1117142618,"operation":"set_active","active":1,"online":1}]}
-{"type":"Z5RWEB","sn":44374,"messages":[{ "id":1117142618, "success":1},{"id":168002245,"operation":"events","events":[{"flag": 0,"event": 4,"time": "2018-06-20 09:50:37","card": "00000029CF67"},{"flag": 0,"event": 16,"time": "2018-06-20 09:50:37","card": "00000029CF67"}]}]}
-{"type":"Z5RWEB","sn":44374,"messages":[{"id":150122846,"operation":"power_on","fw":"3.25","conn_fw":"1.0.128","active":0,"mode":0,"controller_ip":"192.168.8.9","reader_protocol":"wiegand"}]}
-{"date":"2018-06-20 09:52:11","interval":10,"messages":[{"id":150122846,"operation":"set_active","active":1,"online":1}]}
-{"type":"Z5RWEB","sn":44374,"messages":[{ "id":150122846, "success":1},{"id":439493451,"operation":"events","events":[{"flag": 0,"event": 4,"time": "2018-06-20 09:50:37","card": "00000029CF67"},{"flag": 0,"event": 16,"time": "2018-06-20 09:50:37","card": "00000029CF67"}]}]}
-{"type":"Z5RWEB","sn":44374,"messages":[{"id":990892921,"operation":"power_on","fw":"3.25","conn_fw":"1.0.128","active":0,"mode":0,"controller_ip":"192.168.8.9","reader_protocol":"wiegand"}]}
-{"date":"2018-06-20 09:52:21","interval":10,"messages":[{"id":990892921,"operation":"set_active","active":1,"online":1}]}
-{"type":"Z5RWEB","sn":44374,"messages":[{ "id":990892921, "success":1},{"id":1760243555,"operation":"events","events":[{"flag": 0,"event": 4,"time": "2018-06-20 09:50:37","card": "00000029CF67"},{"flag": 0,"event": 16,"time": "2018-06-20 09:50:37","card": "00000029CF67"}]}]}
-{"type":"Z5RWEB","sn":44374,"messages":[{"id":1231192379,"operation":"power_on","fw":"3.25","conn_fw":"1.0.128","active":0,"mode":0,"controller_ip":"192.168.8.9","reader_protocol":"wiegand"}]}
-{"date":"2018-06-20 09:52:32","interval":10,"messages":[{"id":1231192379,"operation":"set_active","active":1,"online":1}]}
-{"type":"Z5RWEB","sn":44374,"messages":[{ "id":1231192379, "success":1},{"id":1622597488,"operation":"events","events":[{"flag": 0,"event": 4,"time": "2018-06-20 09:50:37","card": "00000029CF67"},{"flag": 0,"event": 16,"time": "2018-06-20 09:50:37","card": "00000029CF67"}]}]}
-{"type":"Z5RWEB","sn":44374,"messages":[{"id":111537764,"operation":"power_on","fw":"3.25","conn_fw":"1.0.128","active":0,"mode":0,"controller_ip":"192.168.8.9","reader_protocol":"wiegand"}]}
-{"date":"2018-06-20 09:52:42","interval":10,"messages":[{"id":111537764,"operation":"set_active","active":1,"online":1}]}
-{"type":"Z5RWEB","sn":44374,"messages":[{ "id":111537764, "success":1},{"id":338888228,"operation":"events","events":[{"flag": 0,"event": 4,"time": "2018-06-20 09:50:37","card": "00000029CF67"},{"flag": 0,"event": 16,"time": "2018-06-20 09:50:37","card": "00000029CF67"}]}]}
-{"type":"Z5RWEB","sn":44374,"messages":[{"id":2147469841,"operation":"power_on","fw":"3.25","conn_fw":"1.0.128","active":0,"mode":0,"controller_ip":"192.168.8.9","reader_protocol":"wiegand"}]}
-{"date":"2018-06-20 09:52:52","interval":10,"messages":[{"id":2147469841,"operation":"set_active","active":1,"online":1}]}
-{"type":"Z5RWEB","sn":44374,"messages":[{ "id":2147469841, "success":1},{"id":438792350,"operation":"events","events":[{"flag": 0,"event": 4,"time": "2018-06-20 09:50:37","card": "00000029CF67"},{"flag": 0,"event": 16,"time": "2018-06-20 09:50:37","card": "00000029CF67"}]}]}
-{"type":"Z5RWEB","sn":44374,"messages":[{"id":1911165193,"operation":"power_on","fw":"3.25","conn_fw":"1.0.128","active":0,"mode":0,"controller_ip":"192.168.8.9","reader_protocol":"wiegand"}]}
-{"date":"2018-06-20 09:53:02","interval":10,"messages":[{"id":1911165193,"operation":"set_active","active":1,"online":1}]}
-{"type":"Z5RWEB","sn":44374,"messages":[{ "id":1911165193, "success":1},{"id":269441500,"operation":"events","events":[{"flag": 0,"event": 4,"time": "2018-06-20 09:50:37","card": "00000029CF67"},{"flag": 0,"event": 16,"time": "2018-06-20 09:50:37","card": "00000029CF67"}]}]}
-{"type":"Z5RWEB","sn":44374,"messages":[{"id":2142757034,"operation":"power_on","fw":"3.25","conn_fw":"1.0.128","active":0,"mode":0,"controller_ip":"192.168.8.9","reader_protocol":"wiegand"}]}
-{"date":"2018-06-20 09:53:12","interval":10,"messages":[{"id":2142757034,"operation":"set_active","active":1,"online":1}]}
-{"type":"Z5RWEB","sn":44374,"messages":[{ "id":2142757034, "success":1},{"id":116087764,"operation":"events","events":[{"flag": 0,"event": 4,"time": "2018-06-20 09:50:37","card": "00000029CF67"},{"flag": 0,"event": 16,"time": "2018-06-20 09:50:37","card": "00000029CF67"}]}]}
+{"type":"Z5RWEB","sn":44374,"messages":[{"id":559412924,"operation":"power_on","fw":"3.25","conn_fw":"1.0.128","active":0,"mode":0,"controller_ip":"192.168.8.9","reader_protocol":"wiegand"}]}
+{"date":"2018-06-16 20:29:48","interval":10,"messages":[{"id":559412924,"operation":"set_active","active":1,"online":1}]}
+{"type":"Z5RWEB","sn":44374,"messages":[{"id":1884167637,"operation":"power_on","fw":"3.25","conn_fw":"1.0.128","active":0,"mode":0,"controller_ip":"192.168.8.9","reader_protocol":"wiegand"}]}
+{"date":"2018-06-16 20:29:58","interval":10,"messages":[{"id":1884167637,"operation":"set_active","active":1,"online":1}]}
+{"type":"Z5RWEB","sn":44374,"messages":[{"id":1473442062,"operation":"power_on","fw":"3.25","conn_fw":"1.0.128","active":0,"mode":0,"controller_ip":"192.168.8.9","reader_protocol":"wiegand"}]}
+{"date":"2018-06-16 20:30:08","interval":10,"messages":[{"id":1473442062,"operation":"set_active","active":1,"online":1}]}
+{"type":"Z5RWEB","sn":44374,"messages":[{"id":201305624,"operation":"power_on","fw":"3.25","conn_fw":"1.0.128","active":0,"mode":0,"controller_ip":"192.168.8.9","reader_protocol":"wiegand"}]}
+{"date":"2018-06-16 20:30:18","interval":10,"messages":[{"id":201305624,"operation":"set_active","active":1,"online":1}]}
+{"type":"Z5RWEB","sn":44374,"messages":[{"id":238962600,"operation":"power_on","fw":"3.25","conn_fw":"1.0.128","active":0,"mode":0,"controller_ip":"192.168.8.9","reader_protocol":"wiegand"}]}
+{"date":"2018-06-16 20:30:28","interval":10,"messages":[{"id":238962600,"operation":"set_active","active":1,"online":1}]}
+{"type":"Z5RWEB","sn":44374,"messages":[{"id":776532036,"operation":"power_on","fw":"3.25","conn_fw":"1.0.128","active":0,"mode":0,"controller_ip":"192.168.8.9","reader_protocol":"wiegand"}]}
+{"date":"2018-06-16 20:30:38","interval":10,"messages":[{"id":776532036,"operation":"set_active","active":1,"online":1}]}
+{"type":"Z5RWEB","sn":44374,"messages":[{"id":1238433452,"operation":"power_on","fw":"3.25","conn_fw":"1.0.128","active":0,"mode":0,"controller_ip":"192.168.8.9","reader_protocol":"wiegand"}]}
+{"date":"2018-06-16 20:30:48","interval":10,"messages":[{"id":1238433452,"operation":"set_active","active":1,"online":1}]}
+{"type":"Z5RWEB","sn":44374,"messages":[{"id":1273911899,"operation":"power_on","fw":"3.25","conn_fw":"1.0.128","active":0,"mode":0,"controller_ip":"192.168.8.9","reader_protocol":"wiegand"}]}
+{"date":"2018-06-16 20:30:58","interval":10,"messages":[{"id":1273911899,"operation":"set_active","active":1,"online":1}]}
+{"type":"Z5RWEB","sn":44374,"messages":[{"id":1431419379,"operation":"power_on","fw":"3.25","conn_fw":"1.0.128","active":0,"mode":0,"controller_ip":"192.168.8.9","reader_protocol":"wiegand"}]}
+{"date":"2018-06-16 20:31:08","interval":10,"messages":[{"id":1431419379,"operation":"set_active","active":1,"online":1}]}
+{"type":"Z5RWEB","sn":44374,"messages":[{"id":620145550,"operation":"power_on","fw":"3.25","conn_fw":"1.0.128","active":0,"mode":0,"controller_ip":"192.168.8.9","reader_protocol":"wiegand"}]}
+{"date":"2018-06-16 20:31:18","interval":10,"messages":[{"id":620145550,"operation":"set_active","active":1,"online":1}]}
+{"type":"Z5RWEB","sn":44374,"messages":[{"id":1665947468,"operation":"power_on","fw":"3.25","conn_fw":"1.0.128","active":0,"mode":0,"controller_ip":"192.168.8.9","reader_protocol":"wiegand"}]}
+{"date":"2018-06-16 20:31:28","interval":10,"messages":[{"id":1665947468,"operation":"set_active","active":1,"online":1}]}

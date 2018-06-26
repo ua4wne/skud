@@ -38,8 +38,6 @@ class DataController extends \yii\web\Controller
 
     public function actionIndex()
     {
-//        \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-       // $session = Yii::$app->session;
         //Получить JSON как строку
         $json_str = file_get_contents('php://input');
 
