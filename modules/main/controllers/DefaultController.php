@@ -181,8 +181,8 @@ class DefaultController extends Controller
                             //return $this->redirect(['/']);
                             $old = Visitor::findOne(['card'=>$model->card]);
                             $old->card = null;
-                            $msg = 'Данные посетителя <strong>'. $old->fname .' '.$old->lname .'</strong> были обновлены ' . date('d-m-Y H:i:s');
-                            LibraryModel::AddEventLog('info',$msg);
+                            //$msg = 'Данные посетителя <strong>'. $old->fname .' '.$old->lname .'</strong> были обновлены ' . date('d-m-Y H:i:s');
+                            //LibraryModel::AddEventLog('info',$msg);
                             $old->save();
                         }
                         //else{

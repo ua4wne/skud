@@ -123,12 +123,16 @@ class ReportController extends \yii\web\Controller
 											</thead>
 											<tbody>';
         foreach($rows as $row){
-            $in = Event::find()->select(['event_time'])->where(['event_type'=>[4,16]])->andWhere(['card'=>$row['card']])->andWhere(['visitor_id'=>$row['id']])->orderBy(['id'=>SORT_DESC])->limit(1)->all();
-            $out = Event::find()->select(['event_time'])->where(['event_type'=>[5,17]])->andWhere(['card'=>$row['card']])->andWhere(['visitor_id'=>$row['id']])->orderBy(['id'=>SORT_DESC])->limit(1)->all();
+            $in = Event::find()->select(['event_time'])->where(['event_type'=>[4,16,40]])->andWhere(['card'=>$row['card']])->andWhere(['visitor_id'=>$row['id']])->orderBy(['id'=>SORT_DESC])->limit(1)->all();
+            $out = Event::find()->select(['event_time'])->where(['event_type'=>[5,17,41]])->andWhere(['card'=>$row['card']])->andWhere(['visitor_id'=>$row['id']])->orderBy(['id'=>SORT_DESC])->limit(1)->all();
             if(!empty($in) || !empty($out)){
-                $content.='<tr><td>'.$row['lname'].' '.$row['fname'].' '.$row['mname'].'</td><td>'.$row['card'].'</td><td>'.$row['auto'].'</td>
+                if(empty($in)) $indata = ' ';
+		else $indata = $in[0]['event_time'];
+		if(empty($out)) $outdata = ' ';
+		else $outdata = $out[0]['event_time'];
+		$content.='<tr><td>'.$row['lname'].' '.$row['fname'].' '.$row['mname'].'</td><td>'.$row['card'].'</td><td>'.$row['auto'].'</td>
                            <td>'.$row['car_num'].'</td><td>'.$row['doc'].'</td><td>'.$row['doc_series'].'</td><td>'.$row['doc_num'].'</td>
-                           <td>'.$row['title'].'</td><td>'.$in[0]['event_time'].'</td><td>'.$out[0]['event_time'].'</td></tr>';
+                           <td>'.$row['title'].'</td><td>'.$indata.'</td><td>'.$outdata.'</td></tr>';
             }
         }
 
@@ -146,7 +150,61 @@ class ReportController extends \yii\web\Controller
     }
 
     public function actionShareCard(){
-        return 'ShareCard';
+        $query = "select v.id, v.fname,v.mname,v.lname,v.card,cr.text as auto, v.car_num, dt.text as doc, v.doc_series, v.doc_num, r.title from visitor v
+                join renter r on v.renter_id = r.id
+                join car cr on v.car_id = cr.id
+                join doc_type dt on v.doc_id = dt.id
+                where v.card in (select code from card where share=1)
+                order by r.title";
+        // подключение к базе данных
+        $connection = \Yii::$app->db;
+        // Составляем SQL запрос
+        $model = $connection->createCommand($query);
+        //Осуществляем запрос к базе данных, переменная $model содержит ассоциативный массив с данными
+        $rows = $model->queryAll();
+        //    return print_r($rows);
+        $content='<div class="hr hr-18 dotted hr-double"></div>
+                            <div class="row">
+							<div class="col-xs-12">
+								<!-- PAGE CONTENT BEGINS -->
+								<div class="row">
+									<div class="col-xs-12">
+										<table id="simple-table" class="table  table-bordered table-hover">
+											<thead>
+											<tr>
+													<th>ФИО</th>
+													<th>Карта</th>
+													<th>Автомобиль</th>
+													<th>Рег №</th>
+													<th>Документ</th>
+													<th>Серия</th>
+													<th>Номер</th>
+													<th>Организация</th>
+													<th>Дата входа</th>
+													<th>Дата выхода</th>
+												</tr>
+											</thead>
+											<tbody>';
+        foreach($rows as $row){
+            $in = Event::find()->select(['event_time'])->where(['event_type'=>[4,16,40]])->andWhere(['card'=>$row['card']])->andWhere(['visitor_id'=>$row['id']])->orderBy(['id'=>SORT_DESC])->limit(1)->all();
+            $out = Event::find()->select(['event_time'])->where(['event_type'=>[5,17,41]])->andWhere(['card'=>$row['card']])->andWhere(['visitor_id'=>$row['id']])->orderBy(['id'=>SORT_DESC])->limit(1)->all();
+            if(!empty($in) && empty($out)){
+                $content.='<tr><td>'.$row['lname'].' '.$row['fname'].' '.$row['mname'].'</td><td>'.$row['card'].'</td><td>'.$row['auto'].'</td>
+                           <td>'.$row['car_num'].'</td><td>'.$row['doc'].'</td><td>'.$row['doc_series'].'</td><td>'.$row['doc_num'].'</td>
+                           <td>'.$row['title'].'</td><td>'.$in[0]['event_time'].'</td><td></td></tr>';
+            }
+        }
+
+        $content.='</tbody>
+										</table>
+									</div><!-- /.span -->
+								</div><!-- /.row -->
+							</div>
+						</div>';
+        return $this->render('index',[
+            'title'=>'Не сданные гостевые карты',
+            'content'=>$content,
+        ]);
     }
 
 }
