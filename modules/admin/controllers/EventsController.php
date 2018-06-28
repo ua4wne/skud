@@ -19,7 +19,7 @@ class EventsController extends Controller
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
-            //'sort' => ['defaultOrder' => ['id' => SORT_DESC]],
+            'sort' => ['defaultOrder' => ['id' => SORT_DESC]],
             'pagination' => [
                 'pageSize' => Yii::$app->params['page_size'],
             ],
@@ -55,6 +55,40 @@ class EventsController extends Controller
         else{
             throw new HttpException(404 ,'Доступ запрещен');
         }
+    }
+
+    /**
+     * Deletes an existing Visitor model.
+     * If deletion is successful, the browser will be redirected to the 'index' page.
+     * @param integer $id
+     * @return mixed
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public function actionDelete($id)
+    {
+        if(Yii::$app->user->can('admin')) {
+            $this->findModel($id)->delete();
+            return $this->redirect(['index']);
+        }
+        else{
+            throw new HttpException(404 ,'Доступ запрещен');
+        }
+    }
+
+    /**
+     * Finds the Visitor model based on its primary key value.
+     * If the model is not found, a 404 HTTP exception will be thrown.
+     * @param integer $id
+     * @return Visitor the loaded model
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    protected function findModel($id)
+    {
+        if (($model = Eventlog::findOne($id)) !== null) {
+            return $model;
+        }
+
+        throw new NotFoundHttpException('The requested page does not exist.');
     }
 
 }

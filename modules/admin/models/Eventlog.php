@@ -34,9 +34,9 @@ class Eventlog extends BaseModel
     public function rules()
     {
         return [
-            [['user_id', 'user_ip', 'type', 'msg'], 'required'],
-            [['user_id', 'is_read'], 'integer'],
-            [['created_at', 'updated_at'], 'safe'],
+            [['user_ip', 'type', 'msg'], 'required'],
+            [['is_read'], 'integer'],
+            [['user_id', 'created_at', 'updated_at'], 'safe'],
             [['user_ip'], 'string', 'max' => 15],
             [['type'], 'string', 'max' => 7],
             [['msg'], 'string', 'max' => 255],

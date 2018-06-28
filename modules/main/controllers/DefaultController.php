@@ -2,6 +2,7 @@
 
 namespace app\modules\main\controllers;
 
+use app\models\LibraryModel;
 use app\modules\admin\models\Device;
 use app\modules\admin\models\EventType;
 use app\modules\admin\models\SearchDevice;
@@ -100,14 +101,14 @@ class DefaultController extends Controller
 
         $data = date('Y-m-d');
         //кол-во зашедших сотрудников за день
-        $query = "select count(*) as cnt from event where event_time like '$data%' and event_type=16 and card in (select code from card where share=0)";
+        $query = "select count(*) as cnt from event where event_time like '$data%' and event_type=4 and card in (select code from card where share=0)";
         // Составляем SQL запрос
         $conn = $connection->createCommand($query);
         //Осуществляем запрос к базе данных, переменная $model содержит ассоциативный массив с данными
         $row = $conn->queryAll();
         $in = $row[0]['cnt'];
         //кол-во вышедших сотрудников за день
-        $query = "select count(*) as cnt from event where event_time like '$data%' and event_type=17 and card in (select code from card where share=0)";
+        $query = "select count(*) as cnt from event where event_time like '$data%' and event_type=5 and card in (select code from card where share=0)";
         // Составляем SQL запрос
         $conn = $connection->createCommand($query);
         //Осуществляем запрос к базе данных, переменная $model содержит ассоциативный массив с данными
@@ -176,10 +177,15 @@ class DefaultController extends Controller
                         $busy = Visitor::find()->where(['card'=>$model->card])->count();
                         if($busy){
                             //return 'Карта с номером '. $model->card . ' уже была выдана ранее! Выдача одной карты нескольким посетителям запрещена. Выберите другую карту, а эту сдайте администратору';
-                            Yii::$app->session->setFlash('error', 'Карта с номером '. $model->card . ' уже была выдана ранее! Выдача одной карты нескольким посетителям запрещена. Выберите другую карту, а эту сдайте администратору!');
-                            return $this->redirect(['/']);
+                            //Yii::$app->session->setFlash('error', 'Карта с номером '. $model->card . ' уже была выдана ранее! Выдача одной карты нескольким посетителям запрещена. Выберите другую карту, а эту сдайте администратору!');
+                            //return $this->redirect(['/']);
+                            $old = Visitor::findOne(['card'=>$model->card]);
+                            $old->card = null;
+                            $msg = 'Данные посетителя <strong>'. $old->fname .' '.$old->lname .'</strong> были обновлены ' . date('d-m-Y H:i:s');
+                            LibraryModel::AddEventLog('info',$msg);
+                            $old->save();
                         }
-                        else{
+                        //else{
                             //Все нормально, можно выдавать. Проверяем не был ли ранее зарегистрирован данный чел
                             $visitor = Visitor::findOne(['doc_id'=>$model->doc_id,'doc_series'=>$model->doc_series,'doc_num'=>$model->doc_num]);
                             if(empty($visitor)){ //новый
@@ -189,6 +195,8 @@ class DefaultController extends Controller
                                 else{
                                     $model->image = '/images/truck.png';
                                 }
+                                $msg = 'Добавлен новый посетитель <strong>'. $model->fname .' '.$model->lname .'</strong>. Карта доступа '.$model->card.' арендатор '.$model->renter->title;
+                                LibraryModel::AddEventLog('info',$msg);
                                 $model->save();
                             }
                             else{//был уже
@@ -197,6 +205,8 @@ class DefaultController extends Controller
                                 $visitor->car_id = $model->car_id;
                                 $visitor->car_num = $model->car_num;
                                 $visitor->renter_id = $model->renter_id;
+                                $msg = 'Данные посетителя <strong>'. $visitor->fname .' '.$visitor->lname .'</strong> были обновлены. Повторная регистрация. ' . date('d-m-Y H:i:s');
+                                LibraryModel::AddEventLog('info',$msg);
                                 $visitor->save();
                             }
                             //проверяем, что выбрано ТС
@@ -220,7 +230,7 @@ class DefaultController extends Controller
                             }
                             //return 'OK';
                             return $this->redirect(['/']);
-                        }
+                      //  }
                     }
                     elseif(!$card->share){
                         //return 'Карта не является гостевой! Выберите другую карту, а эту сдайте начальнику охраны.';

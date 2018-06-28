@@ -54,7 +54,12 @@ class LibraryModel extends Model
 
     public static function AddEventLog($type,$msg){
         $log = new Eventlog();
-        $log->user_id = Yii::$app->user->identity->getId();
+        if(empty(Yii::$app->user->identity)){
+            $log->user_id = null;
+        }
+        else{
+            $log->user_id = Yii::$app->user->identity->getId();
+        }
         $log->user_ip = self::GetRealIp();
         $log->type = $type;
         $log->is_read = 0;

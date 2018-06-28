@@ -303,6 +303,22 @@ AppAsset::register($this);
 
                         <b class="arrow"></b>
                     </li>
+                    <li class="">
+                        <a href="/main/report/who-where">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            Карта прохода
+                        </a>
+
+                        <b class="arrow"></b>
+                    </li>
+                    <li class="">
+                        <a href="/main/report/share-card">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            Гостевые пропуска
+                        </a>
+
+                        <b class="arrow"></b>
+                    </li>
                 </ul>
             </li>
 

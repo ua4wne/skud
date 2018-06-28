@@ -2,6 +2,7 @@
 
 namespace app\modules\main\controllers;
 
+use app\models\LibraryModel;
 use app\modules\admin\models\CarType;
 use app\modules\admin\models\DocType;
 use app\modules\main\models\Renter;
@@ -82,8 +83,17 @@ class VisitorController extends Controller
             }
             else
                 $model->image = '/images/noimage.jpg';
-            if($model->save())
+            if($model->save()){
+                $share = Card::findOne(['code'=>$model->card])->share;
+                if($share){
+                    $msg = 'Добавлен новый посетитель <strong>'. $model->fname .' '.$model->lname .'</strong>. Карта доступа '.$model->card.' арендатор '.$model->renter->title;
+                }
+                else{
+                    $msg = 'Добавлен новый сотрудник <strong>'. $model->fname .' '.$model->lname .'</strong>. Карта доступа '.$model->card.' арендатор '.$model->renter->title;
+                }
+                LibraryModel::AddEventLog('info',$msg);
                 return $this->redirect(['view', 'id' => $model->id]);
+            }
         }
 
         $renters = Renter::find()->select(['id', 'title'])->where('status=1')->asArray()->all();
@@ -167,6 +177,14 @@ class VisitorController extends Controller
                         unlink($old_image);
                 }
             }
+            $share = Card::findOne(['code'=>$model->card])->share;
+            if($share){
+                $msg = 'Данные посетителя <strong>'. $model->fname .' '.$model->lname .'</strong> были обновлены ' . date('d-m-Y H:i:s');
+            }
+            else{
+                $msg = 'Данные сотрудника <strong>'. $model->fname .' '.$model->lname .'</strong> были обновлены ' . date('d-m-Y H:i:s');
+            }
+            LibraryModel::AddEventLog('info',$msg);
             $model->save(false);
             return $this->redirect(['view', 'id' => $model->id]);
         }
@@ -204,7 +222,16 @@ class VisitorController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $visitor = $this->findModel($id);
+        $share = Card::findOne(['code'=>$visitor->card])->share;
+        if($share){
+            $msg = 'Данные посетителя <strong>'. $visitor->fname .' '.$visitor->lname .'</strong> были удалены ' . date('d-m-Y H:i:s');
+        }
+        else{
+            $msg = 'Данные сотрудника <strong>'. $visitor->fname .' '.$visitor->lname .'</strong> были удалены ' . date('d-m-Y H:i:s');
+        }
+        LibraryModel::AddEventLog('info',$msg);
+        $visitor->delete();
 
         return $this->redirect(['index']);
     }
