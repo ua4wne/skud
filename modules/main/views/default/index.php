@@ -489,6 +489,7 @@ $js = <<<JS
                         $('#visitor-mname').val(obj.mname);
                         $('#visitor-card').val(obj.card);
                         $('#renter_id').val(obj.renter_id);
+                        $('.select2').css('width','100%').select2({allowClear:false});
                         //$("#renter_id option[value='"+obj.renter_id+"']").attr("selected", "selected");                        
                         $('#car_type').val(obj.car_id);
                         //$("#car_type option[value='"+obj.car_id+"']").attr("selected", "selected");

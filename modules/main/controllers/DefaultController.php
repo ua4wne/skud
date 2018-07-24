@@ -254,8 +254,13 @@ class DefaultController extends Controller
             $doc_id = $_POST['doc_id'];
             $series = $_POST['series'];
             $doc_num = $_POST['doc_num'];
+            if(strlen($series)>0 && strlen($doc_num)>0){
+                $visitor = Visitor::findOne(['doc_id'=>$doc_id, 'doc_series'=>$series, 'doc_num'=>$doc_num]);
+            }
+            else{
+                $visitor=NULL;
+            }
 
-            $visitor = Visitor::findOne(['doc_id'=>$doc_id, 'doc_series'=>$series, 'doc_num'=>$doc_num]);
             if(empty($visitor)){
                 return 'NOT';
             }
