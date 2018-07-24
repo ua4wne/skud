@@ -314,7 +314,7 @@ AppAsset::register($this);
                     <li class="">
                         <a href="/main/report/share-card">
                             <i class="menu-icon fa fa-caret-right"></i>
-                            Гостевые пропуска
+                            Выданные пропуска
                         </a>
 
                         <b class="arrow"></b>

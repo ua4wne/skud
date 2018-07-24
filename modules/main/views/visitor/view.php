@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\DetailView;
+use yii\helpers\Url;
 
 /* @var $this yii\web\View */
 /* @var $model app\modules\main\models\Visitor */
@@ -29,11 +30,22 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
+            [
+                'label' => 'Фото',
+                'format' => 'raw',
+                'value' => function($data){
+                    return Html::img(Url::toRoute($data->image),[
+                        'alt'=>'image',
+                        'style' => 'width:300px;',
+                        //'class'=>'img-circle'
+                    ]);
+                },
+            ],
             'id',
             'fname',
             'mname',
             'lname',
-            'image',
+            //'image',
             'renter_id',
             'card',
             'car_id',
