@@ -50,8 +50,11 @@ $js = <<<JS
                 }
                 if(res=='BUSY')
                     alert('Карта уже назначена другому сотруднику!');
-                if(res=='NO_CARD')
+                if(res=='NO_CARD'){
                     alert('Карта еще не активирована. Обратитесь к администратору СКУД!');
+                    $('#card').val('');
+                    result=true;
+                }
              },
              error: function (xhr, ajaxOptions, thrownError) {
        	        alert(xhr.status+' '+thrownError);

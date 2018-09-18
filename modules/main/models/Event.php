@@ -51,6 +51,11 @@ class Event extends ActiveRecord
                     if(!empty($visitor)){
                         $visitor->card = null;
                         $visitor->save(false);
+                        $gcard = GuestCard::findOne(['visitor_id'=>$visitor->id]);
+                        if(!empty($gcard)){
+                            $gcard->passed = date('Y-m-d H:i:s');
+                            $gcard->update();
+                        }
                     }
                 }
             }

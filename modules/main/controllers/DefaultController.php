@@ -8,6 +8,7 @@ use app\modules\admin\models\EventType;
 use app\modules\admin\models\SearchDevice;
 use app\modules\main\models\Card;
 use app\modules\main\models\Event;
+use app\modules\main\models\GuestCard;
 use app\modules\main\models\SearchEvent;
 use app\modules\main\models\Renter;
 use app\modules\admin\models\CarType;
@@ -209,12 +210,13 @@ class DefaultController extends Controller
                                 LibraryModel::AddEventLog('info',$msg);
                                 $visitor->save();
                             }
+                        //смотрим привязку карты к посетителю
+                        $visitor_id = Visitor::findOne(['card'=>$model->card])->id;
                             //проверяем, что выбрано ТС
                             $car = CarType::findOne($model->car_id)->text;
                             if($car != 'Без ТС'){
                                 $device_id = Device::findOne(['type'=>'Z5RWEB'])->id;
-                                //смотрим привязку карты к посетителю
-                                $visitor_id = Visitor::findOne(['card'=>$model->card])->id;
+
                                 // подключение к базе данных
                                 $connection = \Yii::$app->db;
                                 $connection->createCommand()->insert('event', [
@@ -228,6 +230,12 @@ class DefaultController extends Controller
                                     'updated_at' => date('Y-m-d H:i:s'),
                                 ])->execute();
                             }
+                            //запоминаем данные о выданной карте
+                            $gcard = new GuestCard();
+                            $gcard->visitor_id = $visitor_id;
+                            $gcard->card = $model->card;
+                            $gcard->issued = date('Y-m-d H:i:s');
+                            $gcard->save();
                             //return 'OK';
                             return $this->redirect(['/']);
                       //  }
