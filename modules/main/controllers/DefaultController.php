@@ -188,7 +188,7 @@ class DefaultController extends Controller
                         }
                         //else{
                             //Все нормально, можно выдавать. Проверяем не был ли ранее зарегистрирован данный чел
-                            $visitor = Visitor::findOne(['doc_id'=>$model->doc_id,'doc_series'=>$model->doc_series,'doc_num'=>$model->doc_num]);
+                            $visitor = Visitor::findOne(['doc_id'=>$model->doc_id,'doc_series'=>$model->doc_series,'doc_num'=>$model->doc_num,'card'=>null]);
                             if(empty($visitor)){ //новый
                                 if(empty($model->car_num)){
                                     $model->image = '/images/man.png';
@@ -199,6 +199,12 @@ class DefaultController extends Controller
                                 $msg = 'Добавлен новый посетитель <strong>'. $model->fname .' '.$model->lname .'</strong>. Карта доступа '.$model->card.' арендатор '.$model->renter->title;
                                 LibraryModel::AddEventLog('info',$msg);
                                 $model->save();
+                                //запоминаем данные о выданной карте
+                                $gcard = new GuestCard();
+                                $gcard->visitor_id = $model->id;
+                                $gcard->card = $model->card;
+                                $gcard->issued = date('Y-m-d H:i:s');
+                                $gcard->save();
                             }
                             else{//был уже
                                 $visitor->mname = $model->mname;
@@ -209,14 +215,19 @@ class DefaultController extends Controller
                                 $msg = 'Данные посетителя <strong>'. $visitor->fname .' '.$visitor->lname .'</strong> были обновлены. Повторная регистрация. ' . date('d-m-Y H:i:s');
                                 LibraryModel::AddEventLog('info',$msg);
                                 $visitor->save();
+                                //обновляем данные о выданной карте
+                                $gcard = new GuestCard();
+                                $gcard->visitor_id = $visitor->id;
+                                $gcard->card = $model->card;
+                                $gcard->issued = date('Y-m-d H:i:s');
+                                $gcard->save();
                             }
-                        //смотрим привязку карты к посетителю
-                        $visitor_id = Visitor::findOne(['card'=>$model->card])->id;
                             //проверяем, что выбрано ТС
                             $car = CarType::findOne($model->car_id)->text;
                             if($car != 'Без ТС'){
                                 $device_id = Device::findOne(['type'=>'Z5RWEB'])->id;
-
+                                //смотрим привязку карты к посетителю
+                                $visitor_id = Visitor::findOne(['card'=>$model->card])->id;
                                 // подключение к базе данных
                                 $connection = \Yii::$app->db;
                                 $connection->createCommand()->insert('event', [
@@ -230,12 +241,6 @@ class DefaultController extends Controller
                                     'updated_at' => date('Y-m-d H:i:s'),
                                 ])->execute();
                             }
-                            //запоминаем данные о выданной карте
-                            $gcard = new GuestCard();
-                            $gcard->visitor_id = $visitor_id;
-                            $gcard->card = $model->card;
-                            $gcard->issued = date('Y-m-d H:i:s');
-                            $gcard->save();
                             //return 'OK';
                             return $this->redirect(['/']);
                       //  }
